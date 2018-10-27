@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/bigdata" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bigdatajar/src/main/java/flumeInterceptor/CustomParameterInterceptor.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/httpClient" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/others" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spark" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot1" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot2" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springmvc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/storm1" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/testweixinpay" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice/src/main/java/com/demo/mydemo/cxf/server/HelloServiceImpl.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice/src/main/java/com/demo/mydemo/cxf/server/IHelloService.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice/src/main/java/com/demo/mydemo/cxf/server/Publish.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice/src/main/java/com/demo/mydemo/jdk/client/SayHello.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice/src/main/java/com/demo/mydemo/jdk/client/SayHello2.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice/src/main/java/com/demo/mydemo/jdk/client/SayHello2Response.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice/src/main/java/com/demo/mydemo/jdk/client/SayHelloResponse.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice/src/main/java/com/demo/mydemo/jdk/client/User.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webservice/src/main/java/com/demo/mydemo/jdk/server/User.java" charset="UTF-8" />
+  </component>
+</project>

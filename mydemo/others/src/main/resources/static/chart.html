@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+    <script>
+
+        var initWs = function() {
+            if (window.WebSocket) {
+                websocket = new WebSocket(
+                    encodeURI('ws://' + '127.0.0.1' + ':8887'));
+                websocket.onopen = function() {
+                    console.log('已连接');
+                    websocket.send("小明");
+                };
+
+                websocket.onerror = function() {
+                    console.log('连接发生错误');
+                };
+                websocket.onclose = function() {
+                    console.log('已经断开连接');
+                    //initWs();
+                };
+                // 消息接收
+                websocket.onmessage = function(message) {
+                    console.log(message);
+                };
+            } else {
+                alert("该浏览器不支持下单提醒。<br/>建议使用高版本的浏览器，<br/>如 IE10、火狐 、谷歌  、搜狗等");
+            }
+        };
+        initWs();
+
+    </script>
+</body>
+</html>

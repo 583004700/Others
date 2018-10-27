@@ -1,0 +1,10 @@
+package com.sxt.t007;
+
+import com.lmax.disruptor.EventHandler;
+
+public class LongEventHandler implements EventHandler<LongEvent> {
+    @Override
+    public void onEvent(LongEvent longEvent, long l, boolean b) throws Exception {
+        System.out.println(Thread.currentThread()+":"+longEvent.getValue());
+    }
+}
