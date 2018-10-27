@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="bigdatajar" />
         <module name="httpClient" />
+        <module name="mybatis" />
         <module name="spark" />
         <module name="springboot1" />
         <module name="springboot2" />
@@ -22,6 +23,7 @@
       <module name="bigdata" target="1.8" />
       <module name="bigdatajar" target="1.5" />
       <module name="httpClient" target="1.8" />
+      <module name="mybatis" target="1.5" />
       <module name="others" target="1.8" />
       <module name="spark" target="1.8" />
       <module name="springboot1" target="1.8" />
