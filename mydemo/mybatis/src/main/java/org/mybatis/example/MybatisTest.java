@@ -15,18 +15,26 @@ public class MybatisTest {
     public void init() throws Exception{
         String resource = "org/mybatis/example/mybatis-config.xml";
         InputStream inputStream = Resources.getResourceAsStream(resource);
+        //此时的sqlSessionFactory是DefaultSqlSessionFactory
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
     }
 
+    //sqlSession是非线程安全的
     @Test
     public void test() throws Exception{
+        //DefaultSqlSession
         SqlSession sqlSession = sqlSessionFactory.openSession();
         //第一个参数为mapper的namespace和id
+        //SimpleExecutor.query->BaseExecutor.query->SimpleExecutor.doQuery方法
         Employee employee = sqlSession.selectOne("org.mybatis.example.EmployeeMapper."+"selectEmp",1);
         System.out.println(employee.getEmail());
         sqlSession.close();
     }
 
+    /**
+     * 接口式
+     * @throws Exception
+     */
     @Test
     public void test2() throws Exception{
         SqlSession sqlSession = sqlSessionFactory.openSession();
