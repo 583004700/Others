@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HelloWorldController {
     @RequestMapping("/index")
     public String helloWorld(HttpServletRequest request, Model model) {
+        System.out.println(request.getSession().getServletContext().getRealPath(""));
         System.out.println(request);
         String viewArgValue = "Hello111就是这样啊";
         request.setAttribute("message", viewArgValue);

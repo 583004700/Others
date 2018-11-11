@@ -1,10 +1,16 @@
-package org.mybatis.example;
+package mybatis3.mapper;
 
+import org.apache.ibatis.type.Alias;
+
+//在包扫描的情况下可以用alias注解起别名
+@Alias("emp")
 public class Employee {
     private Integer id;
     private String lastName;
     private String email;
     private String gender;
+
+    private Department department;
 
     public Integer getId() {
         return id;
@@ -36,5 +42,13 @@ public class Employee {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }
