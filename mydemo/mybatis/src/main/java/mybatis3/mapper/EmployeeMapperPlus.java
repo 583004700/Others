@@ -17,4 +17,6 @@ public interface EmployeeMapperPlus {
      * @return
      */
     List<Employee> getEmpsByDeptId(Integer deptId);
+
+    Employee myEmpDis(Integer id);
 }

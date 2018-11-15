@@ -82,4 +82,12 @@ public class MybatisPlusTest {
         System.out.println(department.getDepartmentName());
     }
 
+    @Test
+    public void testMyEmpDis(){
+        SqlSession session = sqlSessionFactory.openSession();
+        EmployeeMapperPlus mapper = session.getMapper(EmployeeMapperPlus.class);
+        Employee employee = mapper.myEmpDis(4);
+        System.out.println(employee);
+    }
+
 }

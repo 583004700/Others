@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis4.dynamicSQL.EmployeeMapper">
+    <select id="getEmpsByConditionIf" resultType="mybatis4.dynamicSQL.Employee">
+        select * from tbl_employee
+        <!--where 1 = 1-->
+        <!--OGNL表达式,从参数中取值进行判断,xml中特殊符号应该转义，比如&为&amp;-->
+        <!--where可以解决前面没有where标签的报错-->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="lastName != null &amp;&amp; lastName != ''">
+                and last_name like #lastName
+            </if>
+            <if test="email != null and email.trim() != ''">
+                and email = #{email}
+            </if>
+            <if test="gender == 0 or gender == 1">
+                and gender = #{gender}
+            </if>
+        </where>
+    </select>
+
+    <select id="getEmpsByConditionTrim" resultType="mybatis4.dynamicSQL.Employee">
+        select * from tbl_employee
+        <!--后面多出的and 或 or where标签不能解决,trim标签体中是整个字符串,prefix加上前缀
+        prefixOverrides:前缀覆盖，去掉整个字符串前面多余的字符,后缀同理
+        -->
+        <trim prefix="where" suffixOverrides="and">
+            <if test="id != null">
+                id = #{id} and
+            </if>
+            <if test="lastName != null &amp;&amp; lastName != ''">
+                last_name like #lastName and
+            </if>
+            <if test="email != null and email.trim() != ''">
+                email = #{email} and
+            </if>
+            <if test="gender == 0 or gender == 1">
+                gender = #{gender}
+            </if>
+        </trim>
+    </select>
+</mapper>

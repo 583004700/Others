@@ -73,4 +73,32 @@
     <select id="getEmpsByDeptId" resultType="mybatis3.mapper.Employee">
         select * from tbl_employee where d_id = #{deptId}
     </select>
+
+    <!--
+        discriminator鉴别器，判断某列的值，根据某列的值改变封装行为
+        如果查出的是女生，则把部门信息查询出来，否则不查询
+        如果是男生，把last_name这一列值赋值给email
+    -->
+    <resultMap id="myEmpDisResultMap" type="mybatis3.mapper.Employee">
+        <result column="id" property="id" />
+        <result column="last_name" property="lastName" />
+        <result column="email" property="email" />
+        <result column="gender" property="gender" />
+        <discriminator javaType="string" column="gender">
+            <case value="0" resultType="mybatis3.mapper.Employee">
+                <association property="department" select="mybatis3.mapper.DepartmentMapper.getDeptById" column="d_id">
+
+                </association>
+            </case>
+            <case value="1" resultType="mybatis3.mapper.Employee">
+                <result column="last_name" property="email" />
+            </case>
+        </discriminator>
+
+    </resultMap>
+    
+    <select id="myEmpDis" resultMap="myEmpDisResultMap">
+        select * from tbl_employee where id = #{id}
+    </select>
+
 </mapper>
