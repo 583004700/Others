@@ -101,4 +101,5 @@ public class MybatisTest {
         Employee employee = mapper.getEmpByIdAndLastName(1,"tom");
         System.out.println(employee.getLastName());
     }
+
 }
