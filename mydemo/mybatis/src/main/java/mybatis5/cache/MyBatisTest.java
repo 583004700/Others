@@ -75,6 +75,7 @@ public class MyBatisTest {
         System.out.println(emps2.get(0).getLastName());
         System.out.println(emps == emps2);
         sqlSession2.close();
+
     }
 
 }

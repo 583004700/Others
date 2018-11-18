@@ -10,6 +10,7 @@
 <html>
 <head>
     <title></title>
+    <script src="/page/js/index.js"></script>
 </head>
 <body>
 hello world${message}好吧
