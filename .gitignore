@@ -1,5 +1,7 @@
 *target/
 *out/
+*lib/
+*classes/
 
 *.class
 *.log

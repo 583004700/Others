@@ -162,7 +162,7 @@ public class ProcessDefinitionTest {
 				.getRepositoryService();
 
 		// 根据流程定义id查询部署id
-		String processDefinitionId = "purchasingflow:1:4";
+		String processDefinitionId = "purchasingflow:1:104";
 		ProcessDefinition processDefinition = repositoryService
 				.createProcessDefinitionQuery()
 				.processDefinitionId(processDefinitionId).singleResult();
