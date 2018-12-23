@@ -11,5 +11,15 @@
       <user-name>root</user-name>
       <introspection-schemas>*:mybatis</introspection-schemas>
     </data-source>
+    <data-source name="activitites0916" uuid="50dbc316-26e6-4ea0-a050-04b11243089e">
+      <database-info product="MySQL" version="5.5.25a" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.46 ( Revision: 9cc87a48e75c2d2e87c1a293b2862ce651cb256e )">
+        <extra-name-characters>#@</extra-name-characters>
+        <identifier-quote-string>`</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>root</user-name>
+      <introspection-schemas>*:activititest0916</introspection-schemas>
+    </data-source>
   </component>
 </project>

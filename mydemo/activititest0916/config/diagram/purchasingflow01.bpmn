@@ -2,9 +2,13 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1543157824618" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
   <process id="purchasingflow" isClosed="false" isExecutable="true" name="采购流程" processType="None">
     <startEvent id="startevent1" name="Start"/>
-    <userTask activiti:assignee="z" activiti:exclusive="true" id="createOrder" name="创建采购单"/>
+    <userTask activiti:assignee="z" activiti:exclusive="true" id="createOrder" name="创建采购单">
+      <extensionElements>
+        <activiti:taskListener class="cn.itcast.activiti.task.MyTaskListener" event="create"/>
+      </extensionElements>
+    </userTask>
     <userTask activiti:assignee="l" activiti:exclusive="true" id="secondAudit" name="总经理审"/>
-    <userTask activiti:assignee="w" activiti:async="true" activiti:exclusive="true" id="thirdAudit" name="财务审核"/>
+    <userTask activiti:assignee="w" activiti:exclusive="true" id="thirdAudit" name="财务审核"/>
     <endEvent id="endevent1" name="End"/>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="createOrder"/>
     <sequenceFlow id="flow4" sourceRef="secondAudit" targetRef="thirdAudit"/>
