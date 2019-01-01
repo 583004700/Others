@@ -1,26 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/tag.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- 引用jquery easy ui的js库及css -->
 <LINK rel="stylesheet" type="text/css" href="/${baseurl}js/easyui/styles/default.css">
 <%@ include file="/WEB-INF/jsp/common_css.jsp"%>
 <%@ include file="/WEB-INF/jsp/common_js.jsp"%>
-<title>创建采购单</title>
+<title>采购单审核</title>
 
 <script type="text/javascript">
-function ordersave(){
-	document.orderform.submit();
+function orderAudit(){
+	document.oorderAuditForm.submit();
 	
 }
 </script>
 </head>
 <body>
 
-<form id="orderform" name="orderform" action="/${baseurl}orderflow/addOrderSave.action" method="post">
-<TABLE border=0 cellSpacing=0 cellPadding=0 width="100%" bgColor=#c4d8ed>
+<form id="oorderAuditForm" name="oorderAuditForm" action="/${baseurl}orderflow/submitOrderAudit.action" method="post">
+
+	<TABLE border=0 cellSpacing=0 cellPadding=0 width="100%" bgColor=#c4d8ed>
 
    <TBODY>
    <TR>
@@ -28,7 +30,7 @@ function ordersave(){
 					<TABLE cellSpacing=0 cellPadding=0 width="100%">
 						<TBODY>
 							<TR>
-								<TD>&nbsp;添加采购单</TD>
+								<TD>&nbsp;审核采购单</TD>
 								<TD align=right>&nbsp;</TD>
 							</TR>
 						</TBODY>
@@ -43,23 +45,26 @@ function ordersave(){
 						<TBODY>
 							
 							<TR>
-								<TD height=30 width="15%" align=right >采购单名称：</TD>
+								<TD height=30 width="15%" align=right >任务id/采购单id：</TD>
 								<TD class=category width="35%">
-								<input type="text" name="orderCustom.name"/>
+								任务id：<input type="text" name="taskId" value="${taskId}"/><br/>
+								采购单id：<input type="text" name="orderId" value="${orderId}"/>
 								</TD>
-								<TD height=30 width="15%" align=right >采购单内容：</TD>
+								
+								<TD height=30 width="15%" align=right >审核类型：</TD>
 								<TD class=category width="35%">
-								<textarea rows="3" cols="30" name="orderCustom.content"></textarea>
+								<input type="text" name="auditType" value="${auditType}"/>
 								</TD>
 							</TR>
 							<TR>
-								<TD height=30 width="15%" align=right >采购金额：</TD>
+								<TD height=30 width="15%" align=right >审核结果：</TD>
 								<TD class=category width="35%">
-								<input type="text" name="orderCustom.price"/>
+								<input type="radio" name="orderAuditCustom.status" value="1"/>通过
+								<input type="radio" name="orderAuditCustom.status" value="0" />不通过
 								</TD>
-								<TD height=30 width="15%" align=right ></TD>
+								<TD height=30 width="15%" align=right >审核意见</TD>
 								<TD class=category width="35%">
-								
+								<textarea rows="3" cols="30" name="orderAuditCustom.auditInfo" ></textarea>
 								</div>
 								</TD>
 								
@@ -68,8 +73,7 @@ function ordersave(){
 							
 							<tr>
 							  <td colspan=4 align=center class=category>
-								<a id="submitbtn"  class="easyui-linkbutton"   iconCls="icon-ok" href="#" onclick="ordersave()">提交</a>
-								<a id="closebtn"  class="easyui-linkbutton" iconCls="icon-cancel" href="#" onclick="parent.closemodalwindow()">关闭</a>
+								<a id="submitbtn"  class="easyui-linkbutton"   iconCls="icon-ok" href="#" onclick="orderAudit()">提交</a>
 							  </td>
 							</tr>
 						
@@ -79,6 +83,9 @@ function ordersave(){
 				</TR>
    </TBODY>
 </TABLE>
+	
+	
 </form>
+
 </body>
 </html>

@@ -17,4 +17,5 @@
 	<!--<bean id="orderService" class="cn.itcast.purchasing.service.impl.OrderServiceImpl" />-->
 	<!-- 用户管理 -->
 	<bean id="userService" class="cn.itcast.purchasing.service.impl.UserServiceImpl"/>
+	<bean id="orderService" class="cn.itcast.purchasing.service.impl.OrderServiceImpl"/>
 </beans>

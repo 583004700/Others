@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<LINK rel="stylesheet" type="text/css" href="/${baseurl}js/easyui/styles/default.css">
+<LINK rel="stylesheet" type="text/css" href="${baseurl}/js/easyui/styles/default.css">
 <%@ include file="/WEB-INF/jsp/common_css.jsp"%>
 <%@ include file="/WEB-INF/jsp/common_js.jsp"%>
 <title>创建采购单</title>
@@ -19,7 +19,7 @@ function ordersave(){
 </head>
 <body>
 
-<form id="orderform" name="orderform" action="/${baseurl}orderflow/addOrderSave.action" method="post">
+<form id="orderform" name="orderform" action="${baseurl}/order/addOrderSubmit.action" method="post">
 <TABLE border=0 cellSpacing=0 cellPadding=0 width="100%" bgColor=#c4d8ed>
 
    <TBODY>
@@ -45,17 +45,17 @@ function ordersave(){
 							<TR>
 								<TD height=30 width="15%" align=right >采购单名称：</TD>
 								<TD class=category width="35%">
-								<input type="text" name="orderCustom.name"/>
+								<input type="text" name="name"/>
 								</TD>
 								<TD height=30 width="15%" align=right >采购单内容：</TD>
 								<TD class=category width="35%">
-								<textarea rows="3" cols="30" name="orderCustom.content"></textarea>
+								<textarea rows="3" cols="30" name="content"></textarea>
 								</TD>
 							</TR>
 							<TR>
 								<TD height=30 width="15%" align=right >采购金额：</TD>
 								<TD class=category width="35%">
-								<input type="text" name="orderCustom.price"/>
+								<input type="text" name="price"/>
 								</TD>
 								<TD height=30 width="15%" align=right ></TD>
 								<TD class=category width="35%">
@@ -68,7 +68,7 @@ function ordersave(){
 							
 							<tr>
 							  <td colspan=4 align=center class=category>
-								<a id="submitbtn"  class="easyui-linkbutton"   iconCls="icon-ok" href="#" onclick="ordersave()">提交</a>
+								<a id="submitbtn"  class="easyui-linkbutton"   iconCls="icon-ok" href="#" onclick="ordersave()">保存</a>
 								<a id="closebtn"  class="easyui-linkbutton" iconCls="icon-cancel" href="#" onclick="parent.closemodalwindow()">关闭</a>
 							  </td>
 							</tr>

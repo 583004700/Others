@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		ActiveUser activeUser = new ActiveUser();
-		activeUser.setUserid(purSysUser.getId());
+		activeUser.setUserid(purSysUser.getUserid());
 		activeUser.setUsername(purSysUser.getUsername());
 		return activeUser;
 	}

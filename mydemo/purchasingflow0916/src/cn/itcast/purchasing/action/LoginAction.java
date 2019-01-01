@@ -10,6 +10,8 @@ import cn.itcast.purchasing.service.UserService;
 import cn.itcast.purchasing.util.UserUtil;
 import cn.itcast.purchasing.vo.ActiveUser;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 @Controller
 public class LoginAction {
 	
@@ -18,7 +20,7 @@ public class LoginAction {
 	
 	@RequestMapping("/login")
 	public String login()throws Exception{
-		
+
 		return "login";
 	}
 	
