@@ -37,7 +37,7 @@ public class Shapes{
         for(Shape shape:shapes){
             shape.draw();
         }
-        Class c = Class.forName("Circle");
+        Class c = Class.forName("zhongji.a14.typeinfo.Circle");
 
     }
 }
