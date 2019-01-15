@@ -28,7 +28,9 @@ public class LoggingCache implements Cache {
 
   private Log log;  
   private Cache delegate;
+  //被请求的次数
   protected int requests = 0;
+  //从缓存中取到数据的次数
   protected int hits = 0;
 
   public LoggingCache(Cache delegate) {
@@ -89,6 +91,10 @@ public class LoggingCache implements Cache {
     return delegate.equals(obj);
   }
 
+  /**
+   * 计算缓存命中的比率
+   * @return
+   */
   private double getHitRatio() {
     return (double) hits / (double) requests;
   }

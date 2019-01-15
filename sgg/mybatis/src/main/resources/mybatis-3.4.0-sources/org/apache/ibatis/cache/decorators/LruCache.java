@@ -26,6 +26,10 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
+
+/**
+ * 最近最少使用的实现
+ */
 public class LruCache implements Cache {
 
   private final Cache delegate;
@@ -48,11 +52,13 @@ public class LruCache implements Cache {
   }
 
   public void setSize(final int size) {
+    //accessOrder参数代表按访问顺序排序，最近访问的放在最前面，最早访问的放在后面
     keyMap = new LinkedHashMap<Object, Object>(size, .75F, true) {
       private static final long serialVersionUID = 4267176411845948333L;
 
       @Override
       protected boolean removeEldestEntry(Map.Entry<Object, Object> eldest) {
+        //返回值为true时会删除最少访问的节点，eldest是被删除的节点
         boolean tooBig = size() > size;
         if (tooBig) {
           eldestKey = eldest.getKey();
@@ -70,6 +76,7 @@ public class LruCache implements Cache {
 
   @Override
   public Object getObject(Object key) {
+    //访问一下keyMap，重新排序
     keyMap.get(key); //touch
     return delegate.getObject(key);
   }

@@ -29,7 +29,7 @@ public class TestDynamicSQL {
         Employee employee = new Employee();
         employee.setLastName("小");
         List<Employee> list = mapper.getEmpsByConditionIf(employee);
-        list.forEach((o)->System.out.println(o.getId()));
+        //list.forEach((o)->System.out.println(o.getId()));
     }
 
     @Test
@@ -39,7 +39,7 @@ public class TestDynamicSQL {
         Employee employee = new Employee();
         employee.setEmail("48");
         List<Employee> list = mapper.getEmpsByConditionTrim(employee);
-        list.forEach((o)->System.out.println(o.getId()));
+        //list.forEach((o)->System.out.println(o.getId()));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class TestDynamicSQL {
         Employee employee = new Employee();
         employee.setId(1);
         List<Employee> list = mapper.getEmpsByConditionChoose(employee);
-        list.forEach((o)->System.out.println(o.getId()));
+        //list.forEach((o)->System.out.println(o.getId()));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class TestDynamicSQL {
         employee.setGender("0");
         employee.setId(1);
         List<Employee> list = mapper.getEmpsByConditionForeach(Arrays.asList(1,4));
-        list.forEach((o)->System.out.println(o.getLastName()));
+        //list.forEach((o)->System.out.println(o.getLastName()));
     }
 
     @Test

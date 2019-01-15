@@ -32,6 +32,10 @@ import org.apache.ibatis.io.Resources;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 将对象转为byte[]之后存入缓存，取出时再将byte[]转为对象
+ */
 public class SerializedCache implements Cache {
 
   private Cache delegate;

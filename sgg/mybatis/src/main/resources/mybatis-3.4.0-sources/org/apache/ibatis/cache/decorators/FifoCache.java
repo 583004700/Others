@@ -26,6 +26,10 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
+
+/**
+ * 只保存最后的size个数的键值对，超过部分移除
+ */
 public class FifoCache implements Cache {
 
   private final Cache delegate;

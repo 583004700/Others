@@ -22,6 +22,10 @@ import org.apache.ibatis.cache.Cache;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 定时清除数据的缓存装饰
+ */
 public class ScheduledCache implements Cache {
 
   private Cache delegate;
