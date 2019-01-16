@@ -106,6 +106,9 @@ public class SoftCache implements Cache {
     return null;
   }
 
+  /**
+   * 从缓存中移除被回收的对象
+   */
   private void removeGarbageCollectedItems() {
     SoftEntry sv;
     while ((sv = (SoftEntry) queueOfGarbageCollectedEntries.poll()) != null) {
@@ -113,6 +116,9 @@ public class SoftCache implements Cache {
     }
   }
 
+  /**
+   * 软引用对象，封装了key和使用引用队列
+   */
   private static class SoftEntry extends SoftReference<Object> {
     private final Object key;
 
