@@ -31,8 +31,10 @@ public class ExceptionUtil {
     Throwable unwrapped = wrapped;
     while (true) {
       if (unwrapped instanceof InvocationTargetException) {
+        //反射异常,执行method.invoke方法时抛出的
         unwrapped = ((InvocationTargetException) unwrapped).getTargetException();
       } else if (unwrapped instanceof UndeclaredThrowableException) {
+        //动态代理异常，执行代理方法时抛出的
         unwrapped = ((UndeclaredThrowableException) unwrapped).getUndeclaredThrowable();
       } else {
         return unwrapped;

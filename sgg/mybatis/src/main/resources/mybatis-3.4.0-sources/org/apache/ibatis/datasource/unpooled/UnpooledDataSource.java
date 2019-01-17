@@ -38,6 +38,7 @@ import org.apache.ibatis.io.Resources;
 public class UnpooledDataSource implements DataSource {
   
   private ClassLoader driverClassLoader;
+  //属性
   private Properties driverProperties;
   private static Map<String, Driver> registeredDrivers = new ConcurrentHashMap<String, Driver>();
 
@@ -49,6 +50,7 @@ public class UnpooledDataSource implements DataSource {
   private Boolean autoCommit;
   private Integer defaultTransactionIsolationLevel;
 
+  //将驱动的实现类放入map中
   static {
     Enumeration<Driver> drivers = DriverManager.getDrivers();
     while (drivers.hasMoreElements()) {
@@ -196,6 +198,12 @@ public class UnpooledDataSource implements DataSource {
     return doGetConnection(props);
   }
 
+  /**
+   * 直接获取一个连接
+   * @param properties
+   * @return
+   * @throws SQLException
+   */
   private Connection doGetConnection(Properties properties) throws SQLException {
     initializeDriver();
     Connection connection = DriverManager.getConnection(url, properties);
@@ -203,6 +211,10 @@ public class UnpooledDataSource implements DataSource {
     return connection;
   }
 
+  /**
+   * 注册驱动
+   * @throws SQLException
+   */
   private synchronized void initializeDriver() throws SQLException {
     if (!registeredDrivers.containsKey(driver)) {
       Class<?> driverType;
@@ -223,6 +235,11 @@ public class UnpooledDataSource implements DataSource {
     }
   }
 
+  /**
+   * 设置conn的属性
+   * @param conn
+   * @throws SQLException
+   */
   private void configureConnection(Connection conn) throws SQLException {
     if (autoCommit != null && autoCommit != conn.getAutoCommit()) {
       conn.setAutoCommit(autoCommit);
@@ -232,6 +249,9 @@ public class UnpooledDataSource implements DataSource {
     }
   }
 
+  /**
+   * 驱动代理类
+   */
   private static class DriverProxy implements Driver {
     private Driver driver;
 
