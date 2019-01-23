@@ -26,6 +26,12 @@ public class PropertyParser {
     // Prevent Instantiation
   }
 
+  /**
+   * 通过${key}去取得配置文件中的值
+   * @param string
+   * @param variables
+   * @return
+   */
   public static String parse(String string, Properties variables) {
     VariableTokenHandler handler = new VariableTokenHandler(variables);
     GenericTokenParser parser = new GenericTokenParser("${", "}", handler);

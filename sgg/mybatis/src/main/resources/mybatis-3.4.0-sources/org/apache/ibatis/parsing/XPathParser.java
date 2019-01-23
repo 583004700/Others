@@ -42,6 +42,10 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * XPath解析类
+ */
 public class XPathParser {
 
   private Document document;
@@ -141,6 +145,7 @@ public class XPathParser {
 
   public String evalString(Object root, String expression) {
     String result = (String) evaluate(expression, root, XPathConstants.STRING);
+    //如果xml配置中配置的是${key}这种形式，则从variables属性配置中获取值
     result = PropertyParser.parse(result, variables);
     return result;
   }
@@ -220,6 +225,13 @@ public class XPathParser {
 
   /**
    *
+   * @param expression
+   * @param root
+   * @param returnType
+   * @return
+   */
+  /**
+   * 通过表达式获取对象
    * @param expression
    * @param root
    * @param returnType

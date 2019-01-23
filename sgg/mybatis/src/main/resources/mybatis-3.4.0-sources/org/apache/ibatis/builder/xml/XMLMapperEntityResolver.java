@@ -30,6 +30,10 @@ import org.xml.sax.SAXException;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+
+/**
+ * 从本地寻找dtd
+ */
 public class XMLMapperEntityResolver implements EntityResolver {
 
   private static final String IBATIS_CONFIG_SYSTEM = "ibatis-3-config.dtd";
