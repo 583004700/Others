@@ -23,6 +23,10 @@ import java.util.Properties;
  * 
  * @author Clinton Begin
  */
+
+/**
+ * 对象工厂，可以在全局配置文件中配置
+ */
 public interface ObjectFactory {
 
   /**

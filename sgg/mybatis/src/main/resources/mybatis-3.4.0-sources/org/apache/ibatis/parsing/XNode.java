@@ -43,7 +43,9 @@ public class XNode {
     this.node = node;
     this.name = node.getNodeName();
     this.variables = variables;
+    //节点的所有属性
     this.attributes = parseAttributes(node);
+    //最近一层子节点的text
     this.body = parseBody(node);
   }
 
@@ -347,6 +349,11 @@ public class XNode {
     return builder.toString();
   }
 
+  /**
+   * 获取节点的所有属性名和属性值
+   * @param n
+   * @return
+   */
   private Properties parseAttributes(Node n) {
     Properties attributes = new Properties();
     NamedNodeMap attributeNodes = n.getAttributes();
@@ -360,6 +367,11 @@ public class XNode {
     return attributes;
   }
 
+  /**
+   * 获取离当前节点最近一层子节点的text值
+   * @param node
+   * @return
+   */
   private String parseBody(Node node) {
     String data = getBodyData(node);
     if (data == null) {
@@ -375,7 +387,13 @@ public class XNode {
     return data;
   }
 
+  /**
+   * 获取节点的text内容
+   * @param child
+   * @return
+   */
   private String getBodyData(Node child) {
+    //Node.CDATA_SECTION_NODE表示子节点为TextNode
     if (child.getNodeType() == Node.CDATA_SECTION_NODE
         || child.getNodeType() == Node.TEXT_NODE) {
       String data = ((CharacterData) child).getData();

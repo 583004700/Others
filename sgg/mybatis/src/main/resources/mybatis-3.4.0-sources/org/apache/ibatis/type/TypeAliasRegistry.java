@@ -100,6 +100,12 @@ public class TypeAliasRegistry {
     registerAlias("ResultSet", ResultSet.class);
   }
 
+  /**
+   * 通过别名获取反射的对象
+   * @param string
+   * @param <T>
+   * @return
+   */
   @SuppressWarnings("unchecked")
   // throws class cast exception as well if types cannot be assigned
   public <T> Class<T> resolveAlias(String string) {
@@ -138,6 +144,10 @@ public class TypeAliasRegistry {
     }
   }
 
+  /**
+   * 通过类型注册别名，alias为类名，如果类名为空，则取Alias注解的value值
+   * @param type
+   */
   public void registerAlias(Class<?> type) {
     String alias = type.getSimpleName();
     Alias aliasAnnotation = type.getAnnotation(Alias.class);

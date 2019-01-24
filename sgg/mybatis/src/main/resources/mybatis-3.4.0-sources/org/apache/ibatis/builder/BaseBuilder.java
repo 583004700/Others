@@ -96,6 +96,11 @@ public abstract class BaseBuilder {
     }
   }
 
+  /**
+   * 通过别名创建一个对象
+   * @param alias
+   * @return
+   */
   protected Object createInstance(String alias) {
     Class<?> clazz = resolveClass(alias);
     if (clazz == null) {

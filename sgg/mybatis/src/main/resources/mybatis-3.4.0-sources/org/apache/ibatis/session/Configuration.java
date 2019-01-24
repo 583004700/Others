@@ -116,6 +116,11 @@ public class Configuration {
   protected Integer defaultStatementTimeout;
   protected Integer defaultFetchSize;
   protected ExecutorType defaultExecutorType = ExecutorType.SIMPLE;
+  /**
+   * autoMappingBehavior
+   * mybatis核心配置文件中settings中配置,指定 MyBatis 应如何自动映射列到字段或属性。 NONE 表示取消自动映射；PARTIAL 只会自动映射没有定义嵌套结果集映射的结果集。 FULL 会自动映射任意复杂的结果集（无论是否嵌套）。默认是partial，这是一种全局设置
+   *
+   */
   protected AutoMappingBehavior autoMappingBehavior = AutoMappingBehavior.PARTIAL;
   protected AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior = AutoMappingUnknownColumnBehavior.NONE;
 
@@ -139,6 +144,7 @@ public class Configuration {
 
   protected final InterceptorChain interceptorChain = new InterceptorChain();
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
+  //类型别名配置
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 
