@@ -46,7 +46,7 @@
         </environment>
     </environments>
     <!--支持多数据库厂商的，type=DB_VENDOR:VendorDatabaseIdProvider.class
-        作用就是得到数据库厂商标识，根据不同厂商执行不同的sql
+        作用就是得到数据库厂商标识，根据不同厂商执行不同的sql，在全局配置文件中会自动根据environments信息选择
     -->
     <databaseIdProvider type="DB_VENDOR">
         <property name="MySQL" value="mysql"></property>

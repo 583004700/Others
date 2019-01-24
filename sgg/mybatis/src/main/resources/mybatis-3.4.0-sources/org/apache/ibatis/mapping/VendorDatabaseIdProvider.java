@@ -62,6 +62,16 @@ public class VendorDatabaseIdProvider implements DatabaseIdProvider {
     this.properties = p;
   }
 
+  /**
+   * 从数据源中获取数据库厂商名称，如果名称中包含配置文件中设置的配置文件中databaseIdProvider下面的属性，则返回配置的数据库名称
+   * <databaseIdProvider type="DB_VENDOR">
+   * <property name="MySQL" value="mysql"></property>
+   * <property name="Oracle" value="oracle"></property>
+   * </databaseIdProvider>  返回mysql或oracle
+   * @param dataSource
+   * @return
+   * @throws SQLException
+   */
   private String getDatabaseName(DataSource dataSource) throws SQLException {
     String productName = getDatabaseProductName(dataSource);
     if (this.properties != null) {
@@ -76,6 +86,12 @@ public class VendorDatabaseIdProvider implements DatabaseIdProvider {
     return productName;
   }
 
+  /**
+   * 获取数据库名称，比如mysql,oracle
+   * @param dataSource
+   * @return
+   * @throws SQLException
+   */
   private String getDatabaseProductName(DataSource dataSource) throws SQLException {
     Connection con = null;
     try {

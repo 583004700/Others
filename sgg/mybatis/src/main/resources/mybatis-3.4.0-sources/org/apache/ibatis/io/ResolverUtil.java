@@ -89,6 +89,7 @@ public class ResolverUtil<T> {
     /** Returns true if type is assignable to the parent type supplied in the constructor. */
     @Override
     public boolean matches(Class<?> type) {
+      //判断type是否是parent的子类或子接口
       return type != null && parent.isAssignableFrom(type);
     }
 
@@ -214,6 +215,7 @@ public class ResolverUtil<T> {
    *        classes, e.g. {@code net.sourceforge.stripes}
    */
   public ResolverUtil<T> find(Test test, String packageName) {
+    //得到包的路径
     String path = getPackagePath(packageName);
 
     try {
@@ -247,9 +249,15 @@ public class ResolverUtil<T> {
    * @param test the test used to determine if the class matches
    * @param fqn the fully qualified name of a class
    */
+  /**
+   * 如果匹配正确则添加到matches中
+   * @param test  匹配规则
+   * @param fqn 类的文件全路径
+   */
   @SuppressWarnings("unchecked")
   protected void addIfMatching(Test test, String fqn) {
     try {
+      //去除后缀并将/替换为.
       String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
       ClassLoader loader = getClassLoader();
       if (log.isDebugEnabled()) {

@@ -44,6 +44,10 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 主要作用是将全局配置文件，构建成Configuration对象
+ */
 public class XMLConfigBuilder extends BaseBuilder {
 
   private boolean parsed;
@@ -118,9 +122,11 @@ public class XMLConfigBuilder extends BaseBuilder {
       // read it after objectFactory and objectWrapperFactory issue #631
       //设置环境信息
       environmentsElement(root.evalNode("environments"));
-
+      //设置数据库厂商名称
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+      //配置类型转换器
       typeHandlerElement(root.evalNode("typeHandlers"));
+      //配置mapper
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -367,6 +373,11 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * 设置databaseId，就是数据库厂商名称
+   * @param context
+   * @throws Exception
+   */
   private void databaseIdProviderElement(XNode context) throws Exception {
     //注册过别名：DB_VENDOR，VendorDatabaseIdProvider
     DatabaseIdProvider databaseIdProvider = null;
@@ -421,10 +432,16 @@ public class XMLConfigBuilder extends BaseBuilder {
     throw new BuilderException("Environment declaration requires a DataSourceFactory.");
   }
 
+  /**
+   * 配置类型转换器
+   * @param parent
+   * @throws Exception
+   */
   private void typeHandlerElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
         if ("package".equals(child.getName())) {
+          //扫描包下所有的类
           String typeHandlerPackage = child.getStringAttribute("name");
           typeHandlerRegistry.register(typeHandlerPackage);
         } else {
