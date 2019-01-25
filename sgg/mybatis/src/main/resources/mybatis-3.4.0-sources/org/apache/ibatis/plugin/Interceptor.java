@@ -24,6 +24,11 @@ public interface Interceptor {
 
   Object intercept(Invocation invocation) throws Throwable;
 
+  /**'
+   * 在创建执行器时会调用这个方法，可以对excutor或statementHandler等装饰
+   * @param target
+   * @return
+   */
   Object plugin(Object target);
 
   void setProperties(Properties properties);

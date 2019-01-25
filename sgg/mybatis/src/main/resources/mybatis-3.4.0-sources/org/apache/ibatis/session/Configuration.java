@@ -153,11 +153,12 @@ public class Configuration {
   protected final Map<String, ResultMap> resultMaps = new StrictMap<ResultMap>("Result Maps collection");
   protected final Map<String, ParameterMap> parameterMaps = new StrictMap<ParameterMap>("Parameter Maps collection");
   protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<KeyGenerator>("Key Generators collection");
-
+  //已加载的mapper类toString格式：class 包名.类名；namespace:包名.类名格式;a/b.xml格式
   protected final Set<String> loadedResources = new HashSet<String>();
   protected final Map<String, XNode> sqlFragments = new StrictMap<XNode>("XML fragments parsed from previous mappers");
 
   protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<XMLStatementBuilder>();
+  //设置ref-cache发生异常时，会添加cacheRefResolver对象的集合内
   protected final Collection<CacheRefResolver> incompleteCacheRefs = new LinkedList<CacheRefResolver>();
   protected final Collection<ResultMapResolver> incompleteResultMaps = new LinkedList<ResultMapResolver>();
   protected final Collection<MethodResolver> incompleteMethods = new LinkedList<MethodResolver>();
@@ -167,6 +168,8 @@ public class Configuration {
    * references a cache bound to another namespace and the value is the
    * namespace which the actual cache is bound to.
    */
+  //mapper.xml文件
+  //保存mapper节点配置中的namespace属性值为key,cache-ref节点中的namespace属性值为value
   protected final Map<String, String> cacheRefMap = new HashMap<String, String>();
 
   public Configuration(Environment environment) {
@@ -537,8 +540,8 @@ public class Configuration {
 
   /**
    * 创建执行器
-   * @param transaction
-   * @param executorType
+   * @param transaction     事务
+   * @param executorType    执行类型
    * @return
    */
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {

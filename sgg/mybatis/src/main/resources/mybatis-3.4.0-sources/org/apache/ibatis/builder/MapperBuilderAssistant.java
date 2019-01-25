@@ -54,8 +54,14 @@ import org.apache.ibatis.type.TypeHandler;
  */
 public class MapperBuilderAssistant extends BaseBuilder {
 
+  /**
+   * mapper节点命名空间
+   */
   private String currentNamespace;
   private String resource;
+  /**
+   * 当前mapper所使用的缓存
+   */
   private Cache currentCache;
   private boolean unresolvedCacheRef; // issue #676
 
@@ -103,6 +109,11 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return currentNamespace + "." + base;
   }
 
+  /**
+   * 将当前缓存设置为namespace命名空间所对应的缓存
+   * @param namespace
+   * @return
+   */
   public Cache useCacheRef(String namespace) {
     if (namespace == null) {
       throw new BuilderException("cache-ref element requires a namespace attribute.");
@@ -121,6 +132,17 @@ public class MapperBuilderAssistant extends BaseBuilder {
     }
   }
 
+  /**
+   * 创建缓存对象
+   * @param typeClass 缓存的实现类
+   * @param evictionClass 缓存的包装类
+   * @param flushInterval
+   * @param size
+   * @param readWrite
+   * @param blocking
+   * @param props 其它属性
+   * @return
+   */
   public Cache useNewCache(Class<? extends Cache> typeClass,
       Class<? extends Cache> evictionClass,
       Long flushInterval,

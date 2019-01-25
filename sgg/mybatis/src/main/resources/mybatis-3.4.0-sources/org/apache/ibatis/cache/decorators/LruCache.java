@@ -58,7 +58,7 @@ public class LruCache implements Cache {
 
       @Override
       protected boolean removeEldestEntry(Map.Entry<Object, Object> eldest) {
-        //返回值为true时会删除最少访问的节点，eldest是被删除的节点
+        //返回值为true时会删除上次访问离当前时间最久的的节点，eldest是被删除的节点
         boolean tooBig = size() > size;
         if (tooBig) {
           eldestKey = eldest.getKey();

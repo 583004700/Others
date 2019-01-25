@@ -97,6 +97,11 @@ public class MapperAnnotationBuilder {
   private MapperBuilderAssistant assistant;
   private Class<?> type;
 
+  /**
+   *
+   * @param configuration
+   * @param type  Mapper类
+   */
   public MapperAnnotationBuilder(Configuration configuration, Class<?> type) {
     String resource = type.getName().replace('.', '/') + ".java (best guess)";
     this.assistant = new MapperBuilderAssistant(configuration, resource);
@@ -152,6 +157,9 @@ public class MapperAnnotationBuilder {
     }
   }
 
+  /**
+   * 加载并解析mapper.xml文件，要求mapper.xml与类名相同，并且在同一路径下
+   */
   private void loadXmlResource() {
     // Spring may not know the real resource name so we check a flag
     // to prevent loading again a resource twice

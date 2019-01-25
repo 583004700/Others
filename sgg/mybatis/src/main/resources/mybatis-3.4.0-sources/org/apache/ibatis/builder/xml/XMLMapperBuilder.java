@@ -50,6 +50,10 @@ import org.apache.ibatis.type.TypeHandler;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 主要解析mapper配置
+ */
 public class XMLMapperBuilder extends BaseBuilder {
 
   private XPathParser parser;
@@ -69,6 +73,14 @@ public class XMLMapperBuilder extends BaseBuilder {
         configuration, resource, sqlFragments);
   }
 
+  /**
+   *
+   * @param inputStream xml文件流
+   * @param configuration 配置
+   * @param resource  xml文件的路径
+   * @param sqlFragments  Mpa集合
+   * @param namespace 命名空间  一般是mapper类文件的包名.类名
+   */
   public XMLMapperBuilder(InputStream inputStream, Configuration configuration, String resource, Map<String, XNode> sqlFragments, String namespace) {
     this(inputStream, configuration, resource, sqlFragments);
     this.builderAssistant.setCurrentNamespace(namespace);
@@ -87,6 +99,9 @@ public class XMLMapperBuilder extends BaseBuilder {
     this.resource = resource;
   }
 
+  /**
+   * 解析mapper.xml文件
+   */
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
       configurationElement(parser.evalNode("/mapper"));
@@ -110,7 +125,9 @@ public class XMLMapperBuilder extends BaseBuilder {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
+      //设置缓存引用
       cacheRefElement(context.evalNode("cache-ref"));
+      //设置缓存
       cacheElement(context.evalNode("cache"));
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       resultMapElements(context.evalNodes("/mapper/resultMap"));
@@ -184,11 +201,15 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * @param context cache-ref节点
+   */
   private void cacheRefElement(XNode context) {
     if (context != null) {
       configuration.addCacheRef(builderAssistant.getCurrentNamespace(), context.getStringAttribute("namespace"));
       CacheRefResolver cacheRefResolver = new CacheRefResolver(builderAssistant, context.getStringAttribute("namespace"));
       try {
+        //将builderAssistant的currentCache设置为context.getStringAttribute("namespace")
         cacheRefResolver.resolveCacheRef();
       } catch (IncompleteElementException e) {
         configuration.addIncompleteCacheRef(cacheRefResolver);
@@ -196,12 +217,22 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   *
+   * @param context cache节点
+   * @throws Exception
+   */
   private void cacheElement(XNode context) throws Exception {
     if (context != null) {
+      //配置缓存的实现类
       String type = context.getStringAttribute("type", "PERPETUAL");
+      //缓存实现类的class
       Class<? extends Cache> typeClass = typeAliasRegistry.resolveAlias(type);
+      //缓存包装类的配置，比如保留固定数量，或者内存不足时清空缓存,LRU实现指的是到达一定数量时删除更早访问的元素
       String eviction = context.getStringAttribute("eviction", "LRU");
+      //缓存包装类的实现类
       Class<? extends Cache> evictionClass = typeAliasRegistry.resolveAlias(eviction);
+
       Long flushInterval = context.getLongAttribute("flushInterval");
       Integer size = context.getIntAttribute("size");
       boolean readWrite = !context.getBooleanAttribute("readOnly", false);

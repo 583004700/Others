@@ -465,6 +465,11 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * 解析并配置mapper
+   * @param parent
+   * @throws Exception
+   */
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {

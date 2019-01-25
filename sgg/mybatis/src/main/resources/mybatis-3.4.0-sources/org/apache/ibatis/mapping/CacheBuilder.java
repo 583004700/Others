@@ -37,8 +37,10 @@ import org.apache.ibatis.reflection.SystemMetaObject;
  * @author Clinton Begin
  */
 public class CacheBuilder {
+  //id是命名空间
   private String id;
   private Class<? extends Cache> implementation;
+  //缓存的装饰集合
   private List<Class<? extends Cache>> decorators;
   private Integer size;
   private Long clearInterval;
@@ -88,6 +90,10 @@ public class CacheBuilder {
     return this;
   }
 
+  /**
+   * 构建缓存对象
+   * @return
+   */
   public Cache build() {
     setDefaultImplementations();
     Cache cache = newBaseCacheInstance(implementation, id);
@@ -186,6 +192,11 @@ public class CacheBuilder {
     }
   }
 
+  /**
+   * 获取构造方法
+   * @param cacheClass
+   * @return
+   */
   private Constructor<? extends Cache> getBaseCacheConstructor(Class<? extends Cache> cacheClass) {
     try {
       return cacheClass.getConstructor(String.class);
