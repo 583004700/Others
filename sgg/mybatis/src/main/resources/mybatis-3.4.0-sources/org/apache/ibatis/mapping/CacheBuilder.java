@@ -39,6 +39,7 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 public class CacheBuilder {
   //id是命名空间
   private String id;
+  //缓存的实现类
   private Class<? extends Cache> implementation;
   //缓存的装饰集合
   private List<Class<? extends Cache>> decorators;
@@ -97,6 +98,7 @@ public class CacheBuilder {
   public Cache build() {
     setDefaultImplementations();
     Cache cache = newBaseCacheInstance(implementation, id);
+    //给缓存对象设置属性
     setCacheProperties(cache);
     // issue #352, do not apply decorators to custom caches
     if (PerpetualCache.class.equals(cache.getClass())) {
@@ -104,8 +106,10 @@ public class CacheBuilder {
         cache = newCacheDecoratorInstance(decorator, cache);
         setCacheProperties(cache);
       }
+      //根据属性设置不同的装饰器
       cache = setStandardDecorators(cache);
     } else if (!LoggingCache.class.isAssignableFrom(cache.getClass())) {
+      //如果cache.getClass()是LoggingCache.class的子类
       cache = new LoggingCache(cache);
     }
     return cache;
@@ -120,6 +124,11 @@ public class CacheBuilder {
     }
   }
 
+  /**
+   * 根据属性设置不同的装饰器
+   * @param cache
+   * @return
+   */
   private Cache setStandardDecorators(Cache cache) {
     try {
       MetaObject metaCache = SystemMetaObject.forObject(cache);
@@ -144,6 +153,10 @@ public class CacheBuilder {
     }
   }
 
+  /**
+   * 给缓存对象设置属性
+   * @param cache
+   */
   private void setCacheProperties(Cache cache) {
     if (properties != null) {
       MetaObject metaCache = SystemMetaObject.forObject(cache);
@@ -206,6 +219,12 @@ public class CacheBuilder {
     }
   }
 
+  /**
+   * 获取装饰之后的cache
+   * @param cacheClass  装饰类
+   * @param base  被装饰对象
+   * @return  装饰之后的cache
+   */
   private Cache newCacheDecoratorInstance(Class<? extends Cache> cacheClass, Cache base) {
     Constructor<? extends Cache> cacheConstructor = getCacheDecoratorConstructor(cacheClass);
     try {
@@ -215,6 +234,11 @@ public class CacheBuilder {
     }
   }
 
+  /**
+   * 获取构造方法
+   * @param cacheClass
+   * @return
+   */
   private Constructor<? extends Cache> getCacheDecoratorConstructor(Class<? extends Cache> cacheClass) {
     try {
       return cacheClass.getConstructor(Cache.class);

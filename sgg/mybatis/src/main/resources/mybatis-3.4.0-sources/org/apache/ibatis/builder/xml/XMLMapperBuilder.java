@@ -125,9 +125,9 @@ public class XMLMapperBuilder extends BaseBuilder {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
-      //设置缓存引用
+      //设置缓存引用builderAssistant.currentCache
       cacheRefElement(context.evalNode("cache-ref"));
-      //设置缓存
+      //设置缓存，设置builderAssistant.currentCache，并添加到configuration中
       cacheElement(context.evalNode("cache"));
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       resultMapElements(context.evalNodes("/mapper/resultMap"));
@@ -212,13 +212,16 @@ public class XMLMapperBuilder extends BaseBuilder {
         //将builderAssistant的currentCache设置为context.getStringAttribute("namespace")
         cacheRefResolver.resolveCacheRef();
       } catch (IncompleteElementException e) {
+        //因为解析mapper.xml文件是从每个文件每个文件解析的，所以解析到引用到其它命名空间的缓存时，
+        // 不一定缓存已经先解析好了，不一定都能找到引用
+        //所以将没解析成功的加入到集合中
         configuration.addIncompleteCacheRef(cacheRefResolver);
       }
     }
   }
 
   /**
-   *
+   *  设置缓存
    * @param context cache节点
    * @throws Exception
    */
