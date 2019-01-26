@@ -85,6 +85,11 @@ public abstract class BaseBuilder {
     }
   }
 
+  /**
+   * 得到ParameterMode枚举对象
+   * @param alias
+   * @return
+   */
   protected ParameterMode resolveParameterMode(String alias) {
     if (alias == null) {
       return null;

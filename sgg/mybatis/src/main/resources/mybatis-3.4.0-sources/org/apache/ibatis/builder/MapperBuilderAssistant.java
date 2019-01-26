@@ -58,6 +58,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
    * mapper节点命名空间
    */
   private String currentNamespace;
+  //mapper.xml文件的路径
   private String resource;
   /**
    * 当前mapper所使用的缓存

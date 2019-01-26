@@ -129,6 +129,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       cacheRefElement(context.evalNode("cache-ref"));
       //设置缓存，设置builderAssistant.currentCache，并添加到configuration中
       cacheElement(context.evalNode("cache"));
+
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       resultMapElements(context.evalNodes("/mapper/resultMap"));
       sqlElement(context.evalNodes("/mapper/sql"));
@@ -245,11 +246,17 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * mapper/parameterMap节点
+   * @param list
+   * @throws Exception
+   */
   private void parameterMapElement(List<XNode> list) throws Exception {
     for (XNode parameterMapNode : list) {
       String id = parameterMapNode.getStringAttribute("id");
       String type = parameterMapNode.getStringAttribute("type");
       Class<?> parameterClass = resolveClass(type);
+      // mapper/parameterMap/parameter节点
       List<XNode> parameterNodes = parameterMapNode.evalNodes("parameter");
       List<ParameterMapping> parameterMappings = new ArrayList<ParameterMapping>();
       for (XNode parameterNode : parameterNodes) {
@@ -260,11 +267,16 @@ public class XMLMapperBuilder extends BaseBuilder {
         String mode = parameterNode.getStringAttribute("mode");
         String typeHandler = parameterNode.getStringAttribute("typeHandler");
         Integer numericScale = parameterNode.getIntAttribute("numericScale");
+        //IN, OUT, INOUT
         ParameterMode modeEnum = resolveParameterMode(mode);
+        //通过别名或者全类名获取class对象
         Class<?> javaTypeClass = resolveClass(javaType);
+        //JdbcType类型枚举
         JdbcType jdbcTypeEnum = resolveJdbcType(jdbcType);
+        //类型处理器，不同的处理器设置参数和得到结果的实现不同
         @SuppressWarnings("unchecked")
         Class<? extends TypeHandler<?>> typeHandlerClass = (Class<? extends TypeHandler<?>>) resolveClass(typeHandler);
+
         ParameterMapping parameterMapping = builderAssistant.buildParameterMapping(parameterClass, property, javaTypeClass, jdbcTypeEnum, resultMap, modeEnum, typeHandlerClass, numericScale);
         parameterMappings.add(parameterMapping);
       }
