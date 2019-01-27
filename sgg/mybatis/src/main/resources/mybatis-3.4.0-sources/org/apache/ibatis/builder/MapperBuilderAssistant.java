@@ -89,6 +89,12 @@ public class MapperBuilderAssistant extends BaseBuilder {
     this.currentNamespace = currentNamespace;
   }
 
+  /**
+   *  当前命名空间.base
+   * @param base
+   * @param isReference
+   * @return  当前命名空间.base
+   */
   public String applyCurrentNamespace(String base, boolean isReference) {
     if (base == null) {
       return null;
@@ -172,6 +178,18 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return parameterMap;
   }
 
+  /**
+   *
+   * @param parameterType mapper/parameterMap的type属性对应的类
+   * @param property  mapper/parameterMap/parameter的property属性
+   * @param javaType  mapper/parameterMap/parameter的javaType属性对应的类
+   * @param jdbcType  mapper/parameterMap/parameter的jdbcType属性对应的类
+   * @param resultMap
+   * @param parameterMode
+   * @param typeHandler
+   * @param numericScale
+   * @return
+   */
   public ParameterMapping buildParameterMapping(
       Class<?> parameterType,
       String property,
@@ -181,10 +199,13 @@ public class MapperBuilderAssistant extends BaseBuilder {
       ParameterMode parameterMode,
       Class<? extends TypeHandler<?>> typeHandler,
       Integer numericScale) {
+    //转为当前命名空间.resultMap形式
     resultMap = applyCurrentNamespace(resultMap, true);
 
     // Class parameterType = parameterMapBuilder.type();
+    //根据参数返回javaType
     Class<?> javaTypeClass = resolveParameterJavaType(parameterType, property, javaType, jdbcType);
+    //获取对应的typeHandler实例，如果typeHandler为空，则根据javaTypeClass进行创建
     TypeHandler<?> typeHandlerInstance = resolveTypeHandler(javaTypeClass, typeHandler);
 
     return new ParameterMapping.Builder(configuration, property, javaTypeClass)
@@ -463,9 +484,18 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return javaType;
   }
 
+  /**
+   * 根据参数返回javaType
+   * @param resultType  mapper/parameterMap的type属性对应的类
+   * @param property
+   * @param javaType
+   * @param jdbcType
+   * @return
+   */
   private Class<?> resolveParameterJavaType(Class<?> resultType, String property, Class<?> javaType, JdbcType jdbcType) {
     if (javaType == null) {
       if (JdbcType.CURSOR.equals(jdbcType)) {
+        //如果是游标类型
         javaType = java.sql.ResultSet.class;
       } else if (Map.class.isAssignableFrom(resultType)) {
         javaType = Object.class;

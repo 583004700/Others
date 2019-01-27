@@ -111,7 +111,7 @@ public class ParameterMapping {
           throw new IllegalStateException("Missing resultmap in property '"  
               + parameterMapping.property + "'.  " 
               + "Parameters of type java.sql.ResultSet require a resultmap.");
-        }            
+        }
       } else {
         if (parameterMapping.typeHandler == null) { 
           throw new IllegalStateException("Type handler was null on parameter mapping for property '"

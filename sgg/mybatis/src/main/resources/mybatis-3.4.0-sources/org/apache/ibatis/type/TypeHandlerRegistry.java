@@ -37,10 +37,12 @@ import org.apache.ibatis.io.Resources;
  * @author Clinton Begin
  */
 public final class TypeHandlerRegistry {
-
+  //保存jdbcType与typeHandler对象的对应关系
   private final Map<JdbcType, TypeHandler<?>> JDBC_TYPE_HANDLER_MAP = new EnumMap<JdbcType, TypeHandler<?>>(JdbcType.class);
+  //保存javaType,jdbcType和typeHandler对象的对应关系
   private final Map<Type, Map<JdbcType, TypeHandler<?>>> TYPE_HANDLER_MAP = new HashMap<Type, Map<JdbcType, TypeHandler<?>>>();
   private final TypeHandler<Object> UNKNOWN_TYPE_HANDLER = new UnknownTypeHandler(this);
+  //保存handler类与handler对象
   private final Map<Class<?>, TypeHandler<?>> ALL_TYPE_HANDLERS_MAP = new HashMap<Class<?>, TypeHandler<?>>();
 
   public TypeHandlerRegistry() {
@@ -262,7 +264,14 @@ public final class TypeHandlerRegistry {
     register((Type) javaType, typeHandler);
   }
 
+  /**
+   *
+   * @param javaType java数据的类型
+   * @param typeHandler   类型处理器
+   * @param <T>
+   */
   private <T> void register(Type javaType, TypeHandler<? extends T> typeHandler) {
+    //获取typeHandler上面的MappedJdbcTypes注解
     MappedJdbcTypes mappedJdbcTypes = typeHandler.getClass().getAnnotation(MappedJdbcTypes.class);
     if (mappedJdbcTypes != null) {
       for (JdbcType handledJdbcType : mappedJdbcTypes.value()) {
@@ -286,6 +295,12 @@ public final class TypeHandlerRegistry {
     register((Type) type, jdbcType, handler);
   }
 
+  /**
+   *  TYPE_HANDLER_MAP，ALL_TYPE_HANDLERS_MAP
+   * @param javaType
+   * @param jdbcType
+   * @param handler
+   */
   private void register(Type javaType, JdbcType jdbcType, TypeHandler<?> handler) {
     if (javaType != null) {
       Map<JdbcType, TypeHandler<?>> map = TYPE_HANDLER_MAP.get(javaType);
