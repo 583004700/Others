@@ -185,6 +185,13 @@ public final class TypeHandlerRegistry {
     return getTypeHandler(javaTypeReference.getRawType(), jdbcType);
   }
 
+  /**
+   * 根据javaType和jdbcType选择typeHandler
+   * @param type
+   * @param jdbcType
+   * @param <T>
+   * @return
+   */
   @SuppressWarnings("unchecked")
   private <T> TypeHandler<T> getTypeHandler(Type type, JdbcType jdbcType) {
     Map<JdbcType, TypeHandler<?>> jdbcHandlerMap = TYPE_HANDLER_MAP.get(type);
@@ -265,7 +272,7 @@ public final class TypeHandlerRegistry {
   }
 
   /**
-   *
+   *  从typeHandler中得到多种jdbcType,将javaType和jdbcType和typeHandler关联起来
    * @param javaType java数据的类型
    * @param typeHandler   类型处理器
    * @param <T>
@@ -351,6 +358,13 @@ public final class TypeHandlerRegistry {
 
   // Construct a handler (used also from Builders)
 
+  /**
+   * 根据javaType初始化typeHandlerClass
+   * @param javaTypeClass
+   * @param typeHandlerClass
+   * @param <T>
+   * @return
+   */
   @SuppressWarnings("unchecked")
   public <T> TypeHandler<T> getInstance(Class<?> javaTypeClass, Class<?> typeHandlerClass) {
     if (javaTypeClass != null) {

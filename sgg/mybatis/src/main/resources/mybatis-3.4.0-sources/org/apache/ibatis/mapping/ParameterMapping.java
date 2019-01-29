@@ -105,6 +105,10 @@ public class ParameterMapping {
       return parameterMapping;
     }
 
+    /**
+     * 如果javaType为ResultSet，则必须有resultMap
+     * 否则的话必须有typeHandler
+     */
     private void validate() {
       if (ResultSet.class.equals(parameterMapping.javaType)) {
         if (parameterMapping.resultMapId == null) { 
@@ -121,6 +125,9 @@ public class ParameterMapping {
       }
     }
 
+    /**
+     * 选择合适的typeHandler处理器
+     */
     private void resolveTypeHandler() {
       if (parameterMapping.typeHandler == null && parameterMapping.javaType != null) {
         Configuration configuration = parameterMapping.configuration;

@@ -171,8 +171,17 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return cache;
   }
 
+  /**
+   *
+   * @param id  mapper/parameterMap的id属性
+   * @param parameterClass  mapper/parameterMap的type属性对应的类
+   * @param parameterMappings   mapper/parameterMap/parameter节点对应的ParameterMapping对象
+   * @return
+   */
   public ParameterMap addParameterMap(String id, Class<?> parameterClass, List<ParameterMapping> parameterMappings) {
+    //当前命名空间+id
     id = applyCurrentNamespace(id, false);
+    //根据参数创建ParameterMap对象
     ParameterMap parameterMap = new ParameterMap.Builder(configuration, id, parameterClass, parameterMappings).build();
     configuration.addParameterMap(parameterMap);
     return parameterMap;

@@ -152,10 +152,12 @@ public class Configuration {
   //key是命名空间，value是Cache对象
   protected final Map<String, Cache> caches = new StrictMap<Cache>("Caches collection");
   protected final Map<String, ResultMap> resultMaps = new StrictMap<ResultMap>("Result Maps collection");
+  //保存mapper/parameterMap对象，key为当前命名空间+id属性值的形式
   protected final Map<String, ParameterMap> parameterMaps = new StrictMap<ParameterMap>("Parameter Maps collection");
   protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<KeyGenerator>("Key Generators collection");
   //已加载的mapper类toString格式：class 包名.类名；namespace:包名.类名格式;a/b.xml格式
   protected final Set<String> loadedResources = new HashSet<String>();
+  //保存当前配置的databaseId环境时应当执行的sql片段，key为当前命名空间+sql的id属性，value为/mapper/sql节点
   protected final Map<String, XNode> sqlFragments = new StrictMap<XNode>("XML fragments parsed from previous mappers");
 
   protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<XMLStatementBuilder>();

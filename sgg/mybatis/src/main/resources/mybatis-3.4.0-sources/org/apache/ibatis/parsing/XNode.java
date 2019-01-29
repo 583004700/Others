@@ -75,6 +75,10 @@ public class XNode {
     return builder.toString();
   }
 
+  /**
+   *  转换为 parentNodeName[a_b_c]_nodeName[a_b_c]_
+   * @return
+   */
   public String getValueBasedIdentifier() {
     StringBuilder builder = new StringBuilder();
     XNode current = this;

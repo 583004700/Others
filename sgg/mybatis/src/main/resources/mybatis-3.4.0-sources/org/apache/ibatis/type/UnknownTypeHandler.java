@@ -68,6 +68,12 @@ public class UnknownTypeHandler extends BaseTypeHandler<Object> {
     return cs.getObject(columnIndex);
   }
 
+  /**
+   * 根据参数确定handler
+   * @param parameter
+   * @param jdbcType
+   * @return
+   */
   private TypeHandler<? extends Object> resolveTypeHandler(Object parameter, JdbcType jdbcType) {
     TypeHandler<? extends Object> handler;
     if (parameter == null) {
@@ -82,6 +88,12 @@ public class UnknownTypeHandler extends BaseTypeHandler<Object> {
     return handler;
   }
 
+  /**
+   * 根据结果集和列名选择参数处理器
+   * @param rs
+   * @param column
+   * @return
+   */
   private TypeHandler<?> resolveTypeHandler(ResultSet rs, String column) {
     try {
       Map<String,Integer> columnIndexLookup;
@@ -120,6 +132,12 @@ public class UnknownTypeHandler extends BaseTypeHandler<Object> {
     return handler;
   }
 
+  /**
+   * 获取数据库的列的类型，并转为jdbcType
+   * @param rsmd
+   * @param columnIndex
+   * @return
+   */
   private JdbcType safeGetJdbcTypeForColumn(ResultSetMetaData rsmd, Integer columnIndex) {
     try {
       return JdbcType.forCode(rsmd.getColumnType(columnIndex));

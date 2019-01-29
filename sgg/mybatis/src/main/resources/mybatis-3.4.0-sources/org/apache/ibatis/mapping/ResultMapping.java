@@ -168,7 +168,8 @@ public class ResultMapping {
         }
       }
     }
-    
+
+    //根据javaType和jdbcType给resultMapping.typeHandler属性赋值
     private void resolveTypeHandler() {
       if (resultMapping.typeHandler == null && resultMapping.javaType != null) {
         Configuration configuration = resultMapping.configuration;

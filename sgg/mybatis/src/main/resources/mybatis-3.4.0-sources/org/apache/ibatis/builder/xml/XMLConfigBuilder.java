@@ -385,6 +385,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       String type = context.getStringAttribute("type");
       // awful patch to keep backward compatibility
       if ("VENDOR".equals(type)) {
+          //VendorDatabaseIdProvider.class
           type = "DB_VENDOR";
       }
       Properties properties = context.getChildrenAsProperties();
