@@ -28,6 +28,12 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * /mapper/resultMap下的所有非constructor和discriminator标签的映射，
+ * 一个标签代表一个ResultMapping对象
+ * 只要是constructor节点下的节点，flags[0]为ResultFlag.CONSTRUCTOR
+ */
 public class ResultMapping {
 
   private Configuration configuration;

@@ -137,6 +137,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       resultMapElements(context.evalNodes("/mapper/resultMap"));
       //解析sql代码片段
       sqlElement(context.evalNodes("/mapper/sql"));
+      //
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. Cause: " + e, e);
@@ -458,9 +459,9 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   /**
    *  构建ResultMapping
-   * @param context   /mapper/resultMap/constructor的子节点
+   * @param context   /mapper/resultMap/[constructor]的子节点
    * @param resultType  /mapper/resultMap的type属性
-   * @param flags
+   * @param flags 标记是ID还是CONSTRUCTOR
    * @return
    * @throws Exception
    */

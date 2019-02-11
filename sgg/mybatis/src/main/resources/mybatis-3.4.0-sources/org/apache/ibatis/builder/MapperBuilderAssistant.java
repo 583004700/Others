@@ -226,6 +226,17 @@ public class MapperBuilderAssistant extends BaseBuilder {
         .build();
   }
 
+  /**
+   * 构建resultMap并添加到configuration
+   * 会把继承的resultMap中的resultMapping去除ResultFlag.CONSTRUCTOR下的标签放到新的resultMap的resultMapping中
+   * @param id
+   * @param type
+   * @param extend
+   * @param discriminator
+   * @param resultMappings
+   * @param autoMapping
+   * @return
+   */
   public ResultMap addResultMap(
       String id,
       Class<?> type,

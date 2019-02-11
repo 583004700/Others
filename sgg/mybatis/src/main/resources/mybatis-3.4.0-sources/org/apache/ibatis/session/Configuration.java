@@ -151,6 +151,7 @@ public class Configuration {
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection");
   //key是命名空间，value是Cache对象
   protected final Map<String, Cache> caches = new StrictMap<Cache>("Caches collection");
+  //key为当前命名空间+id属性值的形式
   protected final Map<String, ResultMap> resultMaps = new StrictMap<ResultMap>("Result Maps collection");
   //保存mapper/parameterMap对象，key为当前命名空间+id属性值的形式
   protected final Map<String, ParameterMap> parameterMaps = new StrictMap<ParameterMap>("Parameter Maps collection");

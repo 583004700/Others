@@ -53,16 +53,25 @@ public class XMLIncludeTransformer {
    * @param source Include node in DOM tree
    * @param variablesContext Current context for static variables with values
    */
+  /**
+   *
+   * @param source 通常是增删查改标签，或者sql标签
+   * @param variablesContext 从当中获取配置信息
+   */
   private void applyIncludes(Node source, final Properties variablesContext) {
     if (source.getNodeName().equals("include")) {
       // new full context for included SQL - contains inherited context and new variables from current include node
+      //将variablesContext和将include中的子标签中的name,value组织成键值对形式的属性整合
       Properties fullContext;
 
       String refid = getStringAttribute(source, "refid");
       // replace variables in include refid value
       refid = PropertyParser.parse(refid, variablesContext);
+      //查找引用的sql片段node
       Node toInclude = findSqlFragment(refid);
+      //将include中的子标签中的name,value组织成键值对形式，variablesContext代表配置
       Properties newVariablesContext = getVariablesContext(source, variablesContext);
+
       if (!newVariablesContext.isEmpty()) {
         // merge contexts
         fullContext = new Properties();
@@ -72,14 +81,19 @@ public class XMLIncludeTransformer {
         // no new context - use inherited fully
         fullContext = variablesContext;
       }
+      //从fullContext取属性替换sql标签内的${val}形式的内容
       applyIncludes(toInclude, fullContext);
+
       if (toInclude.getOwnerDocument() != source.getOwnerDocument()) {
         toInclude = source.getOwnerDocument().importNode(toInclude, true);
       }
+      //将source节点替换为toInclude节点，将include标签的内容替换为所引用的标签的内容
       source.getParentNode().replaceChild(toInclude, source);
       while (toInclude.hasChildNodes()) {
+        //将sql标签内的内容移到外面
         toInclude.getParentNode().insertBefore(toInclude.getFirstChild(), toInclude);
       }
+      //最后将sql标签移除
       toInclude.getParentNode().removeChild(toInclude);
     } else if (source.getNodeType() == Node.ELEMENT_NODE) {
       NodeList children = source.getChildNodes();
@@ -95,6 +109,11 @@ public class XMLIncludeTransformer {
     }
   }
 
+  /**
+   * 得到引用的sql片段的node，并复制返回
+   * @param refid
+   * @return
+   */
   private Node findSqlFragment(String refid) {
     refid = builderAssistant.applyCurrentNamespace(refid, true);
     try {
@@ -114,6 +133,9 @@ public class XMLIncludeTransformer {
    * @param node Include node instance
    * @param inheritedVariablesContext Current context used for replace variables in new variables values
    * @return variables context from include instance (no inherited values)
+   */
+  /**
+   * 将source中的子标签中的name,value组织成键值对形式，variablesContext代表配置
    */
   private Properties getVariablesContext(Node node, Properties inheritedVariablesContext) {
     Properties variablesContext = new Properties();
