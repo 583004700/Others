@@ -38,6 +38,13 @@ public class XMLLanguageDriver implements LanguageDriver {
     return new DefaultParameterHandler(mappedStatement, parameterObject, boundSql);
   }
 
+  /**
+   *  创建sqlSource
+   * @param configuration   全局配置
+   * @param script  标签，比如selectKey，select,update等
+   * @param parameterType 返回值类型
+   * @return
+   */
   @Override
   public SqlSource createSqlSource(Configuration configuration, XNode script, Class<?> parameterType) {
     XMLScriptBuilder builder = new XMLScriptBuilder(configuration, script, parameterType);

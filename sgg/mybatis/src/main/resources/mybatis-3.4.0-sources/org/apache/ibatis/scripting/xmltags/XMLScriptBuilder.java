@@ -49,6 +49,7 @@ public class XMLScriptBuilder extends BaseBuilder {
   }
 
   public SqlSource parseScriptNode() {
+    //contents[0] = StaticTextSqlNode或TextSqlNode 最简单的一种形式
     List<SqlNode> contents = parseDynamicTags(context);
     MixedSqlNode rootSqlNode = new MixedSqlNode(contents);
     SqlSource sqlSource = null;
@@ -60,14 +61,34 @@ public class XMLScriptBuilder extends BaseBuilder {
     return sqlSource;
   }
 
+  /**
+   * 解析动态标签，比如selectKey,select,update等，并将SqlNode添加到contents并返回
+   * @param node  节点
+   * @return
+   */
   List<SqlNode> parseDynamicTags(XNode node) {
     List<SqlNode> contents = new ArrayList<SqlNode>();
     NodeList children = node.getNode().getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
+      //创建子标签的XNode对象
       XNode child = node.newXNode(children.item(i));
       if (child.getNode().getNodeType() == Node.CDATA_SECTION_NODE || child.getNode().getNodeType() == Node.TEXT_NODE) {
+        /*元素节点            　　Node.ELEMENT_NODE(1)
+        属性节点            　　Node.ATTRIBUTE_NODE(2)
+        文本节点            　　Node.TEXT_NODE(3)
+        CDATA节点             Node.CDATA_SECTION_NODE(4)
+        实体引用名称节点    　　 Node.ENTRY_REFERENCE_NODE(5)
+        实体名称节点        　　Node.ENTITY_NODE(6)
+        处理指令节点        　　Node.PROCESSING_INSTRUCTION_NODE(7)
+        注释节点            　 Node.COMMENT_NODE(8)
+        文档节点            　 Node.DOCUMENT_NODE(9)
+        文档类型节点        　　Node.DOCUMENT_TYPE_NODE(10)
+        文档片段节点        　　Node.DOCUMENT_FRAGMENT_NODE(11)
+        DTD声明节点            Node.NOTATION_NODE(12)*/
+
         String data = child.getStringBody("");
         TextSqlNode textSqlNode = new TextSqlNode(data);
+        //检测是否是动态sql，是否是${}取值形式
         if (textSqlNode.isDynamic()) {
           contents.add(textSqlNode);
           isDynamic = true;
@@ -102,6 +123,11 @@ public class XMLScriptBuilder extends BaseBuilder {
   }
 
   private interface NodeHandler {
+    /**
+     *
+     * @param nodeToHandle  子节点，比如trim，where等
+     * @param targetContents SqlNode容器
+     */
     void handleNode(XNode nodeToHandle, List<SqlNode> targetContents);
   }
 
@@ -110,6 +136,11 @@ public class XMLScriptBuilder extends BaseBuilder {
       // Prevent Synthetic Access
     }
 
+    /**
+     *
+     * @param nodeToHandle  bind标签
+     * @param targetContents
+     */
     @Override
     public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
       final String name = nodeToHandle.getStringAttribute("name");
@@ -124,6 +155,11 @@ public class XMLScriptBuilder extends BaseBuilder {
       // Prevent Synthetic Access
     }
 
+    /**
+     *
+     * @param nodeToHandle  trim标签
+     * @param targetContents
+     */
     @Override
     public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
       List<SqlNode> contents = parseDynamicTags(nodeToHandle);

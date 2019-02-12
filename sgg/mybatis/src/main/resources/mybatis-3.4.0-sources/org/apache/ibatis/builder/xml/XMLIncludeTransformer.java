@@ -85,6 +85,7 @@ public class XMLIncludeTransformer {
       applyIncludes(toInclude, fullContext);
 
       if (toInclude.getOwnerDocument() != source.getOwnerDocument()) {
+        //将节点从一个文档复制到另一个文档
         toInclude = source.getOwnerDocument().importNode(toInclude, true);
       }
       //将source节点替换为toInclude节点，将include标签的内容替换为所引用的标签的内容

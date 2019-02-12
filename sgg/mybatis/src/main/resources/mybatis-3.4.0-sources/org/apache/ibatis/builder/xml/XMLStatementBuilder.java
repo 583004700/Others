@@ -94,13 +94,22 @@ public class XMLStatementBuilder extends BaseBuilder {
 
     // Include Fragments before parsing
     XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
+    //将include标签包含进去
     includeParser.applyIncludes(context.getNode());
 
     // Parse selectKey after includes and remove them.
+    //标签的id属性   标签的parameterType对应的类    XMLLanguageDriver.class默认的
+    //处理selectKey标签
     processSelectKeyNodes(id, parameterTypeClass, langDriver);
     
     // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
+    //默认的实现是返回DynamicSqlSource或RawSqlSource，
+    //rootSqlNode为rootSqlNode      contents[0] = StaticTextSqlNode或TextSqlNode 最简单的一种形式
+    //    List<SqlNode> contents = parseDynamicTags(context);
+    //    MixedSqlNode rootSqlNode = new MixedSqlNode(contents);
     SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
+
+
     String resultSets = context.getStringAttribute("resultSets");
     String keyProperty = context.getStringAttribute("keyProperty");
     String keyColumn = context.getStringAttribute("keyColumn");
@@ -108,6 +117,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     String keyStatementId = id + SelectKeyGenerator.SELECT_KEY_SUFFIX;
     keyStatementId = builderAssistant.applyCurrentNamespace(keyStatementId, true);
     if (configuration.hasKeyGenerator(keyStatementId)) {
+        //配置了selectKey时
       keyGenerator = configuration.getKeyGenerator(keyStatementId);
     } else {
       keyGenerator = context.getBooleanAttribute("useGeneratedKeys",
@@ -121,6 +131,12 @@ public class XMLStatementBuilder extends BaseBuilder {
         keyGenerator, keyProperty, keyColumn, databaseId, langDriver, resultSets);
   }
 
+  /**
+   *
+   * @param id 标签的id值
+   * @param parameterTypeClass  参数对应的类
+   * @param langDriver
+   */
   private void processSelectKeyNodes(String id, Class<?> parameterTypeClass, LanguageDriver langDriver) {
     List<XNode> selectKeyNodes = context.evalNodes("selectKey");
     if (configuration.getDatabaseId() != null) {
@@ -130,6 +146,14 @@ public class XMLStatementBuilder extends BaseBuilder {
     removeSelectKeyNodes(selectKeyNodes);
   }
 
+  /**
+   * 解析selectKey标签
+   * @param parentId 标签的id值
+   * @param list  selectKey节点集合
+   * @param parameterTypeClass  参数类型
+   * @param langDriver
+   * @param skRequiredDatabaseId 数据库环境
+   */
   private void parseSelectKeyNodes(String parentId, List<XNode> list, Class<?> parameterTypeClass, LanguageDriver langDriver, String skRequiredDatabaseId) {
     for (XNode nodeToHandle : list) {
       String id = parentId + SelectKeyGenerator.SELECT_KEY_SUFFIX;
@@ -140,9 +164,19 @@ public class XMLStatementBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * 组织KeyGenerator
+   * @param id 标签id拼接SelectKeyGenerator.SELECT_KEY_SUFFIX
+   * @param nodeToHandle  selectKey节点
+   * @param parameterTypeClass
+   * @param langDriver
+   * @param databaseId
+   */
   private void parseSelectKeyNode(String id, XNode nodeToHandle, Class<?> parameterTypeClass, LanguageDriver langDriver, String databaseId) {
     String resultType = nodeToHandle.getStringAttribute("resultType");
+    //selectKey节点返回值类型
     Class<?> resultTypeClass = resolveClass(resultType);
+
     StatementType statementType = StatementType.valueOf(nodeToHandle.getStringAttribute("statementType", StatementType.PREPARED.toString()));
     String keyProperty = nodeToHandle.getStringAttribute("keyProperty");
     String keyColumn = nodeToHandle.getStringAttribute("keyColumn");
@@ -159,6 +193,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     String resultMap = null;
     ResultSetType resultSetTypeEnum = null;
 
+    //nodeToHandle  selectKey节点
     SqlSource sqlSource = langDriver.createSqlSource(configuration, nodeToHandle, parameterTypeClass);
     SqlCommandType sqlCommandType = SqlCommandType.SELECT;
 

@@ -21,6 +21,7 @@ import java.util.List;
  * @author Clinton Begin
  */
 public class MixedSqlNode implements SqlNode {
+  //contents[0] = StaticTextSqlNode或TextSqlNode 最简单的一种形式
   private List<SqlNode> contents;
 
   public MixedSqlNode(List<SqlNode> contents) {

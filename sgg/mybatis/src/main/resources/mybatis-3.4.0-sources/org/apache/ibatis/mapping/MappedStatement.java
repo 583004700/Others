@@ -64,6 +64,13 @@ public final class MappedStatement {
   public static class Builder {
     private MappedStatement mappedStatement = new MappedStatement();
 
+    /**
+     *
+     * @param configuration 全局配置
+     * @param id  当前命名空间. + 标签id + SelectKeyGenerator.SELECT_KEY_SUFFIX
+     * @param sqlSource
+     * @param sqlCommandType
+     */
     public Builder(Configuration configuration, String id, SqlSource sqlSource, SqlCommandType sqlCommandType) {
       mappedStatement.configuration = configuration;
       mappedStatement.id = id;
