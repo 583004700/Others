@@ -147,7 +147,7 @@ public class Configuration {
   //类型别名配置
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
-
+  //增删查改对应的标签对应的对象，key是命名空间.+标签id属性值形式
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection");
   //key是命名空间，value是Cache对象
   protected final Map<String, Cache> caches = new StrictMap<Cache>("Caches collection");
@@ -160,7 +160,7 @@ public class Configuration {
   protected final Set<String> loadedResources = new HashSet<String>();
   //保存当前配置的databaseId环境时应当执行的sql片段，key为当前命名空间+sql的id属性，value为/mapper/sql节点
   protected final Map<String, XNode> sqlFragments = new StrictMap<XNode>("XML fragments parsed from previous mappers");
-
+  //MappedStatement构建失败时，将构建对象放入这个集合
   protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<XMLStatementBuilder>();
   //设置ref-cache发生异常时，会添加cacheRefResolver对象的集合内
   protected final Collection<CacheRefResolver> incompleteCacheRefs = new LinkedList<CacheRefResolver>();

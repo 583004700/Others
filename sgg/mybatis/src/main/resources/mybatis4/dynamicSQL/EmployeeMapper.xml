@@ -97,7 +97,7 @@
     <insert id="addEmps">
         insert into tbl_employee
         <!--引用外部定义的sql片段-->
-        <include refid="insertColumn">
+        <include refid="mybatis4.dynamicSQL.CommonMapper.insertColumn">
             <property name="testColumn" value="abc" />
         </include>
         values
@@ -137,10 +137,10 @@
 
 
     <!--sql标签抽取可重用的sql片段-->
-    <sql id="insertColumn">
-        <!--${testColumn}
-            可以取出testColumn的值
-        -->
-      (last_name,email,gender,d_id)
-    </sql>
+    <!--<sql id="insertColumn">-->
+        <!--&lt;!&ndash;${testColumn}-->
+            <!--可以取出testColumn的值-->
+        <!--&ndash;&gt;-->
+      <!--(last_name,email,gender,d_id)-->
+    <!--</sql>-->
 </mapper>

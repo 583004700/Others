@@ -313,7 +313,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
 
   /**
    *
-   * @param id  标签id拼接SelectKeyGenerator.SELECT_KEY_SUFFIX
+   * @param id  如果是selectKey,则id为标签id拼接SelectKeyGenerator.SELECT_KEY_SUFFIX
    * @param sqlSource
    * @param statementType
    * @param sqlCommandType
@@ -382,6 +382,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
         .useCache(valueOrDefault(useCache, isSelect))
         .cache(currentCache);
 
+    //如果没有配置parameterMap，则会用parameterType构建parameterMap
     ParameterMap statementParameterMap = getStatementParameterMap(parameterMap, parameterType, id);
     if (statementParameterMap != null) {
       statementBuilder.parameterMap(statementParameterMap);
@@ -396,6 +397,13 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return value == null ? defaultValue : value;
   }
 
+  /**
+   * 得到StatementParameterMap
+   * @param parameterMapName  配置文件中的parameterMap
+   * @param parameterTypeClass  配置文件中的parameterType对应的class
+   * @param statementId 标签的id属性
+   * @return
+   */
   private ParameterMap getStatementParameterMap(
       String parameterMapName,
       Class<?> parameterTypeClass,
@@ -404,11 +412,13 @@ public class MapperBuilderAssistant extends BaseBuilder {
     ParameterMap parameterMap = null;
     if (parameterMapName != null) {
       try {
+        //得到所引用的parameterMap
         parameterMap = configuration.getParameterMap(parameterMapName);
       } catch (IllegalArgumentException e) {
         throw new IncompleteElementException("Could not find parameter map " + parameterMapName, e);
       }
     } else if (parameterTypeClass != null) {
+      //如果没有配置parameterMap，则将用parameterTypeClass构建parameterMap
       List<ParameterMapping> parameterMappings = new ArrayList<ParameterMapping>();
       parameterMap = new ParameterMap.Builder(
           configuration,
@@ -419,6 +429,13 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return parameterMap;
   }
 
+  /**
+   * 得到resultMap集合
+   * @param resultMap 标签内引用的resultMap,可以配置多个，用,号分隔
+   * @param resultType
+   * @param statementId 标签的id属性
+   * @return
+   */
   private List<ResultMap> getStatementResultMaps(
       String resultMap,
       Class<?> resultType,

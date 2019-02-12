@@ -27,6 +27,7 @@ public class ParameterMap {
 
   private String id;
   private Class<?> type;
+  //ParameterMap标签下的多个parameter标签对应的对象
   private List<ParameterMapping> parameterMappings;
 
   private ParameterMap() {

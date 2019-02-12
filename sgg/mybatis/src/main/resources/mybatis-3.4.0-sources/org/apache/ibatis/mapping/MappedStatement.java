@@ -31,30 +31,50 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
-public final class MappedStatement {
 
+/**
+ * 对应一个增删查改的标签
+ */
+public final class MappedStatement {
+  //mapper.xml文件的路径
   private String resource;
+  //全局配置
   private Configuration configuration;
+  //当前命名空间.+标签id属性值，如果是selectKey标签，则再+SelectKeyGenerator.SELECT_KEY_SUFFIX
   private String id;
+  //标签的fetchSize属性值
   private Integer fetchSize;
   private Integer timeout;
   private StatementType statementType;
   private ResultSetType resultSetType;
   private SqlSource sqlSource;
+  //当前mapper所使用的cache
   private Cache cache;
+  //如果没有配置parameterMap，则会用parameterType构建parameterMap
   private ParameterMap parameterMap;
+  //如果没有配置resultMap，则会用resultType构建resultMap,可以配置多个，用,号隔开
   private List<ResultMap> resultMaps;
+  //是否刷新缓存，flushCache配置，默认是非select刷新
   private boolean flushCacheRequired;
+  //是否使用缓存，useCache配置，默认是select时使用缓存
   private boolean useCache;
+  //resultOrdered配置，默认为false
   private boolean resultOrdered;
+  //根据增删查改标签判断的
   private SqlCommandType sqlCommandType;
+  //配置了selectKey时从全局配置文件中取得，配置了useGeneratedKeys且为INSERT语句时为Jdbc3KeyGenerator，否则为NoKeyGenerator
   private KeyGenerator keyGenerator;
+  //keyProperty配置，按,号分隔
   private String[] keyProperties;
+  //keyColumn配置，按,号分隔
   private String[] keyColumns;
+  //是否含有嵌套的结果映射， 如果某个映射关系中有 resultMap， 没有 resultSet ， 则为true
   private boolean hasNestedResultMaps;
   private String databaseId;
   private Log statementLog;
+  ////XMLLanguageDriver.class默认的
   private LanguageDriver lang;
+  //resultSet配置，按,号分隔
   private String[] resultSets;
 
   MappedStatement() {
@@ -67,7 +87,7 @@ public final class MappedStatement {
     /**
      *
      * @param configuration 全局配置
-     * @param id  当前命名空间. + 标签id + SelectKeyGenerator.SELECT_KEY_SUFFIX
+     * @param id  如果是selectKey，当前命名空间. + 标签id + SelectKeyGenerator.SELECT_KEY_SUFFIX
      * @param sqlSource
      * @param sqlCommandType
      */
