@@ -314,7 +314,12 @@ public final class MappedStatement {
   public String[] getResulSets() {
     return resultSets;
   }
-  
+
+  /**
+   * 方法的参数
+   * @param parameterObject
+   * @return
+   */
   public BoundSql getBoundSql(Object parameterObject) {
     BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();

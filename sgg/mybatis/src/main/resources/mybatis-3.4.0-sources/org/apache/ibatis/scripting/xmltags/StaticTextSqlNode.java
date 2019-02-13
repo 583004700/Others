@@ -25,6 +25,11 @@ public class StaticTextSqlNode implements SqlNode {
     this.text = text;
   }
 
+  /**
+   * 将text内容添加到context容器内sqlBuilder对象中
+   * @param context
+   * @return
+   */
   @Override
   public boolean apply(DynamicContext context) {
     context.appendSql(text);

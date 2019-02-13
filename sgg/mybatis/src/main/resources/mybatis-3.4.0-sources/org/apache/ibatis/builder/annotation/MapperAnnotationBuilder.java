@@ -88,6 +88,10 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 主要用来解析mapper类
+ */
 public class MapperAnnotationBuilder {
 
   private final Set<Class<? extends Annotation>> sqlAnnotationTypes = new HashSet<Class<? extends Annotation>>();
@@ -179,6 +183,9 @@ public class MapperAnnotationBuilder {
     }
   }
 
+  /**
+   * 解析缓存注解
+   */
   private void parseCache() {
     CacheNamespace cacheDomain = type.getAnnotation(CacheNamespace.class);
     if (cacheDomain != null) {
@@ -188,6 +195,9 @@ public class MapperAnnotationBuilder {
     }
   }
 
+  /**
+   * 解析引用的缓存注解
+   */
   private void parseCacheRef() {
     CacheNamespaceRef cacheDomainRef = type.getAnnotation(CacheNamespaceRef.class);
     if (cacheDomainRef != null) {
@@ -265,6 +275,10 @@ public class MapperAnnotationBuilder {
     return null;
   }
 
+  /**
+   * 解析Statement
+   * @param method
+   */
   void parseStatement(Method method) {
     Class<?> parameterTypeClass = getParameterType(method);
     LanguageDriver languageDriver = getLanguageDriver(method);

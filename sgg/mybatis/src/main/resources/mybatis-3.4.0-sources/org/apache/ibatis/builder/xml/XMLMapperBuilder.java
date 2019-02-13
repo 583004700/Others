@@ -53,7 +53,7 @@ import org.apache.ibatis.type.TypeHandler;
  */
 
 /**
- * 主要解析mapper配置
+ * 主要解析mapper.xml配置
  */
 public class XMLMapperBuilder extends BaseBuilder {
 
@@ -106,11 +106,11 @@ public class XMLMapperBuilder extends BaseBuilder {
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
       configurationElement(parser.evalNode("/mapper"));
-      //
+      //已加载完成的mapper
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
     }
-
+    //处理有引用关系的，解析失败的节点
     parsePendingResultMaps();
     parsePendingChacheRefs();
     parsePendingStatements();

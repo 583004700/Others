@@ -34,7 +34,7 @@ import java.util.Set;
 public class MapperRegistry {
 
   private final Configuration config;
-  //扫描到的mapper类
+  //由当前对象解析完成的mapper类
   private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<Class<?>, MapperProxyFactory<?>>();
 
   public MapperRegistry(Configuration config) {

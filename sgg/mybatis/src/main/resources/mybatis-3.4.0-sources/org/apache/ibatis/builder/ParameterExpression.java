@@ -48,6 +48,11 @@ public class ParameterExpression extends HashMap<String, String> {
     }
   }
 
+  /**
+   * 假设是(ab(cd)e)ee,put的值为ab(cd)e,取得与'('  相对应的  ')'内的值
+   * @param expression
+   * @param left
+   */
   private void expression(String expression, int left) {
     int match = 1;
     int right = left + 1;
@@ -71,8 +76,15 @@ public class ParameterExpression extends HashMap<String, String> {
     }
   }
 
+  /**
+   * 找到有效字符的下标
+   * @param expression
+   * @param p
+   * @return
+   */
   private int skipWS(String expression, int p) {
     for (int i = p; i < expression.length(); i++) {
+      //0x20代表十进制32
       if (expression.charAt(i) > 0x20) {
         return i;
       }
