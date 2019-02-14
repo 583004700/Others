@@ -37,6 +37,7 @@ public class BoundSql {
 
   private String sql;
   private List<ParameterMapping> parameterMappings;
+  //通常是调用mapper方法时传递的具体参数
   private Object parameterObject;
   private Map<String, Object> additionalParameters;
   private MetaObject metaParameters;

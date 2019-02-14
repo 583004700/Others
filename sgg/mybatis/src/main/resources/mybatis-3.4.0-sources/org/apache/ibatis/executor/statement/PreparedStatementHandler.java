@@ -34,6 +34,10 @@ import org.apache.ibatis.session.RowBounds;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 主要处理PreparedStatement，比如执行sql语句等
+ */
 public class PreparedStatementHandler extends BaseStatementHandler {
 
   public PreparedStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
@@ -57,10 +61,19 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     ps.addBatch();
   }
 
+  /**
+   * 执行sql语句
+   * @param statement
+   * @param resultHandler
+   * @param <E>
+   * @return
+   * @throws SQLException
+   */
   @Override
   public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
     PreparedStatement ps = (PreparedStatement) statement;
     ps.execute();
+    //默认为DefaultResultSetHandler
     return resultSetHandler.<E> handleResultSets(ps);
   }
 
@@ -71,6 +84,12 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     return resultSetHandler.<E> handleCursorResultSets(ps);
   }
 
+  /**
+   * 初始化Statement
+   * @param connection
+   * @return
+   * @throws SQLException
+   */
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
     String sql = boundSql.getSql();
@@ -90,6 +109,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
   @Override
   public void parameterize(Statement statement) throws SQLException {
+    //parameterHandler默认是DefaultParameterHandler
     parameterHandler.setParameters((PreparedStatement) statement);
   }
 

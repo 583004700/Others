@@ -18,6 +18,10 @@ package org.apache.ibatis.scripting.xmltags;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 主要用来处理sql中的元素节点，将处理结果放到context中
+ */
 public interface SqlNode {
   boolean apply(DynamicContext context);
 }

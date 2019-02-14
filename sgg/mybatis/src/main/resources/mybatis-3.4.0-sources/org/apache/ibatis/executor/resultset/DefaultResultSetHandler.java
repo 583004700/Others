@@ -64,6 +64,10 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  * @author Eduardo Macarron
  * @author Iwao AVE!
  */
+
+/**
+ * 默认的结果处理器
+ */
 public class DefaultResultSetHandler implements ResultSetHandler {
 
   private static final Object DEFERED = new Object();
@@ -166,6 +170,13 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   //
   // HANDLE RESULT SETS
   //
+
+  /**
+   * 处理返回结果
+   * @param stmt
+   * @return
+   * @throws SQLException
+   */
   @Override
   public List<Object> handleResultSets(Statement stmt) throws SQLException {
     ErrorContext.instance().activity("handling results").object(mappedStatement.getId());

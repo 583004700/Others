@@ -25,6 +25,10 @@ import java.util.List;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 主要用来从Statement获取结果并处理
+ */
 public interface ResultSetHandler {
 
   <E> List<E> handleResultSets(Statement stmt) throws SQLException;

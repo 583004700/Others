@@ -27,7 +27,9 @@ import org.apache.ibatis.session.Configuration;
  */
 public class StaticSqlSource implements SqlSource {
 
+  //sql语句的?占位符形式
   private String sql;
+  //参数解析之后形成的ParameterMapping
   private List<ParameterMapping> parameterMappings;
   private Configuration configuration;
 
@@ -41,6 +43,11 @@ public class StaticSqlSource implements SqlSource {
     this.configuration = configuration;
   }
 
+  /**
+   *
+   * @param parameterObject 通常是调用mapper方法时传递的参数
+   * @return
+   */
   @Override
   public BoundSql getBoundSql(Object parameterObject) {
     return new BoundSql(configuration, sql, parameterMappings, parameterObject);

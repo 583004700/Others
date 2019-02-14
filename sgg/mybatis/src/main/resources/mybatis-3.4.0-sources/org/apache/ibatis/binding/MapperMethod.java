@@ -48,7 +48,7 @@ public class MapperMethod {
    * 构造方法
    * @param mapperInterface 接口类
    * @param method  接口方法
-   * @param config
+   * @param config 全局配置
    */
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
     this.command = new SqlCommand(config, mapperInterface, method);
@@ -203,8 +203,9 @@ public class MapperMethod {
   }
 
   public static class SqlCommand {
-
+    //ms.getId()
     private final String name;
+    //ms.getSqlCommandType()
     private final SqlCommandType type;
 
     /**

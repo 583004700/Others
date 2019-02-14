@@ -49,6 +49,7 @@ public class SqlSourceBuilder extends BaseBuilder {
   public SqlSource parse(String originalSql, Class<?> parameterType, Map<String, Object> additionalParameters) {
     ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler(configuration, parameterType, additionalParameters);
     GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
+    //sql中点位符用?代替，并且占位符中的内容解析为ParameterMapping。放在handler.getParameterMappings()中
     String sql = parser.parse(originalSql);
     return new StaticSqlSource(configuration, sql, handler.getParameterMappings());
   }
@@ -86,12 +87,15 @@ public class SqlSourceBuilder extends BaseBuilder {
      * @return
      */
     private ParameterMapping buildParameterMapping(String content) {
+      //假如配置文件中配置，#{comm,jdbcType=NUMERIC}，则map形式为  {property:comm,jdbcType:NUMERIC}
       Map<String, String> propertiesMap = parseParameterMapping(content);
       String property = propertiesMap.get("property");
+
       Class<?> propertyType;
       if (metaParameters.hasGetter(property)) { // issue #448 get type from additional params
         propertyType = metaParameters.getGetterType(property);
       } else if (typeHandlerRegistry.hasTypeHandler(parameterType)) {
+        //比如Integer
         propertyType = parameterType;
       } else if (JdbcType.CURSOR.name().equals(propertiesMap.get("jdbcType"))) {
         propertyType = java.sql.ResultSet.class;
@@ -142,6 +146,7 @@ public class SqlSourceBuilder extends BaseBuilder {
 
     private Map<String, String> parseParameterMapping(String content) {
       try {
+        //假如配置文件中配置，#{comm,jdbcType=NUMERIC}，则map形式为  {property:comm,jdbcType:NUMERIC}
         return new ParameterExpression(content);
       } catch (BuilderException ex) {
         throw ex;

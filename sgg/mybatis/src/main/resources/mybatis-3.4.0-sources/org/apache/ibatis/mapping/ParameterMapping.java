@@ -25,10 +25,15 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * 1.配置的paramterMap中的每一项都是ParameterMapping
+ * 2.#{comm,jdbcType=NUMERIC}  这种占位符也会映射为一个ParameterMapping
+ */
 public class ParameterMapping {
 
   private Configuration configuration;
-
+  //#{id}，则为id
   private String property;
   private ParameterMode mode;
   private Class<?> javaType = Object.class;

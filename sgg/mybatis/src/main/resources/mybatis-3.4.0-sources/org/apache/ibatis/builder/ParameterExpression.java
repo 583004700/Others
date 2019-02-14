@@ -39,6 +39,10 @@ public class ParameterExpression extends HashMap<String, String> {
     parse(expression);
   }
 
+  /**
+   * 假如配置文件中配置，#{comm,jdbcType=NUMERIC}
+   * @param expression  comm,jdbcType=NUMERIC
+   */
   private void parse(String expression) {
     int p = skipWS(expression, 0);
     if (expression.charAt(p) == '(') {
@@ -68,9 +72,15 @@ public class ParameterExpression extends HashMap<String, String> {
     jdbcTypeOpt(expression, right);
   }
 
+  /**
+   *
+   * @param expression  comm,jdbcType=NUMERIC
+   * @param left
+   */
   private void property(String expression, int left) {
     if (left < expression.length()) {
       int right = skipUntil(expression, left, ",:");
+      //将comm添加到map中
       put("property", trimmedStr(expression, left, right));
       jdbcTypeOpt(expression, right);
     }
@@ -92,6 +102,13 @@ public class ParameterExpression extends HashMap<String, String> {
     return expression.length();
   }
 
+  /**
+   *  如果expression字符串中的某个字符在endChars中存在，则返回找到的字符下标
+   * @param expression
+   * @param p
+   * @param endChars
+   * @return
+   */
   private int skipUntil(String expression, int p, final String endChars) {
     for (int i = p; i < expression.length(); i++) {
       char c = expression.charAt(i);
@@ -102,6 +119,11 @@ public class ParameterExpression extends HashMap<String, String> {
     return expression.length();
   }
 
+  /**
+   *
+   * @param expression  comm,jdbcType=NUMERIC
+   * @param p
+   */
   private void jdbcTypeOpt(String expression, int p) {
     p = skipWS(expression, p);
     if (p < expression.length()) {
@@ -115,6 +137,11 @@ public class ParameterExpression extends HashMap<String, String> {
     }
   }
 
+  /**
+   *
+   * @param expression
+   * @param p
+   */
   private void jdbcType(String expression, int p) {
     int left = skipWS(expression, p);
     int right = skipUntil(expression, left, ",");
@@ -126,19 +153,34 @@ public class ParameterExpression extends HashMap<String, String> {
     option(expression, right + 1);
   }
 
+  /**
+   *
+   * @param expression  comm,jdbcType=NUMERIC
+   * @param p j的下标
+   */
   private void option(String expression, int p) {
     int left = skipWS(expression, p);
     if (left < expression.length()) {
       int right = skipUntil(expression, left, "=");
+      //此例name为jdbcType
       String name = trimmedStr(expression, left, right);
       left = right + 1;
       right = skipUntil(expression, left, ",");
+      //此例value为NUMERIC
       String value = trimmedStr(expression, left, right);
       put(name, value);
+      //再次向下解析更多键值对
       option(expression, right + 1);
     }
   }
 
+  /**
+   * 去除start和end之间无效的字符
+   * @param str
+   * @param start
+   * @param end
+   * @return
+   */
   private String trimmedStr(String str, int start, int end) {
     while (str.charAt(start) <= 0x20) {
       start++;

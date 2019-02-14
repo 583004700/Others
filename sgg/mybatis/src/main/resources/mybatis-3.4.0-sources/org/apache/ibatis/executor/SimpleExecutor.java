@@ -70,7 +70,9 @@ public class SimpleExecutor extends BaseExecutor {
     try {
       Configuration configuration = ms.getConfiguration();
       StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
+      //构建Statement并设置好参数
       stmt = prepareStatement(handler, ms.getStatementLog());
+      //resultHandler一般是Executor.NO_RESULT_HANDLER
       return handler.<E>query(stmt, resultHandler);
     } finally {
       closeStatement(stmt);
@@ -90,10 +92,19 @@ public class SimpleExecutor extends BaseExecutor {
     return Collections.emptyList();
   }
 
+  /**
+   * 通过StatementHandler构建Statement
+   * @param handler 通常是RoutingStatementHandler包装了PreparedStatementHandler
+   * @param statementLog
+   * @return
+   * @throws SQLException
+   */
   private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
     Statement stmt;
     Connection connection = getConnection(statementLog);
+    //如果没有重写prepare方法，则prepare方法在BaseStatementHandler中，最终调用的是子类的instantiateStatement方法构建Statement
     stmt = handler.prepare(connection, transaction.getTimeout());
+    //设置stmt参数
     handler.parameterize(stmt);
     return stmt;
   }

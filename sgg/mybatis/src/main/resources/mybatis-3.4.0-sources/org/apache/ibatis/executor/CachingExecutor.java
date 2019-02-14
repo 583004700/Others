@@ -36,6 +36,10 @@ import org.apache.ibatis.transaction.Transaction;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+
+/**
+ * 配置了二级缓存时会使用当前执行器
+ */
 public class CachingExecutor implements Executor {
 
   private Executor delegate;

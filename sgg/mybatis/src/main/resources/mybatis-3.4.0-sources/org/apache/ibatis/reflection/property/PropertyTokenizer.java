@@ -20,10 +20,22 @@ import java.util.Iterator;
 /**
  * @author Clinton Begin
  */
+
+/**
+ * user[0].age
+ * name为user
+ * indexedName为user[0]
+ * index为0
+ * children为age
+ */
 public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<PropertyTokenizer> {
+  //如果点号前面部分不包含[，则name和indexedName相同，否则取[前的部分
   private String name;
+  //.号分隔符前面的部分
   private String indexedName;
+  //如果点号前面部分不包含[，则name和indexedName相同，否则取[]内的值
   private String index;
+  //.号分隔符后面的部分
   private String children;
 
   public PropertyTokenizer(String fullname) {

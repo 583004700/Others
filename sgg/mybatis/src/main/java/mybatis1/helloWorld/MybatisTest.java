@@ -20,6 +20,7 @@ public class MybatisTest {
     }
 
     //sqlSession是非线程安全的
+    //一级缓存保存在executor中
     @Test
     public void test() throws Exception{
         //DefaultSqlSession

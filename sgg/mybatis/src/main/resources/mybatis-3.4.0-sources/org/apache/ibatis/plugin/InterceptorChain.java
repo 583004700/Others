@@ -35,6 +35,11 @@ public class InterceptorChain {
    * @param target
    * @return
    */
+  /**
+   * 在创建各种组件时会调用这个方法，可以对组件进行改写，装饰等
+   * @param target
+   * @return
+   */
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
       target = interceptor.plugin(target);
