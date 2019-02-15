@@ -43,6 +43,7 @@ public class Plugin implements InvocationHandler {
   public static Object wrap(Object target, Interceptor interceptor) {
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();
+    //得到target接口中在注解上配置过的
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
     if (interfaces.length > 0) {
       return Proxy.newProxyInstance(
@@ -66,6 +67,21 @@ public class Plugin implements InvocationHandler {
     }
   }
 
+  /**
+   * @Intercepts(
+   *     {
+   *         @Signature(type=StatementHandler.class,method="parameterize",
+   *                    args=java.sql.Statement.class)
+   *     }
+   * )
+   * @param interceptor
+   * @return
+   */
+  /**
+   * 组织类和方法，一个类可以有多个方法
+   * @param interceptor
+   * @return
+   */
   private static Map<Class<?>, Set<Method>> getSignatureMap(Interceptor interceptor) {
     Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts.class);
     // issue #251
@@ -90,6 +106,12 @@ public class Plugin implements InvocationHandler {
     return signatureMap;
   }
 
+  /**
+   *
+   * @param type  target
+   * @param signatureMap
+   * @return  返回signatureMap中包含的target接口
+   */
   private static Class<?>[] getAllInterfaces(Class<?> type, Map<Class<?>, Set<Method>> signatureMap) {
     Set<Class<?>> interfaces = new HashSet<Class<?>>();
     while (type != null) {
