@@ -90,7 +90,7 @@ import org.apache.ibatis.type.UnknownTypeHandler;
  */
 
 /**
- * 主要用来解析mapper类
+ * 主要用来收集注解上的配置信息，然后交给assistant去解析
  */
 public class MapperAnnotationBuilder {
 
@@ -205,6 +205,11 @@ public class MapperAnnotationBuilder {
     }
   }
 
+  /**
+   * 解析形成resultMap节点
+   * @param method
+   * @return
+   */
   private String parseResultMap(Method method) {
     Class<?> returnType = getReturnType(method);
     ConstructorArgs args = method.getAnnotation(ConstructorArgs.class);
@@ -285,6 +290,7 @@ public class MapperAnnotationBuilder {
     SqlSource sqlSource = getSqlSourceFromAnnotations(method, parameterTypeClass, languageDriver);
     if (sqlSource != null) {
       Options options = method.getAnnotation(Options.class);
+      //
       final String mappedStatementId = type.getName() + "." + method.getName();
       Integer fetchSize = null;
       Integer timeout = null;
@@ -324,11 +330,14 @@ public class MapperAnnotationBuilder {
         useCache = options.useCache();
         fetchSize = options.fetchSize() > -1 || options.fetchSize() == Integer.MIN_VALUE ? options.fetchSize() : null; //issue #348
         timeout = options.timeout() > -1 ? options.timeout() : null;
+        //options中配置
         statementType = options.statementType();
+        //options中配置
         resultSetType = options.resultSetType();
       }
 
       String resultMapId = null;
+      //引用的resultMap的id,可以配置多个
       ResultMap resultMapAnnotation = method.getAnnotation(ResultMap.class);
       if (resultMapAnnotation != null) {
         String[] resultMaps = resultMapAnnotation.value();
@@ -371,7 +380,12 @@ public class MapperAnnotationBuilder {
           options != null ? nullOrEmpty(options.resultSets()) : null);
     }
   }
-  
+
+  /**
+   * 从方法上得到Lang注解的配置
+   * @param method
+   * @return
+   */
   private LanguageDriver getLanguageDriver(Method method) {
     Lang lang = method.getAnnotation(Lang.class);
     Class<?> langClass = null;
@@ -381,6 +395,11 @@ public class MapperAnnotationBuilder {
     return assistant.getLanguageDriver(langClass);
   }
 
+  /**
+   * 获取ParameterType
+   * @param method  接口对应的方法
+   * @return 如果有多个参数，则parameterType为ParamMap.class
+   */
   private Class<?> getParameterType(Method method) {
     Class<?> parameterType = null;
     Class<?>[] parameterTypes = method.getParameterTypes();
@@ -397,7 +416,13 @@ public class MapperAnnotationBuilder {
     return parameterType;
   }
 
+  /**
+   * 得到返回的类型
+   * @param method
+   * @return
+   */
   private Class<?> getReturnType(Method method) {
+    //得到方法返回值类型
     Class<?> returnType = method.getReturnType();
     Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, type);
     if (resolvedReturnType instanceof Class) {
@@ -445,6 +470,13 @@ public class MapperAnnotationBuilder {
     return returnType;
   }
 
+  /**
+   *
+   * @param method 接口对应的方法
+   * @param parameterType 参数类型，如果有多个参数，则为map
+   * @param languageDriver
+   * @return
+   */
   private SqlSource getSqlSourceFromAnnotations(Method method, Class<?> parameterType, LanguageDriver languageDriver) {
     try {
       Class<? extends Annotation> sqlAnnotationType = getSqlAnnotationType(method);
@@ -507,6 +539,12 @@ public class MapperAnnotationBuilder {
     return chooseAnnotationType(method, sqlProviderAnnotationTypes);
   }
 
+  /**
+   * 得到注解的类型
+   * @param method
+   * @param types
+   * @return
+   */
   private Class<? extends Annotation> chooseAnnotationType(Method method, Set<Class<? extends Annotation>> types) {
     for (Class<? extends Annotation> type : types) {
       Annotation annotation = method.getAnnotation(type);

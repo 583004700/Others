@@ -261,6 +261,7 @@ public class MapperMethod {
     private final String mapKey;
     private final Integer resultHandlerIndex;
     private final Integer rowBoundsIndex;
+    //方法参数列表的这种形式{0:"1",1:"2",2:"id"}
     private final SortedMap<Integer, String> params;
     private final boolean hasNamedParameters;
 
@@ -290,6 +291,11 @@ public class MapperMethod {
       this.params = Collections.unmodifiableSortedMap(getParams(method, this.hasNamedParameters));
     }
 
+    /**
+     * 组织成{1:"张三",param1:"张三",2:"19",param2:"19",3:"111",id:"111"}  这种形式
+     * @param args
+     * @return
+     */
     public Object convertArgsToSqlCommandParam(Object[] args) {
       final int paramCount = params.size();
       if (args == null || paramCount == 0) {
@@ -378,6 +384,12 @@ public class MapperMethod {
       return mapKey;
     }
 
+    /**
+     *  得到方法参数列表的名字，如果有Param注解，获取注解值
+     * @param method  接口方法
+     * @param hasNamedParameters  是否有Param注解
+     * @return {0:"1",1:"2",2:"id"}
+     */
     private SortedMap<Integer, String> getParams(Method method, boolean hasNamedParameters) {
       final SortedMap<Integer, String> params = new TreeMap<Integer, String>();
       final Class<?>[] argTypes = method.getParameterTypes();
@@ -393,6 +405,13 @@ public class MapperMethod {
       return params;
     }
 
+    /**
+     * 得到第i个方法的Param注解的value
+     * @param method
+     * @param i
+     * @param paramName
+     * @return
+     */
     private String getParamNameFromAnnotation(Method method, int i, String paramName) {
       final Object[] paramAnnos = method.getParameterAnnotations()[i];
       for (Object paramAnno : paramAnnos) {
@@ -404,6 +423,11 @@ public class MapperMethod {
       return paramName;
     }
 
+    /**
+     * 判断参数前面是否加了Param注解
+     * @param method
+     * @return
+     */
     private boolean hasNamedParams(Method method) {
       final Object[][] paramAnnos = method.getParameterAnnotations();
       for (Object[] paramAnno : paramAnnos) {

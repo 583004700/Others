@@ -85,7 +85,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
   }
 
   /**
-   * 初始化Statement
+   * 初始化Statement,用sql创建prepareStatement
    * @param connection
    * @return
    * @throws SQLException

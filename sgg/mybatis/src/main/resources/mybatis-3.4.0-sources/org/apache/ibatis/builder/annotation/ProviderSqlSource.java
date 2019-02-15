@@ -33,8 +33,11 @@ import org.apache.ibatis.session.Configuration;
 public class ProviderSqlSource implements SqlSource {
 
   private SqlSourceBuilder sqlSourceParser;
+  //注解指向的类
   private Class<?> providerType;
+  //注解指向的满足条件的方法
   private Method providerMethod;
+  //方法参数名 [param1,param2,id]这种形式
   private String[] providerMethodArgumentNames;
 
   public ProviderSqlSource(Configuration config, Object provider) {
@@ -74,6 +77,11 @@ public class ProviderSqlSource implements SqlSource {
     return sqlSource.getBoundSql(parameterObject);
   }
 
+  /**
+   * 执行注解指向的方法，返回的字符串创建sqlSource
+   * @param parameterObject 调用接口方法时具体的参数
+   * @return
+   */
   private SqlSource createSqlSource(Object parameterObject) {
     try {
       Class<?>[] parameterTypes = providerMethod.getParameterTypes();
@@ -105,6 +113,11 @@ public class ProviderSqlSource implements SqlSource {
     }
   }
 
+  /**
+   * 得到参数[param1,parma2,id]  形式
+   * @param providerMethod
+   * @return
+   */
   private String[] extractProviderMethodArgumentNames(Method providerMethod) {
     String[] argumentNames = new String[providerMethod.getParameterTypes().length];
     for (int i = 0; i < argumentNames.length; i++) {

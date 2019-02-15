@@ -53,7 +53,7 @@ import org.apache.ibatis.type.TypeHandler;
  */
 
 /**
- * 主要解析mapper.xml配置
+ * 主要用来收集xml.mapper配置信息，然后交给assistant去解析
  */
 public class XMLMapperBuilder extends BaseBuilder {
 
