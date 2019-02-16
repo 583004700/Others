@@ -16,7 +16,10 @@ public class DynamicQueryService implements IDynamicQueryService{
     public List<Map> queryList(Map map,String dataSourceKey){
         //设置数据源
         ThreadDataSourceManager.set(dataSourceKey);
-        return dynamicQueryMapper.queryList(map);
+        List<Map> list = dynamicQueryMapper.queryList(map);
+        //必须手动清除ThreadLocal内容
+        ThreadDataSourceManager.remove();
+        return list;
     }
 
 }

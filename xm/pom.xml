@@ -79,10 +79,15 @@
         </dependency>
         <!-- 分页插件 -->
         <!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper-spring-boot-starter -->
+        <!--<dependency>-->
+            <!--<groupId>com.github.pagehelper</groupId>-->
+            <!--<artifactId>pagehelper-spring-boot-starter</artifactId>-->
+            <!--<version>1.2.10</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.2.10</version>
+            <artifactId>pagehelper</artifactId>
+            <version>5.1.8</version>
         </dependency>
         <!-- alibaba的druid数据库连接池 -->
         <dependency>

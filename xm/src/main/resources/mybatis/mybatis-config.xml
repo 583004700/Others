@@ -11,4 +11,8 @@
 		<setting name="callSettersOnNulls" value="true" />
 	</settings>
 
+	<plugins>
+		<plugin interceptor="com.common.plugins.MyPageInterceptor"></plugin>
+	</plugins>
+
 </configuration>

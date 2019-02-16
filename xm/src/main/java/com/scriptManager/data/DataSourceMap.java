@@ -8,6 +8,9 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,5 +41,26 @@ public class DataSourceMap {
 
     public static DataSource getDataSource(String key){
         return datasources.get(key);
+    }
+
+    public static String getDatabaseProductName(String key){
+        String databaseProductName = "";
+        Connection con = null;
+        try {
+            con = datasources.get(key).getConnection();
+            DatabaseMetaData metaData = con.getMetaData();
+            databaseProductName = metaData.getDatabaseProductName();
+        }catch (Exception e){
+
+        }finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    // ignored
+                }
+            }
+        }
+        return databaseProductName;
     }
 }
