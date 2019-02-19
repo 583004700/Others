@@ -20,6 +20,7 @@ public class HelloController {
         HttpServletRequest request = requestAttributes.getRequest();
         HttpServletResponse response = requestAttributes.getResponse();
         response.setHeader("Access-Control-Allow-Origin","*");
+        System.out.println("1231");
         return "hello-2019889";
     }
 

@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="utf-8">
 		<title>chart</title>
 		<link rel="stylesheet" href="/chart/css/amazeui.min.css" />
 		<link rel="stylesheet" href="/chart/css/main.css" />
 	</head>
+	<script th:inline="javascript">
+		user = [[${session.user}]];
+	</script>
 	<body>
 		<div class="box">
 			<div class="wechat" style="height: 90%">
@@ -262,8 +265,8 @@
 							<a href="javascript:;"></a>
 						</div>
 						<div class="input_box">
-							<textarea name="" rows="" cols="" id="input_box"></textarea>
-							<button id="send">发送（S）</button>
+							<textarea name="" rows="" cols="" id="input_box" onkeypress="onKeyPress(event)"></textarea>
+							<button id="send" onclick="chartWindow.sendMessage($('#input_box').val())">发送（S）</button>
 						</div>
 					</div>
 				</div>
@@ -274,51 +277,6 @@
 	<script type="text/javascript" src="/chart/js/amazeui.min.js"></script>
 	<script type="text/javascript" src="/chart/js/zUI.js"></script>
 	<script type="text/javascript" src="/chart/js/wechat.js"></script>
-	
-	<script type="text/javascript">
-		//三图标
-		window.onload=function(){
-			function a(){
-				var si1 = document.getElementById('si_1');
-				var si2 = document.getElementById('si_2');
-				var si3 = document.getElementById('si_3');
-				si1.onclick=function(){
-					si1.style.background="url(/chart/images/icon/head_2_1.png) no-repeat"
-					si2.style.background="";
-					si3.style.background="";
-				};
-				si2.onclick=function(){
-					si2.style.background="url(/chart/images/icon/head_3_1.png) no-repeat"
-					si1.style.background="";
-					si3.style.background="";
-				};
-				si3.onclick=function(){
-					si3.style.background="url(/chart/images/icon/head_4_1.png) no-repeat"
-					si1.style.background="";
-					si2.style.background="";
-				};
-			};
-			function b(){
-				var text = document.getElementById('input_box');
-				var chat = document.getElementById('chatbox');
-				var btn = document.getElementById('send');
-				var talk = document.getElementById('talkbox');
-				btn.onclick=function(){
-					if(text.value ==''){
-			            alert('不能发送空消息');
-			        }else{
-						chat.innerHTML += '<li class="me"><img src="'+'/chart/images/own_head.jpg'+'"><span>'+text.value+'</span></li>';
-						text.value = '';
-						chat.scrollTop=chat.scrollHeight;
-						talk.style.background="#fff";
-						text.style.background="#fff";
-					};
-				};
-			};
-			a();
-			b();
-		};
-	</script>
 	<script src="/chart/js/index.js"></script>
 	</body>
 </html>

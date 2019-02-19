@@ -29,25 +29,6 @@ $(document).ready(function(){
     });
 });
 
-window.onload=function b(){
-	var text = document.getElementById('input_box');
-	var chat = document.getElementById('chatbox');
-	var btn = document.getElementById('send');
-	var talk = document.getElementById('talkbox');
-	
-	btn.onclick=function(){
-		if(text.value ==''){
-            alert('不能发送空消息');
-        }else{
-			chat.innerHTML += '<li class="me"><img src="'+'images/own_head.jpg'+'"><span>'+text.value+'</span></li>';
-			text.value = '';
-			chat.scrollTop=chat.scrollHeight;
-			talk.style.background="#fff";
-			text.style.background="#fff";
-		};
-	};
-};
-
 
 
 

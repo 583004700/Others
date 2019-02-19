@@ -8,6 +8,9 @@
     <select id="queryOne" parameterType="map" resultType="com.scriptManager.entity.User">
         select * from users u
         where 1 = 1
+        <if test="id != null and id != ''">
+            and u.id =  #{id}
+        </if>
         <if test="userName != null and userName != ''">
             and u.user_name =  #{userName}
         </if>
