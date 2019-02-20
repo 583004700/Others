@@ -5,6 +5,7 @@ public class User {
     private String userName;
     private String password;
     private String realName;
+    private String pic;
 
     public String getId() {
         return id;
@@ -36,5 +37,13 @@ public class User {
 
     public void setRealName(String realName) {
         this.realName = realName;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
     }
 }

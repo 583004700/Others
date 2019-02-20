@@ -1,4 +1,4 @@
-var chartWebsocketHref = "ws://zhuwb.nat123.net/chartWebsocket/";
+var chartWebsocketHref = "ws://zhuwb.nat123.net:8866/chartWebsocket/";
 
 var LocalStorageOpt = {
     setObjectItem: function (key, value) {
@@ -69,7 +69,9 @@ var User = function (id, realName) {
 User.prototype = {
     //设置用户头像
     setPic: function (pic) {
-        this.pic = pic;
+        if(pic){
+            this.pic = pic;
+        }
         return this;
     },
 
@@ -134,6 +136,7 @@ User.prototype = {
  */
 var ChartWindow = function (currentUser) {
     this.currentUser = currentUser;
+    $("#myPic").css("background","url("+this.currentUser.pic+")");
     //用户列表
     this.userList = [];
     this.userMap = {};
@@ -320,11 +323,9 @@ function onKeyPress(event) {
     }
 }
 
-var user1 = new User(user.id, user.realName);
+var user1 = new User(user.id, user.realName).setPic(user.pic);
 
 var chartWindow = new ChartWindow(user1);
-
-var user3 = new User("3", "郝忠斌").setPic("/chart/images/head/4.jpg");
 
 var currentUserId = user.id;
 var socket = new WebSocket(chartWebsocketHref+currentUserId);
@@ -338,7 +339,7 @@ socket.onopen = function() {
 socket.onmessage = function(msg) {
     var messageObj = JSON.parse(msg.data);
     if(messageObj.onLine){
-        var user2 = new User(messageObj.onLine.id, messageObj.onLine.realName).setPic("/chart/images/head/15.jpg");
+        var user2 = new User(messageObj.onLine.id, messageObj.onLine.realName).setPic(messageObj.onLine.pic);
         chartWindow.onLine(user2);
         //chartWindow.flushUserList([user2]);
     }
@@ -349,7 +350,7 @@ socket.onmessage = function(msg) {
     if(messageObj.flushUsers){
         var newUserList = [];
         for (var i = 0; i < messageObj.flushUsers.length; i++) {
-            var newUser = new User(messageObj.flushUsers[i].id, messageObj.flushUsers[i].realName).setPic("/chart/images/head/15.jpg");
+            var newUser = new User(messageObj.flushUsers[i].id, messageObj.flushUsers[i].realName).setPic(messageObj.flushUsers[i].pic);
             newUserList.push(newUser);
         }
         chartWindow.flushUserList(newUserList);

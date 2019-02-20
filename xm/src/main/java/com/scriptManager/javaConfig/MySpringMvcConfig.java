@@ -36,4 +36,5 @@ public class MySpringMvcConfig extends WebMvcConfigurerAdapter{
         // 4、将convert添加到converters当中.
         converters.add(fastConverter);
     }
+
 }
