@@ -6,5 +6,5 @@ public class Const {
     //session中保存的用户键
     public static String USER_KEY = "user";
     //登录成功之后跳转的页面
-    public static String INDEX = "/index";
+    public static String INDEX = "/chart/index";
 }

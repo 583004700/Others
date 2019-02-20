@@ -1,3 +1,4 @@
+var chartWebsocketHref = "ws://zhuwb.nat123.net/chartWebsocket/";
 
 var LocalStorageOpt = {
     setObjectItem: function (key, value) {
@@ -24,6 +25,9 @@ var ChartRecord = {
     getAllChartRecords: function () {
         //所有的聊天记录保存在localStorage中
         var allChartRecords = LocalStorageOpt.getObjectItem("allChartRecords");
+        if(!allChartRecords){
+            return [];
+        }
         return allChartRecords;
     },
     /**
@@ -157,6 +161,37 @@ ChartWindow.prototype = {
         }
         return this;
     },
+    /**
+     * 刷新用户列表
+     * @param newUserList
+     */
+    flushUserList: function(newUserList){
+        if(!newUserList){
+            return;
+        }
+        for (var i = 0; i < newUserList.length; i++) {
+            var newUser = newUserList[i];
+            if(this.userMap[newUser.id] && this.userMap[newUser.id].id){
+                //如果新的列表中的用户在当前列表，则不操作
+            }else{
+                this.onLine(newUser);
+            }
+        }
+
+        for (var i = 0; i < this.userList.length; i++) {
+            var outLineBoolean = true;
+            var user = this.userList[i];
+            for (var i = 0; i < newUserList.length; i++) {
+                if(newUserList[i].id == user.id){
+                    outLineBoolean = false;
+                }
+            }
+            if(outLineBoolean){
+                this.outLine(this.userList[i].id);
+            }
+        }
+
+    },
     //用户上线
     onLine: function (user) {
         this.userList.push(user);
@@ -187,14 +222,29 @@ ChartWindow.prototype = {
      * 用户下线
      * @param user
      */
-    outLine: function(user){
-        user.leftElements.remove();
+    outLine: function(userId){
+        this.userMap[userId].leftElements.remove();
         for(var i = 0;i<this.userList.length;i++){
-            if(this.userList[i].id == user.id){
+            if(this.userList[i].id == userId){
                 this.userList.splice(i,1);
             }
         }
-        this.userMap[user.id] = "";
+        this.userMap[userId] = "";
+        if(this.otherUser){
+            if(userId == this.otherUser.id){
+                this.cleanChart();
+            }
+        }
+    },
+    /**
+     * 清除右边元素内容
+     */
+    cleanChart: function(){
+        //聊天记录box
+        var chartBox = $("#chatbox");
+        //清空页面上的聊天记录
+        $(chartBox.html(""));
+        $("#realName").html("");
     },
     /**
      * 将聊天记录定位到最新位置
@@ -242,10 +292,12 @@ ChartWindow.prototype = {
         //将聊天窗口定位到最新位置
         this.lastPosition();
         $('#input_box').val('').focus();
+        var sendMessageObj = {"sendMessage":chartRecord};
+        socket.send(JSON.stringify(sendMessageObj));
     },
-    receiveMessage: function(fromUser,messageText){
+    receiveMessage: function(fromUserId,messageText){
         var chartRecord = {
-            "chartFrom": fromUser.id,
+            "chartFrom": fromUserId,
             "chartTo": this.currentUser.id,
             "chartText": messageText,
             "chartDate": chartDate
@@ -253,7 +305,7 @@ ChartWindow.prototype = {
         var chartDate = new Date().getTime();
         this.currentUser.addOneChartRecord(chartRecord, this.otherUser);
         ChartRecord.addChartRecord(chartRecord);
-        $(fromUser.leftElements).find(".user_message").html(messageText);
+        $(this.userMap[fromUserId].leftElements).find(".user_message").html(messageText);
         //将聊天窗口定位到最新位置
         this.lastPosition();
     }
@@ -268,39 +320,48 @@ function onKeyPress(event) {
     }
 }
 
-var user1 = new User("1", "朱未斌");
+var user1 = new User(user.id, user.realName);
 
-var user2 = new User("2", "钟子祥").setPic("/chart/images/head/15.jpg");
+var chartWindow = new ChartWindow(user1);
 
 var user3 = new User("3", "郝忠斌").setPic("/chart/images/head/4.jpg");
 
-var userList = [user2, user3];
-
-var chartWindow = new ChartWindow(user1).setUserList(userList);
-
-
-
-
-
-
-
-
 var currentUserId = user.id;
-var socket = new WebSocket("ws://localhost:8866/chartWebsocket/"+currentUserId);
+var socket = new WebSocket(chartWebsocketHref+currentUserId);
 
 socket.onopen = function() {
     console.log("Socket 已打开");
+    var flushUsers = {"flushUsers":currentUserId};
+    socket.send(JSON.stringify(flushUsers));
 };
 
 socket.onmessage = function(msg) {
     var messageObj = JSON.parse(msg.data);
-    if(messageObj.onOpen){
-        alert(messageObj.onOpen.realName);
+    if(messageObj.onLine){
+        var user2 = new User(messageObj.onLine.id, messageObj.onLine.realName).setPic("/chart/images/head/15.jpg");
+        chartWindow.onLine(user2);
+        //chartWindow.flushUserList([user2]);
+    }
+    if(messageObj.outLine){
+        chartWindow.outLine(messageObj.outLine.id);
+        //chartWindow.flushUserList([]);
+    }
+    if(messageObj.flushUsers){
+        var newUserList = [];
+        for (var i = 0; i < messageObj.flushUsers.length; i++) {
+            var newUser = new User(messageObj.flushUsers[i].id, messageObj.flushUsers[i].realName).setPic("/chart/images/head/15.jpg");
+            newUserList.push(newUser);
+        }
+        chartWindow.flushUserList(newUserList);
+    }
+    if(messageObj.sendMessage){
+        var chartObj = messageObj.sendMessage;
+        chartWindow.receiveMessage(chartObj.chartFrom,chartObj.chartText);
     }
 };
 
 socket.onclose = function() {
-    console.log("Socket已关闭");
+    console.log("Socket 已关闭");
 };
 
 socket.onerror = function() {
