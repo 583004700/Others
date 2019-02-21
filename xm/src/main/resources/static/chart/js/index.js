@@ -1,4 +1,5 @@
-var chartWebsocketHref = "ws://zhuwb.nat123.net:8866/chartWebsocket/";
+//聊天的webSocket路径
+var chartWebsocketHref = "ws://"+window.location.host+"/chartWebsocket/";
 
 var LocalStorageOpt = {
     setObjectItem: function (key, value) {
@@ -65,11 +66,12 @@ var User = function (id, realName) {
     this.pic = "/chart/images/own_head.jpg";
     //用户对应界面左侧菜单元素，每个用户都有自己的，方便找到对应的左侧列表进行操作
     this.leftElements = "";
-    //用户右边的聊天窗口，每个用户都有自己的，方便保存状态信息
-    this.chartRightBox = "";
+    //最后一次在输入框中未保存的内容
+    this.lastChartText = "";
 };
 
 User.prototype = {
+    chatbox: $("#chatbox"),
     //设置用户头像
     setPic: function (pic) {
         if(pic){
@@ -93,7 +95,7 @@ User.prototype = {
      */
     addOneChartRecord: function (chartRecord, otherUser) {
         var success = false;
-        var chartBox = $("#chatbox");
+        var chartBox = this.chatbox;
         var chartRecordElement = $("<li class=\"\"><img src=\"\" title=\"\"><span></span></li>");
         if (chartRecord.chartFrom == this.id && chartRecord.chartTo == otherUser.id) {
             chartRecordElement.attr("class", "me");
@@ -120,7 +122,7 @@ User.prototype = {
         var chartRecords = this.loadChartRecords(otherUser);
         $("#realName").html(otherUser.realName);
         //聊天记录box
-        var chartBox = $("#chatbox");
+        var chartBox = this.chatbox;
         //清空页面上的聊天记录
         $(chartBox.html(""));
         for (var i = 0; i < chartRecords.length; i++) {
@@ -146,6 +148,9 @@ var ChartWindow = function (currentUser) {
     this.userListElement = $("#userList");
     //另一个用户对象
     this.otherUser = {};
+    //聊天记录box
+    this.chatbox = $("#chatbox");
+    this.inputBox = $("#input_box");
 };
 
 ChartWindow.prototype = {
@@ -244,17 +249,20 @@ ChartWindow.prototype = {
      * 清除右边元素内容
      */
     cleanChart: function(){
-        //聊天记录box
-        var chartBox = $("#chatbox");
         //清空页面上的聊天记录
-        $(chartBox.html(""));
+        $(this.chatbox.html(""));
         $("#realName").html("");
+    },
+    inputBoxValueChange: function(element){
+        if(this.otherUser){
+            this.otherUser.lastChartText = element.value;
+        }
     },
     /**
      * 将聊天记录定位到最新位置
      */
     lastPosition: function(){
-        var chartBox = $("#chatbox");
+        var chartBox = this.chatbox;
         var chartParent = chartBox.parent();
         var topValue = -(chartBox.height() - chartParent.height()+20);
         if(topValue<0){
@@ -270,12 +278,13 @@ ChartWindow.prototype = {
         this.userListElement.find("li").attr("class", "");
         $(element).attr("class", "user_active");
         this.currentUser.openUserSession(this.otherUser);
+        this.inputBox.html(this.otherUser.lastChartText);
         this.lastPosition();
     },
     //因为打开聊天窗口时就已经知道另一个用户是谁，所以不用传给哪个用户发送消息
     sendMessage: function (messageText) {
         if(!this.otherUser.id){
-            alert("请选择要发送的对象");
+            alert("请在左侧选择要发送的对象");
             return;
         }
         if(!messageText || messageText.replace(/\s+/g,"") == ""){
@@ -294,7 +303,10 @@ ChartWindow.prototype = {
         this.otherUser.leftElements.find(".user_message").html(messageText);
         //将聊天窗口定位到最新位置
         this.lastPosition();
-        $('#input_box').val('').focus();
+
+        this.inputBox.val('').focus();
+        this.otherUser.lastChartText = "";
+
         var sendMessageObj = {"sendMessage":chartRecord};
         socket.send(JSON.stringify(sendMessageObj));
     },
@@ -323,52 +335,59 @@ function onKeyPress(event) {
     }
 }
 
-var user1 = new User(user.id, user.realName).setPic(user.pic);
+var user1;
+var chartWindow;
+var socket;
 
-var chartWindow = new ChartWindow(user1);
+$(document).ready(function(){
+    user1 = new User(user.id, user.realName).setPic(user.pic);
 
-var currentUserId = user.id;
-var socket = new WebSocket(chartWebsocketHref+currentUserId);
+    chartWindow = new ChartWindow(user1);
 
-socket.onopen = function() {
-    console.log("Socket 已打开");
-    var flushUsers = {"flushUsers":currentUserId};
-    socket.send(JSON.stringify(flushUsers));
-};
+    var currentUserId = user.id;
+    socket = new WebSocket(chartWebsocketHref+currentUserId);
 
-socket.onmessage = function(msg) {
-    var messageObj = JSON.parse(msg.data);
-    if(messageObj.onLine){
-        var user2 = new User(messageObj.onLine.id, messageObj.onLine.realName).setPic(messageObj.onLine.pic);
-        chartWindow.onLine(user2);
-        //chartWindow.flushUserList([user2]);
-    }
-    if(messageObj.outLine){
-        chartWindow.outLine(messageObj.outLine.id);
-        //chartWindow.flushUserList([]);
-    }
-    if(messageObj.flushUsers){
-        var newUserList = [];
-        for (var i = 0; i < messageObj.flushUsers.length; i++) {
-            var newUser = new User(messageObj.flushUsers[i].id, messageObj.flushUsers[i].realName).setPic(messageObj.flushUsers[i].pic);
-            newUserList.push(newUser);
+    socket.onopen = function() {
+        console.log("Socket 已打开");
+        var flushUsers = {"flushUsers":currentUserId};
+        socket.send(JSON.stringify(flushUsers));
+    };
+
+    socket.onmessage = function(msg) {
+        var messageObj = JSON.parse(msg.data);
+        if(messageObj.onLine){
+            var user2 = new User(messageObj.onLine.id, messageObj.onLine.realName).setPic(messageObj.onLine.pic);
+            chartWindow.onLine(user2);
+            //chartWindow.flushUserList([user2]);
         }
-        chartWindow.flushUserList(newUserList);
-    }
-    if(messageObj.sendMessage){
-        var chartObj = messageObj.sendMessage;
-        chartWindow.receiveMessage(chartObj.chartFrom,chartObj.chartText);
-    }
-};
+        if(messageObj.outLine){
+            chartWindow.outLine(messageObj.outLine.id);
+            //chartWindow.flushUserList([]);
+        }
+        if(messageObj.flushUsers){
+            var newUserList = [];
+            for (var i = 0; i < messageObj.flushUsers.length; i++) {
+                var newUser = new User(messageObj.flushUsers[i].id, messageObj.flushUsers[i].realName).setPic(messageObj.flushUsers[i].pic);
+                newUserList.push(newUser);
+            }
+            chartWindow.flushUserList(newUserList);
+        }
+        if(messageObj.sendMessage){
+            var chartObj = messageObj.sendMessage;
+            chartWindow.receiveMessage(chartObj.chartFrom,chartObj.chartText);
+        }
+    };
 
-socket.onclose = function() {
-    console.log("Socket 已关闭");
-};
+    socket.onclose = function() {
+        console.log("Socket 已关闭");
+    };
 
-socket.onerror = function() {
+    socket.onerror = function() {
 
-};
+    };
 
-$(window).unload(function(){
-    socket.close();
+    $(window).unload(function(){
+        socket.close();
+    });
 });
+

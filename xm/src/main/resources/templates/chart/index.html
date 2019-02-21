@@ -221,7 +221,7 @@
 						</ul>
 					</div>	
 				</div>
-			
+
 				<!--聊天窗口-->
 				<div class="talk_window">
 					<div class="windows_top" style="height: 10%">
@@ -236,15 +236,15 @@
 							<div class="extend am-btn am-btn-success" data-am-offcanvas="{target: '#doc-oc-demo3'}"></div>
 							<!-- 侧边栏内容 -->
 							<div id="doc-oc-demo3" class="am-offcanvas">
-							    <div class="am-offcanvas-bar am-offcanvas-bar-flip">
-								    <div class="am-offcanvas-content">
-								    	<p><a href="http://music.163.com/#/song?id=385554" target="_blank">网易音乐</a></p>
-								    </div>
-							    </div>
+								<div class="am-offcanvas-bar am-offcanvas-bar-flip">
+									<div class="am-offcanvas-content">
+										<p><a href="http://music.163.com/#/song?id=385554" target="_blank">网易音乐</a></p>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					
+
 					<!--聊天内容-->
 					<div class="windows_body" style="height: 60%">
 						<div class="office_text" style="height: 100%;">
@@ -254,7 +254,7 @@
 							</ul>
 						</div>
 					</div>
-					
+
 					<div class="windows_input" id="talkbox" style="height: 30%">
 						<div class="input_icon">
 							<a href="javascript:;"></a>
@@ -265,7 +265,7 @@
 							<a href="javascript:;"></a>
 						</div>
 						<div class="input_box">
-							<textarea name="" rows="" cols="" id="input_box" onkeypress="onKeyPress(event)"></textarea>
+							<textarea name="" rows="" cols="" id="input_box" oninput="chartWindow.inputBoxValueChange(this)" onkeypress="onKeyPress(event)"></textarea>
 							<button id="send" onclick="chartWindow.sendMessage($('#input_box').val())">发送（S）</button>
 						</div>
 					</div>
