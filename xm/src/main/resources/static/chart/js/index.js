@@ -63,7 +63,10 @@ var User = function (id, realName) {
     this.id = id;
     this.realName = realName;
     this.pic = "/chart/images/own_head.jpg";
+    //用户对应界面左侧菜单元素，每个用户都有自己的，方便找到对应的左侧列表进行操作
     this.leftElements = "";
+    //用户右边的聊天窗口，每个用户都有自己的，方便保存状态信息
+    this.chartRightBox = "";
 };
 
 User.prototype = {
@@ -74,7 +77,6 @@ User.prototype = {
         }
         return this;
     },
-
     /**
      * 加载与其它用户的聊天记录数据
      * @param otherUser
@@ -144,8 +146,6 @@ var ChartWindow = function (currentUser) {
     this.userListElement = $("#userList");
     //另一个用户对象
     this.otherUser = {};
-    //另一个对象的左侧菜单元素
-    this.otherUserLeftElement = {};
 };
 
 ChartWindow.prototype = {
@@ -236,6 +236,7 @@ ChartWindow.prototype = {
         if(this.otherUser){
             if(userId == this.otherUser.id){
                 this.cleanChart();
+                this.otherUser = {};
             }
         }
     },
@@ -265,7 +266,6 @@ ChartWindow.prototype = {
     //打开与其它用户的聊天窗口,因为页面调用时只传id过来
     openUserSession: function (otherUserId, element) {
         this.otherUser = this.userMap[otherUserId];
-        this.otherUserLeftElement = element;
         //清空其它用户列表的激活状态
         this.userListElement.find("li").attr("class", "");
         $(element).attr("class", "user_active");
@@ -291,7 +291,7 @@ ChartWindow.prototype = {
         var chartDate = new Date().getTime();
         this.currentUser.addOneChartRecord(chartRecord, this.otherUser);
         ChartRecord.addChartRecord(chartRecord);
-        $(this.otherUserLeftElement).find(".user_message").html(messageText);
+        this.otherUser.leftElements.find(".user_message").html(messageText);
         //将聊天窗口定位到最新位置
         this.lastPosition();
         $('#input_box').val('').focus();
