@@ -149,7 +149,7 @@ var ChartWindow = function (currentUser) {
     //用户列表在页面上的位置
     this.userListElement = $("#userList");
     //另一个用户对象
-    this.otherUser = {};
+    this.otherUser = "";
     //聊天记录box
     this.chatbox = $("#chatbox");
     this.inputBox = $("#input_box");
@@ -165,6 +165,8 @@ ChartWindow.prototype = {
         this.userList = [];
         this.userMap = {};
         this.otherUser = "";
+        //清除右边聊天记录
+        this.cleanChart();
         //清空页面上的用户列表
         this.userListElement.html("");
         for (var i = 0; i < userList.length; i++) {
@@ -244,7 +246,7 @@ ChartWindow.prototype = {
         if(this.otherUser){
             if(userId == this.otherUser.id){
                 this.cleanChart();
-                this.otherUser = {};
+                this.otherUser = "";
             }
         }
     },
@@ -253,8 +255,9 @@ ChartWindow.prototype = {
      */
     cleanChart: function(){
         //清空页面上的聊天记录
-        $(this.chatbox.html(""));
+        this.chatbox.html("");
         $("#realName").html("");
+        this.inputBox.val("");
     },
     inputBoxValueChange: function(element){
         if(this.otherUser){
@@ -277,7 +280,7 @@ ChartWindow.prototype = {
     //打开与其它用户的聊天窗口,因为页面调用时只传id过来
     openUserSession: function (otherUserId, element) {
         if(this.otherUser.lastChartText){
-            var messageText ="<span style='color: red'>[草稿]</span>" + this.otherUser.lastChartText;
+            var messageText ="<span style='color: red'>[草稿] </span>" + this.otherUser.lastChartText;
             this.otherUser.leftElements.find(".user_message").html(messageText);
         }
 
@@ -311,13 +314,13 @@ ChartWindow.prototype = {
         var chartDate = new Date().getTime();
         this.currentUser.addOneChartRecord(chartRecord, this.otherUser);
         ChartRecord.addChartRecord(chartRecord);
-        this.otherUser.leftElements.find(".user_message").html(messageText);
         //将聊天窗口定位到最新位置
         this.lastPosition();
 
         this.inputBox.val('').focus();
         this.otherUser.lastChartText = "";
-
+        this.otherUser.lastChartRecord = chartRecord;
+        this.otherUser.leftElements.find(".user_message").html(this.otherUser.lastChartRecord.chartText);
         var sendMessageObj = {"sendMessage":chartRecord};
         socket.send(JSON.stringify(sendMessageObj));
     },
@@ -330,8 +333,11 @@ ChartWindow.prototype = {
         };
         var chartDate = new Date().getTime();
         this.currentUser.addOneChartRecord(chartRecord, this.otherUser);
-        ChartRecord.addChartRecord(chartRecord);
-        $(this.userMap[fromUserId].leftElements).find(".user_message").html(messageText);
+        //接收到的消息和发送的是同一条记录，所以不用添加再次
+        //ChartRecord.addChartRecord(chartRecord);
+        var fromUser = this.userMap[fromUserId];
+        fromUser.lastChartRecord = chartRecord;
+        $(fromUser.leftElements).find(".user_message").html(fromUser.lastChartRecord.chartText);
         //将聊天窗口定位到最新位置
         this.lastPosition();
     }
@@ -390,7 +396,7 @@ $(document).ready(function(){
     };
 
     socket.onclose = function() {
-        console.log("Socket 已关闭");
+        alert("连接已关闭");
         //重置用户列表
         chartWindow.setUserList([]);
     };
@@ -399,8 +405,5 @@ $(document).ready(function(){
         console.log("Socket error");
     };
 
-    $(window).unload(function(){
-        socket.close();
-    });
 });
 

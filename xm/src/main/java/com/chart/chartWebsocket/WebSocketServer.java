@@ -43,7 +43,6 @@ public class WebSocketServer {
         HashMap<String,String> hashMap = new HashMap<String,String>();
         hashMap.put("id",id);
         this.user = userMapper.queryOne(hashMap);
-        onLineUsers.put(id,this);
         try {
             onLine();
         }catch (Exception e){
@@ -53,7 +52,6 @@ public class WebSocketServer {
 
     @OnClose
     public void onClose() {
-        onLineUsers.remove(id);
         outLine();
     }
 
@@ -111,6 +109,7 @@ public class WebSocketServer {
             //如果已经在线，则让之前用户下线
             onLineUsers.get(id).outLine();
         }
+        onLineUsers.put(id,this);
         String onLineMessage = "{\""+ON_LINE+"\":"+JsonUtil.ObjectToJsonString(user)+"}";
         sendMessageToAllUser(onLineMessage);
     }
@@ -119,6 +118,12 @@ public class WebSocketServer {
      * 用户下线，通知其它用户删除当前用户
      */
     public void outLine(){
+        try {
+            this.session.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        onLineUsers.remove(id);
         String onLineMessage = "{\""+OUT_LINE+"\":"+JsonUtil.ObjectToJsonString(user)+"}";
         sendMessageToAllUser(onLineMessage);
     }
