@@ -107,6 +107,10 @@ public class WebSocketServer {
      * 用户上线,通知其它用户添加当前用户
      */
     public void onLine(){
+        if(onLineUsers.containsKey(id)){
+            //如果已经在线，则让之前用户下线
+            onLineUsers.get(id).outLine();
+        }
         String onLineMessage = "{\""+ON_LINE+"\":"+JsonUtil.ObjectToJsonString(user)+"}";
         sendMessageToAllUser(onLineMessage);
     }

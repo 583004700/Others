@@ -68,6 +68,8 @@ var User = function (id, realName) {
     this.leftElements = "";
     //最后一次在输入框中未保存的内容
     this.lastChartText = "";
+    //最后条发送成功或者接收成功的聊天记录
+    this.lastChartRecord = "";
 };
 
 User.prototype = {
@@ -155,13 +157,14 @@ var ChartWindow = function (currentUser) {
 
 ChartWindow.prototype = {
     /**
-     * 设置用户列表
+     * 设置用户列表，因为会重置状态，并加载列表，适用于连接被关闭时重置，或首次加载列表
      * @param userList
      * @returns {ChartWindow}
      */
     setUserList: function (userList) {
         this.userList = [];
         this.userMap = {};
+        this.otherUser = "";
         //清空页面上的用户列表
         this.userListElement.html("");
         for (var i = 0; i < userList.length; i++) {
@@ -170,7 +173,7 @@ ChartWindow.prototype = {
         return this;
     },
     /**
-     * 刷新用户列表
+     * 刷新用户列表,如果直接用setUserList，则会清空列表和重新加载，会影响当前正在聊天的窗口
      * @param newUserList
      */
     flushUserList: function(newUserList){
@@ -219,8 +222,8 @@ ChartWindow.prototype = {
         //加载最近的聊天记录
         var chartRecords = this.currentUser.loadChartRecords(user);
         if (chartRecords && chartRecords.length > 0) {
-            var lastChartRecord = chartRecords[chartRecords.length - 1];
-            userObj.find(".user_message").html(lastChartRecord.chartText);
+            user.lastChartRecord = chartRecords[chartRecords.length - 1];
+            userObj.find(".user_message").html(user.lastChartRecord.chartText);
         }
         this.userListElement.append(userObj);
         user.leftElements = userObj;
@@ -273,12 +276,20 @@ ChartWindow.prototype = {
     },
     //打开与其它用户的聊天窗口,因为页面调用时只传id过来
     openUserSession: function (otherUserId, element) {
+        if(this.otherUser.lastChartText){
+            var messageText ="<span style='color: red'>[草稿]</span>" + this.otherUser.lastChartText;
+            this.otherUser.leftElements.find(".user_message").html(messageText);
+        }
+
         this.otherUser = this.userMap[otherUserId];
+
+        this.otherUser.leftElements.find(".user_message").html(this.otherUser.lastChartRecord ? this.otherUser.lastChartRecord.chartText : '');
+
         //清空其它用户列表的激活状态
         this.userListElement.find("li").attr("class", "");
         $(element).attr("class", "user_active");
         this.currentUser.openUserSession(this.otherUser);
-        this.inputBox.html(this.otherUser.lastChartText);
+        this.inputBox.val(this.otherUser.lastChartText);
         this.lastPosition();
     },
     //因为打开聊天窗口时就已经知道另一个用户是谁，所以不用传给哪个用户发送消息
@@ -380,10 +391,12 @@ $(document).ready(function(){
 
     socket.onclose = function() {
         console.log("Socket 已关闭");
+        //重置用户列表
+        chartWindow.setUserList([]);
     };
 
     socket.onerror = function() {
-
+        console.log("Socket error");
     };
 
     $(window).unload(function(){
