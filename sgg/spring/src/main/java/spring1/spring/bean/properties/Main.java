@@ -7,7 +7,7 @@ import javax.sql.DataSource;
 
 public class Main {
     public static void main(String[] args) {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("beans-properties.xml");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("spring1/beans-properties.xml");
         DataSource dataSource = (DataSource)ctx.getBean("dataSource");
         System.out.println(dataSource);
     }

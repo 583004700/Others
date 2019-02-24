@@ -6,7 +6,7 @@ import spring1.spring.bean.autowire.Address;
 
 public class Main {
     public static void main(String[] args) {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("beans-spel.xml");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("spring1/beans-spel.xml");
 
         Address address = (Address) ctx.getBean("address");
         System.out.println(address);

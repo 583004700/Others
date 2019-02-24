@@ -9,7 +9,7 @@ public class Main {
 //        HelloWorld helloWorld = new HelloWorld();
 //        helloWorld.setName("zhuwb");
 
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("spring1/applicationContext.xml");
         HelloWorld helloWorld = (HelloWorld) ctx.getBean("helloWorld");
 
         HelloWorld helloWorld1 = ctx.getBean(HelloWorld.class);
