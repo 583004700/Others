@@ -19,13 +19,13 @@ public class IOUtil {
         return sb.toString();
     }
 
-    public static String readLinStr(InputStream inputStream,String charsetName){
+    public static String readLinStr(InputStream inputStream,String charsetName) throws Exception{
         String line = null;
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream,charsetName));
             line = br.readLine();
         }catch (Exception e){
-            e.printStackTrace();
+            throw new Exception(e);
         }
         return line;
     }

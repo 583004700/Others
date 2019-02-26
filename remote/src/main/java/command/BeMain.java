@@ -5,8 +5,6 @@ public class BeMain {
 
         BeSocketClient aSocketClient = new BeSocketClient();
         aSocketClient.connect();
-        aSocketClient.sendMessage("\n");
-        System.out.println("连接成功");
-        Thread.sleep(Integer.MAX_VALUE);
+        aSocketClient.start();
     }
 }

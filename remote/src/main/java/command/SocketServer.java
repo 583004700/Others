@@ -1,8 +1,6 @@
 package command;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,24 +8,33 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SocketServer {
     private static ConcurrentHashMap<String, Socket> beSockets = new ConcurrentHashMap<String, Socket>();
-    private static ConcurrentHashMap<String, Socket> sockets = new ConcurrentHashMap<String, Socket>();
 
-    public static void main(String[] args) {
-        try {
-            ServerSocket serverSocket = new ServerSocket(8867);
-            while(true) {
+    public static void main(String[] args) throws Exception{
+        ServerSocket serverSocket = new ServerSocket(8867);
+        while (true) {
+            try {
                 Socket socket = serverSocket.accept();
                 String inetAddressStr = socket.getInetAddress().toString();
+                System.out.println(inetAddressStr);
                 InputStream in = socket.getInputStream();
                 OutputStream out = socket.getOutputStream();
-                if("op:start".equals(IOUtil.readLinStr(in,"UTF-8"))){
-                    sockets.put(inetAddressStr,socket);
-                }else {
+                String str = IOUtil.readLinStr(in, "UTF-8");
+                if (str.split(";").length > 1) {
+                    if ("op:start".equals(str.split(";")[0])) {
+                        String ip = str.split(";")[1];
+                        Socket beSocket = beSockets.get(ip);
+                        SocketHandler socketHandler = new SocketHandler().setSocket(socket).setBeSocket(beSocket);
+                        Thread t = new Thread(socketHandler);
+                        t.start();
+                    }
+                } else {
+                    System.out.println("添加");
                     beSockets.put(inetAddressStr, socket);
                 }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 
