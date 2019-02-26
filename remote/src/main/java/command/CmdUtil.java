@@ -1,11 +1,15 @@
 package command;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
+/**
+ * cmd常用命令
+ * dir 展示目录
+ * del d:a.txt 删除文件
+ *
+ */
 public class CmdUtil {
     /**
      * 执行命令之后关闭窗口
@@ -27,23 +31,15 @@ public class CmdUtil {
      * @return
      * @throws Exception
      */
-    public static String execCloseReturnStr(String... cmdStr) throws Exception {
-        Process process = execClose(cmdStr);
-        StringBuffer b = new StringBuffer();
+    public static String execCloseReturnStr(String... cmdStr) {
+        Process process = null;
+        String str = null;
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName("GBK")));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                b.append(line + "\n");
-            }
+            process = execClose(cmdStr);
+            str = IOUtil.readStr(process.getInputStream(),"GBK");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return b.toString();
-    }
-
-    public static void main(String[] args) throws Exception {
-        String result = execCloseReturnStr("d:","dir");
-        System.out.println(result);
+        return str;
     }
 }
