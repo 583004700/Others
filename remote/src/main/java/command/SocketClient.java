@@ -23,6 +23,7 @@ public class SocketClient implements Runnable{
             new Thread(new SocketClient()).start();
             while(true){
                 Scanner scanner = new Scanner(System.in);
+                scanner.useDelimiter("\n");
                 String input = scanner.next();
                 pw.println(input);
                 pw.flush();
@@ -37,10 +38,13 @@ public class SocketClient implements Runnable{
             String result = null;
             try {
                 result = IOUtil.readLinStr(inputStream,"UTF-8");
+                System.out.println(result);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println(result);
+            if(result == null){
+                break;
+            }
         }
     }
 }
