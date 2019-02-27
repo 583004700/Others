@@ -42,18 +42,7 @@ public class SocketHandler implements Runnable {
             String command = null;
             boolean success = true;
             try {
-//                if(b) {
-//                    command = IOUtil.readLinStr(socket.getInputStream(), "UTF-8");
-//                }else{
-//                    command = IOUtil.readStr(socket.getInputStream(),"UTF-8");
-//                }
-//                System.out.print(command);
-//                PrintWriter pw = new PrintWriter(new OutputStreamWriter(beSocket.getOutputStream()));
-//                pw.println(command);
-//                pw.flush();
-
                 IOUtil.readStrToOutputStream(socket.getInputStream(),"UTF-8",beSocket.getOutputStream());
-
             } catch (Exception e) {
                 try {
                     success = false;

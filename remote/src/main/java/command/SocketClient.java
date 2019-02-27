@@ -1,9 +1,6 @@
 package command;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -34,10 +31,16 @@ public class SocketClient implements Runnable{
     }
 
     public void run() {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         while(true){
             String result = null;
             try {
-                result = IOUtil.readLinStr(inputStream,"UTF-8");
+                result = br.readLine();
                 System.out.println(result);
             } catch (Exception e) {
                 e.printStackTrace();
