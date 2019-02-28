@@ -1,8 +1,6 @@
 package command;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
 
 class BeSocketHandler implements Runnable {
@@ -16,7 +14,7 @@ class BeSocketHandler implements Runnable {
 
     public void run() {
         SocketHandler socketHandler = new SocketHandler().setSocket(beSocket).setBeSocket(socket);
-        socketHandler.handler(false);
+        socketHandler.handler();
         System.out.println("BeSocketHandler线程结束");
     }
 }
@@ -32,31 +30,22 @@ public class SocketHandler implements Runnable {
         beSocketThread = new Thread(beSocketHandler);
         beSocketThread.setDaemon(true);
         beSocketThread.start();
-        handler(true);
+        handler();
         System.out.println("SocketHandler线程结束");
     }
 
-    public void handler(boolean b) {
+    public void handler() {
         System.out.println("SocketHandler");
-        while (true) {
-            String command = null;
-            boolean success = true;
+        try {
+            IOUtil.readStrToOutputStream(socket.getInputStream(),"UTF-8",beSocket.getOutputStream());
+        } catch (Exception e) {
             try {
-                IOUtil.readStrToOutputStream(socket.getInputStream(),"UTF-8",beSocket.getOutputStream());
-            } catch (Exception e) {
-                try {
-                    success = false;
-                    beSocket.close();
-                    System.out.println("服务端线程关闭");
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                e.printStackTrace();
-            } finally {
-                if (command == null || success == false) {
-                    break;
-                }
+                beSocket.close();
+                System.out.println("服务端线程关闭");
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
+            e.printStackTrace();
         }
     }
 
