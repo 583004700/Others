@@ -19,6 +19,7 @@ public class SocketServer {
                 InputStream in = socket.getInputStream();
                 OutputStream out = socket.getOutputStream();
                 String str = IOUtil.readLinStr(in, "UTF-8");
+                System.out.println("SocketServer:"+str);
                 if (str.split(";").length > 1) {
                     if ("op:start".equals(str.split(";")[0])) {
                         String ip = str.split(";")[1];
@@ -28,8 +29,8 @@ public class SocketServer {
                         t.start();
                     }
                 } else {
-                    System.out.println("添加");
-                    beSockets.put(inetAddressStr, socket);
+                    System.out.println("添加"+str);
+                    beSockets.put(str, socket);
                 }
 
             } catch (Exception e) {
@@ -37,6 +38,4 @@ public class SocketServer {
             }
         }
     }
-
-
 }

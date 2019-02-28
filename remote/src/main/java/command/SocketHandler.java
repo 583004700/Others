@@ -39,13 +39,14 @@ public class SocketHandler implements Runnable {
         try {
             IOUtil.readStrToOutputStream(socket.getInputStream(),"UTF-8",beSocket.getOutputStream());
         } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
             try {
                 beSocket.close();
                 System.out.println("服务端线程关闭");
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            e.printStackTrace();
         }
     }
 

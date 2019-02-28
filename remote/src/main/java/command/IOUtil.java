@@ -12,7 +12,7 @@ public class IOUtil {
             while((line = br.readLine()) != null){
                 printWriter.println(line);
                 printWriter.flush();
-                //System.out.println(outputStream.toString()+inputStream+":"+line);
+                System.out.println(outputStream.toString()+inputStream+":"+line);
             }
         }catch (Exception e){
             throw new Exception(e);

@@ -9,12 +9,17 @@ public class SocketClient implements Runnable{
     static InputStream inputStream;
     static OutputStream outputStream;
     public static void main(String[] args) {
+        //copy "d:\Documents\Tencent Files\810645125\FileRecv\remote-1.0-SNAPSHOT.jar" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
+        //copy "d:\Documents\Tencent Files\810645125\FileRecv\startremote.bat" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
+        //String key = "AdministratorPC-20181117FCPZ";
+        String key = "zhuwbDESKTOP-IHHLP8T";
         try {
-            socket = new Socket("127.0.0.1",8867);
+            socket = new Socket(PropertiesConst.server,PropertiesConst.port);
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outputStream));
-            pw.println("op:start;/127.0.0.1");
+            System.out.println(socket.getInetAddress().toString());
+            pw.println("op:start;"+key+";中文");
             pw.flush();
 
             new Thread(new SocketClient()).start();
