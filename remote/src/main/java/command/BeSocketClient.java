@@ -3,17 +3,48 @@ package command;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.Date;
+
+class TimeoutRunnable implements Runnable{
+    private BeSocketClient beSocketClient;
+
+    public TimeoutRunnable(BeSocketClient beSocketClient) {
+        this.beSocketClient = beSocketClient;
+    }
+
+    @Override
+    public void run() {
+        while(true) {
+            try {
+                Thread.sleep(10000);
+                long currentTime = new Date().getTime();
+                if (currentTime - beSocketClient.startTime >= beSocketClient.timeOut) {
+                    beSocketClient.getSocket().getInputStream().close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
 
 public class BeSocketClient {
     private Socket socket;
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;
+    public volatile long startTime;
+    public long timeOut = 1000 * 60 * 30;
+
+    public BeSocketClient(){
+        TimeoutRunnable timeoutRunnable = new TimeoutRunnable(this);
+        Thread timeoutThread = new Thread(timeoutRunnable);
+        timeoutThread.start();
+    }
 
 
     public void connect(){
         while(socket == null) {
             try {
-                Thread.sleep(10000);
                 connectServer();
             } catch (ConnectException e) {
                 e.printStackTrace();
@@ -33,12 +64,13 @@ public class BeSocketClient {
         System.out.println("连接成功");
     }
 
-    public void start(){
+    public void handler(){
         while(true){
             String command = null;
             boolean success = true;
             try {
                 System.out.println("command before");
+                startTime = new Date().getTime();
                 command = bufferedReader.readLine();
                 System.out.print("command after:"+command);
             } catch (IOException e) {
@@ -47,14 +79,23 @@ public class BeSocketClient {
             }finally {
                 if(command == null || success == false){
                     System.out.println("closed");
-                    socket = null;
-                    connect();
                     start();
                 }else{
                     System.out.println("执行"+command);
                     sendMessage(CmdUtil.execCloseReturnStr(command.split("&")));
                 }
             }
+        }
+    }
+
+    public void start(){
+        socket = null;
+        connect();
+        handler();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
