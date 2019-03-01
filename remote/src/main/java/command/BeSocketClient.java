@@ -1,5 +1,7 @@
 package command;
 
+import handler.impl.CmdHandler;
+
 import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
@@ -82,7 +84,8 @@ public class BeSocketClient {
                     start();
                 }else{
                     System.out.println("执行"+command);
-                    sendMessage(CmdUtil.execCloseReturnStr(command.split("&")));
+                    CmdHandler<String> cmdHandler = new CmdHandler<String>(new Object[]{command});
+                    sendMessage(cmdHandler.handler());
                 }
             }
         }
