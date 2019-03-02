@@ -1,11 +1,13 @@
 package command.entity;
 
 import command.PropertiesConst;
+import executor.OperatorExecutor;
 import handler.Handler;
 import thread.ThreadManager;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.Scanner;
 
 public class OperatorComputer extends Computer implements Runnable{
@@ -13,8 +15,6 @@ public class OperatorComputer extends Computer implements Runnable{
     static InputStream inputStream;
     static OutputStream outputStream;
     public static void main(String[] args) {
-        //copy "d:\Documents\Tencent Files\810645125\FileRecv\remote-1.0-SNAPSHOT.jar" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
-        //copy "d:\Documents\Tencent Files\810645125\FileRecv\startremote.bat" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
         //String key = "AdministratorPC-20181117FCPZ";  //邓声根
         //String key = "zhuwbDESKTOP-DQ7BJCL"; //公司电脑
         //copy startremote.bat "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
@@ -34,8 +34,8 @@ public class OperatorComputer extends Computer implements Runnable{
                 Scanner scanner = new Scanner(System.in);
                 scanner.useDelimiter("\n");
                 String input = scanner.next();
-                pw.println(input);
-                pw.flush();
+                OperatorExecutor operatorExecutor = new OperatorExecutor(input,pw,key);
+                operatorExecutor.execute();
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -54,6 +54,8 @@ public class OperatorComputer extends Computer implements Runnable{
             try {
                 result = br.readLine();
                 System.out.println(result);
+            }catch (SocketTimeoutException s){
+                result = "";
             } catch (Exception e) {
                 e.printStackTrace();
             }

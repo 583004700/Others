@@ -2,9 +2,12 @@ package executor;
 
 import command.SocketServer;
 import handler.Handler;
+import handler.connection.impl.FileHandler;
 import handler.connection.impl.MessageHandler;
 import thread.ThreadManager;
+import util.IOUtil;
 
+import java.io.InputStream;
 import java.net.Socket;
 
 public class ServerExecutor extends BaseExecutor {
@@ -15,15 +18,27 @@ public class ServerExecutor extends BaseExecutor {
     public Handler getHandler(){
         Handler handler = null;
         String prefix = getPrefix(completeCommand);
-        String key = getCommand(completeCommand);
+        otherKey = getCommand(completeCommand);
         if(Handler.REGISTER.equals(prefix)){
             System.out.println("添加"+getCompleteCommand());
-            socketServer.registerSocket(key, socketServer.getSocket());
+            socketServer.registerSocket(otherKey, socketServer.getSocket());
         }else if(Handler.OPERATE.equals(prefix)){
-            Socket otherSocket = socketServer.getRegisterSocket(key);
+            Socket otherSocket = socketServer.getRegisterSocket(otherKey);
             MessageHandler messageHandler = (MessageHandler) new MessageHandler(socketServer).setOperatorSocket(socketServer.getSocket()).setOtherSocket(otherSocket);
-            messageHandler.setOtherKey(key);
+            messageHandler.setOtherKey(otherKey);
             ThreadManager.getExecutorService().execute(messageHandler);
+        }else if(Handler.DOWNFILE.equals(prefix)){
+            String te = getCommand(getCompleteCommand());
+            System.out.println("te:"+te);
+            if(getCommand(getCompleteCommand()).contains(":other")){
+                System.out.println("添加文件socket:"+getCompleteCommand());
+                socketServer.addFileSocket(getCompleteCommand(),socketServer.getSocket());
+            }else {
+                FileHandler fileHandler = (FileHandler) new FileHandler(socketServer).setOperatorSocket(socketServer.getSocket());
+                fileHandler.setOtherKey(getCommand(getCompleteCommand()));
+                fileHandler.setCompleteCommand(getCompleteCommand());
+                fileHandler.handler();
+            }
         }
         return handler;
     }

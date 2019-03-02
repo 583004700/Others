@@ -71,7 +71,6 @@ public class OtherComputer extends Computer {
         messageReader = new BufferedReader(new InputStreamReader(messageSocket.getInputStream()));
         messageWriter = new PrintWriter(new OutputStreamWriter(messageSocket.getOutputStream()));
         String key = getKey();
-        key = key.replaceAll("\n", "");
         sendMessage(Handler.REGISTER +":"+key);
         System.out.println("连接成功");
     }
@@ -94,6 +93,7 @@ public class OtherComputer extends Computer {
                     start();
                 } else {
                     OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter);
+                    otherExecutor.setKey(getKey());
                     otherExecutor.execute();
                 }
             }

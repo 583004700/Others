@@ -55,4 +55,29 @@ public class IOUtil {
         }
         return line;
     }
+
+    public static PrintWriter wrapPrintWriter(OutputStream outputStream){
+        return new PrintWriter(new OutputStreamWriter(outputStream));
+    }
+
+    public static BufferedReader wrapBufferedReader(InputStream inputStream){
+        return new BufferedReader(new InputStreamReader(inputStream));
+    }
+
+    public static void inputToOutput(InputStream inputStream,OutputStream outputStream){
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+        try {
+            byte[] b = new byte[2048];
+            int n = 0;
+            while((n = bufferedInputStream.read(b)) != -1){
+                outputStream.write(b,0,n);
+                outputStream.flush();
+            }
+            bufferedInputStream.close();
+            inputStream.close();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
