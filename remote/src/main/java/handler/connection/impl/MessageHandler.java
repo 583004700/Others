@@ -1,0 +1,58 @@
+package handler.connection.impl;
+
+import command.SocketServer;
+import handler.connection.ConnectionHandler;
+import thread.ThreadManager;
+import util.IOUtil;
+
+import java.io.IOException;
+
+class OtherMessageHandler extends ConnectionHandler implements Runnable{
+
+    public OtherMessageHandler(SocketServer socketServer) {
+        super(socketServer);
+    }
+
+    @Override
+    public void run() {
+        handler();
+        System.out.println(getOtherSocket()+":OtherMessageHandler线程结束");
+    }
+
+    @Override
+    public Object handler() {
+        new MessageHandler(getSocketServer()).setOperatorSocket(getOperatorSocket()).setOtherSocket(getOtherSocket()).handler();
+        return null;
+    }
+}
+
+public class MessageHandler extends ConnectionHandler implements Runnable{
+    public MessageHandler(SocketServer socketServer) {
+        super(socketServer);
+    }
+
+    public void run() {
+        OtherMessageHandler otherMessageHandler = (OtherMessageHandler)new OtherMessageHandler(getSocketServer()).setOperatorSocket(getOtherSocket()).setOtherSocket(getOperatorSocket());
+        ThreadManager.getExecutorService().execute(otherMessageHandler);
+        handler();
+        System.out.println(getOtherKey()+":MessageHandler线程结束");
+    }
+
+    @Override
+    public Object handler() {
+        System.out.println(getOtherKey()+"MessageHandler");
+        try {
+            IOUtil.readStrToOutputStream(getOperatorSocket().getInputStream(),"UTF-8",getOtherSocket().getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                getOtherSocket().close();
+                System.out.println(getOtherKey()+"服务端线程关闭");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+}

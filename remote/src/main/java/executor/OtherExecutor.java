@@ -1,15 +1,15 @@
 package executor;
 
 import handler.Handler;
-import handler.impl.CmdHandler;
+import handler.command.impl.OtherCmdHandler;
 
 import java.io.PrintWriter;
 
-public class Executor extends BaseExecutor{
+public class OtherExecutor extends BaseExecutor{
     private String completeCommand;
     private PrintWriter printWriter;
 
-    public Executor(String completeCommand, PrintWriter printWriter) {
+    public OtherExecutor(String completeCommand, PrintWriter printWriter) {
         this.completeCommand = completeCommand;
         this.printWriter = printWriter;
     }
@@ -18,7 +18,7 @@ public class Executor extends BaseExecutor{
         Handler handler = null;
         String prefix = getPrefix(completeCommand);
         if(Handler.CMD.equals(prefix)){
-            handler = new CmdHandler(new Object[]{completeCommand,printWriter});
+            handler = new OtherCmdHandler(completeCommand,printWriter);
         }
         return handler;
     }

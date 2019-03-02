@@ -8,5 +8,6 @@ public interface Handler{
     String CMD = "cmd";
     //添加
     String REGISTER = "register";
+    String OPERATE = "operate";
     Object handler();
 }

@@ -1,4 +1,4 @@
-package command;
+package util;
 
 /**
  * cmd常用命令

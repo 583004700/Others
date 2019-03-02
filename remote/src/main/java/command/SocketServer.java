@@ -1,15 +1,16 @@
 package command;
 
-import thread.ThreadManager;
+import executor.ServerExecutor;
+import util.IOUtil;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SocketServer {
-    private static ConcurrentHashMap<String, Socket> beSockets = new ConcurrentHashMap<String, Socket>();
+    private static ConcurrentHashMap<String, Socket> registerSockets = new ConcurrentHashMap<String, Socket>();
+    private Socket socket;
 
     public static void main(String[] args) throws Exception{
         ServerSocket serverSocket = new ServerSocket(8867);
@@ -19,24 +20,35 @@ public class SocketServer {
                 String inetAddressStr = socket.getInetAddress().toString();
                 System.out.println(inetAddressStr);
                 InputStream in = socket.getInputStream();
-                OutputStream out = socket.getOutputStream();
                 String str = IOUtil.readLinStr(in, "UTF-8");
                 System.out.println("SocketServer:"+str);
-                if (str.split(";").length > 1) {
-                    if ("op:start".equals(str.split(";")[0])) {
-                        String ip = str.split(";")[1];
-                        Socket beSocket = beSockets.get(ip);
-                        SocketHandler socketHandler = new SocketHandler().setSocket(socket).setBeSocket(beSocket);
-                        ThreadManager.getExecutorService().execute(socketHandler);
-                    }
-                } else {
-                    System.out.println("添加"+str);
-                    beSockets.put(str, socket);
-                }
 
+                SocketServer socketServer = new SocketServer();
+                socketServer.setSocket(socket);
+
+                ServerExecutor serverExecutor = new ServerExecutor();
+                serverExecutor.setCompleteCommand(str);
+                serverExecutor.setSocketServer(socketServer);
+                serverExecutor.execute();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void registerSocket(String key,Socket value){
+        registerSockets.put(key,value);
+    }
+
+    public Socket getRegisterSocket(String key){
+        return registerSockets.get(key);
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
     }
 }

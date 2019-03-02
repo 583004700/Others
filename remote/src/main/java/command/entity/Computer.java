@@ -1,6 +1,6 @@
 package command.entity;
 
-import command.CmdUtil;
+import util.CmdUtil;
 
 public class Computer {
     public String getKey(){

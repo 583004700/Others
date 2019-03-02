@@ -1,7 +1,7 @@
-package handler.impl;
+package handler.command.impl;
 
-import command.CmdUtil;
-import handler.CommandHandler;
+import util.CmdUtil;
+import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
 
 import java.io.PrintWriter;
@@ -9,10 +9,10 @@ import java.io.PrintWriter;
 /**
  * cmd命令处理
  */
-public class CmdHandler extends CommandHandler implements Runnable{
+public class OtherCmdHandler extends OtherCommandHandler implements Runnable{
 
-    public CmdHandler(Object[] param){
-        super(param);
+    public OtherCmdHandler(String completeCommand, PrintWriter printWriter){
+        super(completeCommand,printWriter);
     }
 
     @Override
