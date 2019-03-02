@@ -1,5 +1,7 @@
 package command;
 
+import thread.ThreadManager;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
@@ -25,8 +27,7 @@ public class SocketServer {
                         String ip = str.split(";")[1];
                         Socket beSocket = beSockets.get(ip);
                         SocketHandler socketHandler = new SocketHandler().setSocket(socket).setBeSocket(beSocket);
-                        Thread t = new Thread(socketHandler);
-                        t.start();
+                        ThreadManager.getExecutorService().execute(socketHandler);
                     }
                 } else {
                     System.out.println("添加"+str);

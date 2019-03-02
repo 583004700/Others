@@ -1,5 +1,7 @@
 package command;
 
+import thread.ThreadManager;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -23,13 +25,10 @@ class BeSocketHandler implements Runnable {
 public class SocketHandler implements Runnable {
     private Socket socket;
     private Socket beSocket;
-    Thread beSocketThread = null;
 
     public void run() {
         BeSocketHandler beSocketHandler = new BeSocketHandler(socket, beSocket);
-        beSocketThread = new Thread(beSocketHandler);
-        beSocketThread.setDaemon(true);
-        beSocketThread.start();
+        ThreadManager.getExecutorService().execute(beSocketHandler);
         handler();
         System.out.println("SocketHandler线程结束");
     }

@@ -1,5 +1,7 @@
 package command;
 
+import thread.ThreadManager;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -12,10 +14,10 @@ public class SocketClient implements Runnable{
         //copy "d:\Documents\Tencent Files\810645125\FileRecv\remote-1.0-SNAPSHOT.jar" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
         //copy "d:\Documents\Tencent Files\810645125\FileRecv\startremote.bat" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
         //String key = "AdministratorPC-20181117FCPZ";  //邓声根
-        String key = "zhuwbDESKTOP-DQ7BJCL"; //公司电脑
+        //String key = "zhuwbDESKTOP-DQ7BJCL"; //公司电脑
         //copy startremote.bat "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
         //copy "remote-1.0-SNAPSHOT.jar" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
-        //String key = "zhuwbDESKTOP-DQ7BJCL";
+        String key = "zhuwbDESKTOP-IHHLP8T";
         try {
             socket = new Socket(PropertiesConst.server,PropertiesConst.port);
             inputStream = socket.getInputStream();
@@ -25,7 +27,7 @@ public class SocketClient implements Runnable{
             pw.println("op:start;"+key+";中文");
             pw.flush();
 
-            new Thread(new SocketClient()).start();
+            ThreadManager.getExecutorService().execute(new SocketClient());
             while(true){
                 Scanner scanner = new Scanner(System.in);
                 scanner.useDelimiter("\n");

@@ -1,6 +1,8 @@
 package command;
 
+import executor.Executor;
 import handler.impl.CmdHandler;
+import thread.ThreadManager;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -39,8 +41,7 @@ public class BeSocketClient {
 
     public BeSocketClient(){
         TimeoutRunnable timeoutRunnable = new TimeoutRunnable(this);
-        Thread timeoutThread = new Thread(timeoutRunnable);
-        timeoutThread.start();
+        ThreadManager.getExecutorService().execute(timeoutRunnable);
     }
 
 
@@ -74,7 +75,7 @@ public class BeSocketClient {
                 System.out.println("command before");
                 startTime = new Date().getTime();
                 command = bufferedReader.readLine();
-                System.out.print("command after:"+command);
+                System.out.print("command after");
             } catch (IOException e) {
                 success = false;
                 e.printStackTrace();
@@ -83,9 +84,8 @@ public class BeSocketClient {
                     System.out.println("closed");
                     start();
                 }else{
-                    System.out.println("执行"+command);
-                    CmdHandler<String> cmdHandler = new CmdHandler<String>(new Object[]{command});
-                    sendMessage(cmdHandler.handler());
+                    Executor executor = new Executor(command,printWriter);
+                    executor.execute();
                 }
             }
         }
