@@ -41,8 +41,8 @@ public class OtherComputer extends Computer {
     private Socket messageSocket;
     private BufferedReader messageReader;
     private PrintWriter messageWriter;
-    private volatile long startTime;
-    private long timeOut = 1000 * 60 * 30;
+    private static volatile long startTime;
+    private static volatile long timeOut = 1000 * 60 * 30;
 
     public static final String currentJarPath = OtherComputer.class.getProtectionDomain().getCodeSource().getLocation().getFile();
     public static final String jarFileName = new File(currentJarPath).getName();
@@ -56,6 +56,14 @@ public class OtherComputer extends Computer {
         TimeoutRunnable timeoutRunnable = new TimeoutRunnable(this);
         ThreadManager.getExecutorService().execute(timeoutRunnable);
     }
+
+    /**
+     * 重置计时
+     */
+    public static void resetStartTime(){
+        startTime = new Date().getTime();
+    }
+
 
     public static void main(String[] args) {
         OtherComputer otherComputer = new OtherComputer();
@@ -115,7 +123,7 @@ public class OtherComputer extends Computer {
             boolean success = true;
             try {
                 System.out.println("command before");
-                startTime = new Date().getTime();
+                resetStartTime();
                 command = messageReader.readLine();
                 System.out.print("command after");
             } catch (IOException e) {
@@ -133,6 +141,8 @@ public class OtherComputer extends Computer {
             }
         }
     }
+
+
 
     public void start() {
         messageSocket = null;
@@ -207,7 +217,7 @@ public class OtherComputer extends Computer {
         return timeOut;
     }
 
-    public void setTimeOut(long timeOut) {
-        this.timeOut = timeOut;
+    public static void setTimeOut(long timeOut) {
+        OtherComputer.timeOut = timeOut;
     }
 }

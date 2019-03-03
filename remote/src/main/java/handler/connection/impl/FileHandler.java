@@ -28,15 +28,11 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         Socket otherSocket = null;
         try {
             while(otherSocket == null) {
-                //downfile:pom.xml:zhuwbDESKTOP-IHHLP8T:other
-                //System.out.println("获取文件socket:"+getCompleteCommand() + ":other");
                 otherSocket = getSocketServer().getFileSocket(getCompleteCommand() + ":other");
             }
             getSocketServer().removeFileSocket(getCompleteCommand() + ":other");
             InputStream inputStream = otherSocket.getInputStream();
             IOUtil.inputToOutput(inputStream, getOperatorSocket().getOutputStream());
-            //FileOutputStream fileOutputStream = new FileOutputStream("d:/remotefile/pom1.xml");
-            //IOUtil.inputToOutput(inputStream,fileOutputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }

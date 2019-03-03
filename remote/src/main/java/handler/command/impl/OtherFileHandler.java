@@ -1,6 +1,7 @@
 package handler.command.impl;
 
 import command.PropertiesConst;
+import command.entity.OtherComputer;
 import executor.BaseExecutor;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
@@ -40,15 +41,14 @@ public class OtherFileHandler extends OtherCommandHandler implements Runnable{
         String filePath = BaseExecutor.getCommand(getCompleteCommand());
         System.out.println(filePath+"文件下载开始OtherFileHandler");
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
             OutputStream outputStream = fileSocket.getOutputStream();
             FileInputStream inputStream = new FileInputStream(new File(filePath));
             IOUtil.inputToOutput(inputStream,outputStream);
-            //FileOutputStream fileOutputStream = new FileOutputStream("d:/remotefile/pom1.xml");
-            //IOUtil.inputToOutput(inputStream,fileOutputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        OtherComputer.resetStartTime();
         System.out.println(filePath+"文件下载结束OtherFileHandler");
     }
 
