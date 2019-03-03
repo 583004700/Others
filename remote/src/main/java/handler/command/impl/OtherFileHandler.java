@@ -40,7 +40,7 @@ public class OtherFileHandler extends OtherCommandHandler implements Runnable{
         String filePath = BaseExecutor.getCommand(getCompleteCommand());
         System.out.println(filePath+"文件下载开始OtherFileHandler");
         try {
-            Thread.sleep(100);
+            Thread.sleep(500);
             OutputStream outputStream = fileSocket.getOutputStream();
             FileInputStream inputStream = new FileInputStream(new File(filePath));
             IOUtil.inputToOutput(inputStream,outputStream);

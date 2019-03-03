@@ -1,6 +1,7 @@
 package util;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 
 public class IOUtil {
 
@@ -66,14 +67,16 @@ public class IOUtil {
 
     public static void inputToOutput(InputStream inputStream,OutputStream outputStream){
         BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
         try {
             byte[] b = new byte[2048];
             int n = 0;
-            while((n = bufferedInputStream.read(b)) != -1){
-                outputStream.write(b,0,n);
-                outputStream.flush();
+            while ((n = bufferedInputStream.read(b)) != -1) {
+                bufferedOutputStream.write(b, 0, n);
+                bufferedOutputStream.flush();
             }
             bufferedInputStream.close();
+            bufferedOutputStream.close();;
             inputStream.close();
             outputStream.close();
         } catch (Exception e) {
