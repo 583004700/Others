@@ -10,6 +10,16 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Scanner;
 
+/**
+ * cmd常用命令
+ * dir 展示目录
+ * del d:a.txt 删除文件
+ * msg %username% /time:10 "要显示的内容" 弹出窗口
+ * shutdown /s 关机，有30秒提示
+ * shutdown /s /t 300 300秒后
+ * shutdown /s /t 300 /c "注释"
+ */
+
 public class OperatorComputer extends Computer implements Runnable{
     static Socket socket;
     static InputStream inputStream;

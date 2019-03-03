@@ -1,11 +1,6 @@
 package util;
 
-/**
- * cmd常用命令
- * dir 展示目录
- * del d:a.txt 删除文件
- *
- */
+
 public class CmdUtil {
     /**
      * 执行命令之后关闭窗口
