@@ -23,19 +23,18 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
         String downPath = defaultDownPath;
         fileName = getCommand();
         boolean b = true;
+        File downPathFile = null;
         try{
             String[] comArr = getCommand().split(">");
             if(comArr.length > 1){
                 downPath = comArr[1];
-                File downPathFile = new File(downPath);
+                downPathFile = new File(downPath);
                 if(downPathFile.isDirectory()){
                     fileName = comArr[0];
-                }else{
-                    fileName = downPath;
-                    downPath = "";
+                    downPathFile = new File(downPath,fileName);
                 }
             }
-            fileOutputStream = new FileOutputStream(new File(downPath,fileName));
+            fileOutputStream = new FileOutputStream(downPathFile);
         }catch (Exception e){
             e.printStackTrace();
             b = false;
