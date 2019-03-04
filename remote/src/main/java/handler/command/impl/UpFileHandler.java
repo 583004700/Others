@@ -39,6 +39,9 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
     @Override
     public void run() {
         String filePath = getCommand();
+        if(filePath.split(">").length > 1){
+            filePath = filePath.split(">")[0];
+        }
         System.out.println(filePath+"文件上传开始UpFileHandler");
         try {
             Thread.sleep(1000);
