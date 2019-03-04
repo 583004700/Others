@@ -9,8 +9,8 @@ import java.io.IOException;
 
 class OtherMessageHandler extends ConnectionHandler implements Runnable{
 
-    public OtherMessageHandler(SocketServer socketServer) {
-        super(socketServer);
+    public OtherMessageHandler(SocketServer socketServer,String completeCommand) {
+        super(socketServer,completeCommand);
     }
 
     @Override
@@ -21,18 +21,18 @@ class OtherMessageHandler extends ConnectionHandler implements Runnable{
 
     @Override
     public Object handler() {
-        new MessageHandler(getSocketServer()).setOperatorSocket(getOperatorSocket()).setOtherSocket(getOtherSocket()).handler();
+        new MessageHandler(getSocketServer(),getCompleteCommand()).setOperatorSocket(getOperatorSocket()).setOtherSocket(getOtherSocket()).handler();
         return null;
     }
 }
 
 public class MessageHandler extends ConnectionHandler implements Runnable{
-    public MessageHandler(SocketServer socketServer) {
-        super(socketServer);
+    public MessageHandler(SocketServer socketServer,String completeCommand) {
+        super(socketServer,completeCommand);
     }
 
     public void run() {
-        OtherMessageHandler otherMessageHandler = (OtherMessageHandler)new OtherMessageHandler(getSocketServer()).setOperatorSocket(getOtherSocket()).setOtherSocket(getOperatorSocket());
+        OtherMessageHandler otherMessageHandler = (OtherMessageHandler)new OtherMessageHandler(getSocketServer(),getCompleteCommand()).setOperatorSocket(getOtherSocket()).setOtherSocket(getOperatorSocket());
         ThreadManager.getExecutorService().execute(otherMessageHandler);
         handler();
         System.out.println(getOtherKey()+":MessageHandler线程结束");

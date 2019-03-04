@@ -11,7 +11,8 @@ public abstract class ConnectionHandler extends BaseHandler {
     private Socket otherSocket;
     private String otherKey = "";
 
-    public ConnectionHandler(SocketServer socketServer){
+    public ConnectionHandler(SocketServer socketServer,String completeCommand){
+        super(completeCommand);
         this.socketServer = socketServer;
     }
 

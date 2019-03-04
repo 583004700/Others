@@ -1,29 +1,31 @@
 package executor;
 
 import handler.Handler;
-import handler.command.impl.OperatorFileHandler;
+import handler.command.impl.DownFileHandler;
+import handler.command.impl.UpFileHandler;
 
 import java.io.PrintWriter;
 
 public class OperatorExecutor extends BaseExecutor{
-    private String completeCommand;
     private PrintWriter printWriter;
     private String otherKey;
 
     public OperatorExecutor(String completeCommand, PrintWriter printWriter,String otherKey) {
-        this.completeCommand = completeCommand;
+        super(completeCommand);
         this.printWriter = printWriter;
         this.otherKey = otherKey;
     }
 
     public Handler getHandler(){
         Handler handler = null;
-        String prefix = getPrefix(completeCommand);
+        String prefix = getPrefix();
         if(Handler.CMD.equals(prefix)){
-            printWriter.println(completeCommand);
+            printWriter.println(getCompleteCommand());
             printWriter.flush();
         }else if(Handler.DOWNFILE.equals(prefix)){
-            handler = new OperatorFileHandler(otherKey,completeCommand,printWriter);
+            handler = new DownFileHandler(otherKey,getCompleteCommand(),printWriter);
+        }else if(Handler.UPFILE.equals(prefix)){
+            handler = new UpFileHandler(getCompleteCommand(),printWriter,getOtherKey());
         }
         return handler;
     }
@@ -33,14 +35,6 @@ public class OperatorExecutor extends BaseExecutor{
         if(handler != null){
             handler.handler();
         }
-    }
-
-    public String getCompleteCommand() {
-        return completeCommand;
-    }
-
-    public void setCompleteCommand(String completeCommand) {
-        this.completeCommand = completeCommand;
     }
 
     public PrintWriter getPrintWriter() {

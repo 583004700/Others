@@ -1,28 +1,30 @@
 package executor;
 
 import handler.Handler;
+import handler.command.impl.DownFileHandler;
 import handler.command.impl.OtherCmdHandler;
-import handler.command.impl.OtherFileHandler;
+import handler.command.impl.UpFileHandler;
 
 import java.io.PrintWriter;
 
 public class OtherExecutor extends BaseExecutor{
-    private String completeCommand;
     private PrintWriter printWriter;
-    private String key;
+    private String otherKey;
 
     public OtherExecutor(String completeCommand, PrintWriter printWriter) {
-        this.completeCommand = completeCommand;
+        super(completeCommand);
         this.printWriter = printWriter;
     }
 
     public Handler getHandler(){
         Handler handler = null;
-        String prefix = getPrefix(completeCommand);
+        String prefix = getPrefix();
         if(Handler.CMD.equals(prefix)){
-            handler = new OtherCmdHandler(completeCommand,printWriter);
+            handler = new OtherCmdHandler(getCompleteCommand(),printWriter);
         }else if(Handler.DOWNFILE.equals(prefix)){
-            handler = new OtherFileHandler(completeCommand,printWriter,key);
+            handler = new UpFileHandler(getCompleteCommand(),printWriter, otherKey);
+        }else if(Handler.UPFILE.equals(prefix)){
+            handler = new DownFileHandler(otherKey,getCompleteCommand(),printWriter);
         }
         return handler;
     }
@@ -34,11 +36,11 @@ public class OtherExecutor extends BaseExecutor{
         }
     }
 
-    public String getKey() {
-        return key;
+    public String getOtherKey() {
+        return otherKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setOtherKey(String otherKey) {
+        this.otherKey = otherKey;
     }
 }
