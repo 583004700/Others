@@ -13,5 +13,9 @@ public interface Handler{
     String DOWNFILE = "downfile";
     //上传文件
     String UPFILE = "upfile";
+    //代表下载时较验成功，能创建文件
+    String DOWNFILESUCCESS = "downfilesuccess";
+    //代表上传时较验成功，能找到文件
+    String UPFILESUCCESS = "upfilesuccess";
     Object handler();
 }

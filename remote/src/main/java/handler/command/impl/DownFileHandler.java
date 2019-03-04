@@ -2,6 +2,7 @@ package handler.command.impl;
 
 import command.PropertiesConst;
 import command.entity.OtherComputer;
+import handler.Handler;
 import handler.command.OperatorCommandHandler;
 import thread.ThreadManager;
 import util.IOUtil;
@@ -48,23 +49,41 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
     }
 
     public boolean connection(){
-        if(!checkFile()){
-            System.out.println("文件下载失败");
-            getPrintWriter().println("对方文件下载失败");
-            getPrintWriter().flush();
-            return false;
-        }
+        boolean success = true;
+        PrintWriter pw = null;
         getPrintWriter().println(getCompleteCommand());
         getPrintWriter().flush();
         try {
             fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
-            PrintWriter pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream());
+            pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream());
             pw.println(getCompleteCommand()+":"+getOtherKey());
             pw.flush();
+            if(!checkFile()){
+                success = false;
+            }
         } catch (IOException e) {
+            success = false;
             e.printStackTrace();
         }
-        return true;
+        if(success){
+            //告诉服务器下载较验成功
+            pw.println(Handler.DOWNFILESUCCESS);
+            pw.flush();
+        }else{
+            System.out.println("本机较验：文件下载失败，可能是不能创建目录");
+            pw.println("downFail");
+            pw.flush();
+        }
+        try {
+            String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),"UTF-8");
+            if(!Handler.UPFILESUCCESS.equals(otherStr)){
+                success = false;
+                System.out.println("对方较验：文件上传失败，可能是找不到文件");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return success;
     }
 
     @Override
@@ -77,6 +96,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
     public void run() {
         boolean b = connection();
         if(!b){
+            System.out.println("文件传输取消，线程结束");
             return;
         }
         System.out.println(fileName+"文件下载开始DownFileHandler");

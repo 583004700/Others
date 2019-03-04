@@ -37,24 +37,42 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
     }
 
     private boolean connection(){
-        if(!checkFile()){
-            System.out.println("文件上传失败");
-            getPrintWriter().println("对方文件上传失败");
-            getPrintWriter().flush();
-            return false;
-        }
+        boolean success = true;
+        PrintWriter pw = null;
         getPrintWriter().println(getCompleteCommand());
         getPrintWriter().flush();
         try {
             fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
-            PrintWriter pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream());
+            pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream());
             System.out.println("UpFileHandler:"+getCompleteCommand()+":"+key+":"+ Handler.UPFILE);
             pw.println(getCompleteCommand()+":"+key+":"+Handler.UPFILE);
             pw.flush();
+            if(!checkFile()){
+                success = false;
+            }
         } catch (IOException e) {
+            success = false;
             e.printStackTrace();
         }
-        return true;
+        if(success){
+            //告诉服务器上传较验成功
+            pw.println(Handler.UPFILESUCCESS);
+            pw.flush();
+        }else{
+            System.out.println("本机较验：文件上传失败，可能是找不到文件");
+            pw.println("upFail");
+            pw.flush();
+        }
+        try {
+            String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),"UTF-8");
+            if(!Handler.DOWNFILESUCCESS.equals(otherStr)){
+                success = false;
+                System.out.println("对方较验：文件下载失败，可能不能创建目录");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return success;
     }
 
     @Override
@@ -67,6 +85,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
     public void run() {
         boolean b = connection();
         if(!b){
+            System.out.println("文件传输取消，线程结束");
             return;
         }
         System.out.println(filePath+"文件上传开始UpFileHandler");
