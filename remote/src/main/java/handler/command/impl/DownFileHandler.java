@@ -1,7 +1,6 @@
 package handler.command.impl;
 
 import command.PropertiesConst;
-import executor.BaseExecutor;
 import handler.command.OperatorCommandHandler;
 import thread.ThreadManager;
 import util.IOUtil;
@@ -9,8 +8,8 @@ import util.IOUtil;
 import java.io.*;
 import java.net.Socket;
 
-public class OperatorFileHandler extends OperatorCommandHandler implements Runnable{
-    public OperatorFileHandler(String otherKey, String completeCommand, PrintWriter printWriter) {
+public class DownFileHandler extends OperatorCommandHandler implements Runnable{
+    public DownFileHandler(String otherKey, String completeCommand, PrintWriter printWriter) {
         super(otherKey, completeCommand, printWriter);
     }
 
@@ -34,8 +33,8 @@ public class OperatorFileHandler extends OperatorCommandHandler implements Runna
 
     @Override
     public void run() {
-        String fileName = BaseExecutor.getCommand(getCompleteCommand());
-        System.out.println(fileName+"文件下载开始OperatorFileHandler");
+        String fileName = getCommand();
+        System.out.println(fileName+"文件下载开始DownFileHandler");
         try {
             InputStream inputStream = fileSocket.getInputStream();
             File file = new File("d:/remotefile/");
@@ -47,6 +46,6 @@ public class OperatorFileHandler extends OperatorCommandHandler implements Runna
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(fileName+"文件下载结束OperatorFileHandler");
+        System.out.println(fileName+"文件下载结束DownFileHandler");
     }
 }

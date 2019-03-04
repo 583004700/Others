@@ -10,11 +10,10 @@ import java.io.InputStream;
 import java.net.Socket;
 
 public class FileHandler extends ConnectionHandler implements Runnable{
-    public FileHandler(SocketServer socketServer) {
-        super(socketServer);
-    }
 
-    private String completeCommand;
+    public FileHandler(SocketServer socketServer,String completeCommand) {
+        super(socketServer,completeCommand);
+    }
 
     @Override
     public Object handler() {
@@ -25,7 +24,7 @@ public class FileHandler extends ConnectionHandler implements Runnable{
 
     @Override
     public void run() {
-        System.out.println("服务器文件下载开始");
+        System.out.println("服务器文件传输开始");
         Socket otherSocket = null;
         try {
             while(otherSocket == null) {
@@ -37,14 +36,7 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("服务器文件下载结束");
+        System.out.println("服务器文件传输结束");
     }
 
-    public String getCompleteCommand() {
-        return completeCommand;
-    }
-
-    public void setCompleteCommand(String completeCommand) {
-        this.completeCommand = completeCommand;
-    }
 }

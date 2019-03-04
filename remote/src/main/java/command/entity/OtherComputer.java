@@ -135,7 +135,7 @@ public class OtherComputer extends Computer {
                     start();
                 } else {
                     OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter);
-                    otherExecutor.setKey(getKey());
+                    otherExecutor.setOtherKey(getKey());
                     otherExecutor.execute();
                 }
             }

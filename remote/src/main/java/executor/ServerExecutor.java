@@ -5,36 +5,37 @@ import handler.Handler;
 import handler.connection.impl.FileHandler;
 import handler.connection.impl.MessageHandler;
 import thread.ThreadManager;
-import util.IOUtil;
 
-import java.io.InputStream;
 import java.net.Socket;
 
 public class ServerExecutor extends BaseExecutor {
-    private String completeCommand;
     private SocketServer socketServer;
     private String otherKey = "";
 
+    public ServerExecutor(String completeCommand, SocketServer socketServer) {
+        super(completeCommand);
+        this.socketServer = socketServer;
+    }
+
     public Handler getHandler(){
         Handler handler = null;
-        String prefix = getPrefix(completeCommand);
-        otherKey = getCommand(completeCommand);
+        String prefix = getPrefix();
+        otherKey = getCommand();
         if(Handler.REGISTER.equals(prefix)){
             System.out.println("添加"+getCompleteCommand());
             socketServer.registerSocket(otherKey, socketServer.getSocket());
         }else if(Handler.OPERATE.equals(prefix)){
             Socket otherSocket = socketServer.getRegisterSocket(otherKey);
-            MessageHandler messageHandler = (MessageHandler) new MessageHandler(socketServer).setOperatorSocket(socketServer.getSocket()).setOtherSocket(otherSocket);
+            MessageHandler messageHandler = (MessageHandler) new MessageHandler(socketServer,getCompleteCommand()).setOperatorSocket(socketServer.getSocket()).setOtherSocket(otherSocket);
             messageHandler.setOtherKey(otherKey);
             ThreadManager.getExecutorService().execute(messageHandler);
         }else if(Handler.DOWNFILE.equals(prefix) || Handler.UPFILE.equals(prefix)){
-            if(getCommand(getCompleteCommand()).contains(":"+Handler.UPFILE)){
+            if(getCommand().contains(":"+Handler.UPFILE)){
                 System.out.println("添加文件socket:"+getCompleteCommand());
                 socketServer.addFileSocket(getCompleteCommand(),socketServer.getSocket());
             }else {
-                FileHandler fileHandler = (FileHandler) new FileHandler(socketServer).setOperatorSocket(socketServer.getSocket());
-                fileHandler.setOtherKey(getCommand(getCompleteCommand()));
-                fileHandler.setCompleteCommand(getCompleteCommand());
+                FileHandler fileHandler = (FileHandler) new FileHandler(socketServer,getCompleteCommand()).setOperatorSocket(socketServer.getSocket());
+                fileHandler.setOtherKey(getCommand());
                 fileHandler.handler();
             }
         }
@@ -46,15 +47,6 @@ public class ServerExecutor extends BaseExecutor {
         if(handler != null){
             handler.handler();
         }
-    }
-
-    public String getCompleteCommand() {
-        return completeCommand;
-    }
-
-    public ServerExecutor setCompleteCommand(String completeCommand) {
-        this.completeCommand = completeCommand;
-        return this;
     }
 
     public SocketServer getSocketServer() {

@@ -2,7 +2,6 @@ package handler.command.impl;
 
 import command.PropertiesConst;
 import command.entity.OtherComputer;
-import executor.BaseExecutor;
 import handler.Handler;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
@@ -11,9 +10,9 @@ import util.IOUtil;
 import java.io.*;
 import java.net.Socket;
 
-public class OtherFileHandler extends OtherCommandHandler implements Runnable{
+public class UpFileHandler extends OtherCommandHandler implements Runnable{
     private String key;
-    public OtherFileHandler(String completeCommand, PrintWriter printWriter,String key) {
+    public UpFileHandler(String completeCommand, PrintWriter printWriter, String key) {
         super(completeCommand, printWriter);
         this.key = key;
     }
@@ -27,7 +26,7 @@ public class OtherFileHandler extends OtherCommandHandler implements Runnable{
         try {
             fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
             PrintWriter pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream());
-            System.out.println("otherFileHandler:"+getCompleteCommand()+":"+key+":"+ Handler.UPFILE);
+            System.out.println("UpFileHandler:"+getCompleteCommand()+":"+key+":"+ Handler.UPFILE);
             pw.println(getCompleteCommand()+":"+key+":"+Handler.UPFILE);
             pw.flush();
         } catch (IOException e) {
@@ -39,8 +38,8 @@ public class OtherFileHandler extends OtherCommandHandler implements Runnable{
 
     @Override
     public void run() {
-        String filePath = BaseExecutor.getCommand(getCompleteCommand());
-        System.out.println(filePath+"文件下载开始OtherFileHandler");
+        String filePath = getCommand();
+        System.out.println(filePath+"文件上传开始UpFileHandler");
         try {
             Thread.sleep(1000);
             OutputStream outputStream = fileSocket.getOutputStream();
@@ -50,7 +49,7 @@ public class OtherFileHandler extends OtherCommandHandler implements Runnable{
             e.printStackTrace();
         }
         OtherComputer.resetStartTime();
-        System.out.println(filePath+"文件下载结束OtherFileHandler");
+        System.out.println(filePath+"文件上传结束UpFileHandler");
     }
 
     public String getKey() {

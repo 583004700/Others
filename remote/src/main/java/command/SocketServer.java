@@ -35,9 +35,7 @@ public class SocketServer {
                     SocketServer socketServer = new SocketServer();
                     socketServer.setSocket(socket);
 
-                    ServerExecutor serverExecutor = new ServerExecutor();
-                    serverExecutor.setCompleteCommand(str);
-                    serverExecutor.setSocketServer(socketServer);
+                    ServerExecutor serverExecutor = new ServerExecutor(str,socketServer);
                     serverExecutor.execute();
                 }
             } catch (Exception e) {
