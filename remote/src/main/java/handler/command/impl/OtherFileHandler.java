@@ -3,6 +3,7 @@ package handler.command.impl;
 import command.PropertiesConst;
 import command.entity.OtherComputer;
 import executor.BaseExecutor;
+import handler.Handler;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
 import util.IOUtil;
@@ -26,8 +27,8 @@ public class OtherFileHandler extends OtherCommandHandler implements Runnable{
         try {
             fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
             PrintWriter pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream());
-            System.out.println("otherFileHandler:"+getCompleteCommand()+":"+key+":other");
-            pw.println(getCompleteCommand()+":"+key+":other");
+            System.out.println("otherFileHandler:"+getCompleteCommand()+":"+key+":"+ Handler.UPFILE);
+            pw.println(getCompleteCommand()+":"+key+":"+Handler.UPFILE);
             pw.flush();
         } catch (IOException e) {
             e.printStackTrace();

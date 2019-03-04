@@ -1,6 +1,7 @@
 package handler.connection.impl;
 
 import command.SocketServer;
+import handler.Handler;
 import handler.connection.ConnectionHandler;
 import thread.ThreadManager;
 import util.IOUtil;
@@ -28,9 +29,9 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         Socket otherSocket = null;
         try {
             while(otherSocket == null) {
-                otherSocket = getSocketServer().getFileSocket(getCompleteCommand() + ":other");
+                otherSocket = getSocketServer().getFileSocket(getCompleteCommand() + ":" + Handler.UPFILE);
             }
-            getSocketServer().removeFileSocket(getCompleteCommand() + ":other");
+            getSocketServer().removeFileSocket(getCompleteCommand() + ":" + Handler.UPFILE);
             InputStream inputStream = otherSocket.getInputStream();
             IOUtil.inputToOutput(inputStream, getOperatorSocket().getOutputStream());
         } catch (Exception e) {

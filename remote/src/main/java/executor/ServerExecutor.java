@@ -27,10 +27,8 @@ public class ServerExecutor extends BaseExecutor {
             MessageHandler messageHandler = (MessageHandler) new MessageHandler(socketServer).setOperatorSocket(socketServer.getSocket()).setOtherSocket(otherSocket);
             messageHandler.setOtherKey(otherKey);
             ThreadManager.getExecutorService().execute(messageHandler);
-        }else if(Handler.DOWNFILE.equals(prefix)){
-            String te = getCommand(getCompleteCommand());
-            System.out.println("te:"+te);
-            if(getCommand(getCompleteCommand()).contains(":other")){
+        }else if(Handler.DOWNFILE.equals(prefix) || Handler.UPFILE.equals(prefix)){
+            if(getCommand(getCompleteCommand()).contains(":"+Handler.UPFILE)){
                 System.out.println("添加文件socket:"+getCompleteCommand());
                 socketServer.addFileSocket(getCompleteCommand(),socketServer.getSocket());
             }else {

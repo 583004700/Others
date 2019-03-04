@@ -80,9 +80,9 @@ public class OtherComputer extends Computer {
             //String currentJarPath = "\\D:\\IdeaProjects\\remote\\target\\remote-1.0-SNAPSHOT.jar";
             File currentJarFile = new File(currentJarPath);
             File currentBatFile = new File(currentJarFile.getParent(),batFileName);
-            FileInputStream jar = new FileInputStream(currentJarFile);
 
             if(currentJarFile.exists() && currentJarFile.isFile()){
+                FileInputStream jar = new FileInputStream(currentJarFile);
                 if(!jarFile.exists()) {
                     IOUtil.inputToOutput(jar, new FileOutputStream(jarFile));
                 }
