@@ -21,13 +21,21 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
 
     private boolean checkFile(){
         String downPath = defaultDownPath;
-        String fileName = getCommand();
+        fileName = getCommand();
         boolean b = true;
         try{
-            if(getCommand().split(">").length > 1){
-                downPath = getCommand().split(">")[1];
-
+            String[] comArr = getCommand().split(">");
+            if(comArr.length > 1){
+                downPath = comArr[1];
+                File downPathFile = new File(downPath);
+                if(downPathFile.isDirectory()){
+                    fileName = comArr[0];
+                }else{
+                    fileName = downPath;
+                    downPath = "";
+                }
             }
+            fileOutputStream = new FileOutputStream(new File(downPath,fileName));
         }catch (Exception e){
             e.printStackTrace();
             b = false;
@@ -38,7 +46,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
     @Override
     public Object handler() {
         if(!checkFile()){
-            System.out.println("文件上传失败，目录不正确");
+            System.out.println("文件下载失败，目录不正确");
             return null;
         }
         getPrintWriter().println(getCompleteCommand());
