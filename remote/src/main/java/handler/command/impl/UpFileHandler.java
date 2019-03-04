@@ -18,9 +18,31 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
     }
 
     private Socket fileSocket;
+    private String filePath;
+    private FileInputStream inputStream;
 
-    @Override
-    public Object handler() {
+    private boolean checkFile(){
+        boolean b = true;
+        try {
+            filePath = getCommand();
+            if(filePath.split(">").length > 1){
+                filePath = filePath.split(">")[0];
+            }
+            inputStream = new FileInputStream(new File(filePath));
+        } catch (FileNotFoundException e) {
+            b = false;
+            e.printStackTrace();
+        }
+        return b;
+    }
+
+    private boolean connection(){
+        if(!checkFile()){
+            System.out.println("文件上传失败");
+            getPrintWriter().println("对方文件上传失败");
+            getPrintWriter().flush();
+            return false;
+        }
         getPrintWriter().println(getCompleteCommand());
         getPrintWriter().flush();
         try {
@@ -32,21 +54,25 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
+    }
+
+    @Override
+    public Object handler() {
         ThreadManager.getExecutorService().execute(this);
         return null;
     }
 
     @Override
     public void run() {
-        String filePath = getCommand();
-        if(filePath.split(">").length > 1){
-            filePath = filePath.split(">")[0];
+        boolean b = connection();
+        if(!b){
+            return;
         }
         System.out.println(filePath+"文件上传开始UpFileHandler");
         try {
             Thread.sleep(1000);
             OutputStream outputStream = fileSocket.getOutputStream();
-            FileInputStream inputStream = new FileInputStream(new File(filePath));
             IOUtil.inputToOutput(inputStream,outputStream);
         } catch (Exception e) {
             e.printStackTrace();

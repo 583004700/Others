@@ -21,17 +21,22 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
 
     private boolean checkFile(){
         String downPath = defaultDownPath;
-        fileName = getCommand();
+        fileName = new File(getCommand()).getName();
         boolean b = true;
         File downPathFile = null;
         try{
+            downPathFile = new File(downPath,fileName);
             String[] comArr = getCommand().split(">");
             if(comArr.length > 1){
+                fileName = new File(comArr[0]).getName();
                 downPath = comArr[1];
                 downPathFile = new File(downPath);
                 if(downPathFile.isDirectory()){
-                    fileName = comArr[0];
                     downPathFile = new File(downPath,fileName);
+                }else{
+                    if(!downPathFile.getParentFile().exists()){
+                        downPathFile.getParentFile().mkdirs();
+                    }
                 }
             }
             fileOutputStream = new FileOutputStream(downPathFile);
@@ -42,11 +47,12 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
         return b;
     }
 
-    @Override
-    public Object handler() {
+    public boolean connection(){
         if(!checkFile()){
-            System.out.println("文件下载失败，目录不正确");
-            return null;
+            System.out.println("文件下载失败");
+            getPrintWriter().println("对方文件下载失败");
+            getPrintWriter().flush();
+            return false;
         }
         getPrintWriter().println(getCompleteCommand());
         getPrintWriter().flush();
@@ -58,12 +64,21 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
+    }
+
+    @Override
+    public Object handler() {
         ThreadManager.getExecutorService().execute(this);
         return null;
     }
 
     @Override
     public void run() {
+        boolean b = connection();
+        if(!b){
+            return;
+        }
         System.out.println(fileName+"文件下载开始DownFileHandler");
         try {
             InputStream inputStream = fileSocket.getInputStream();
