@@ -23,7 +23,7 @@ public class OperatorExecutor extends BaseExecutor{
     public Handler getHandler(){
         Handler handler = null;
         String prefix = getPrefix();
-        if(Handler.CMD.equals(prefix)){
+        if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix)){
             printWriter.println(getCompleteCommand());
             printWriter.flush();
         }else if(Handler.DOWNFILE.equals(prefix)){

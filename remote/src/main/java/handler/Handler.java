@@ -21,5 +21,7 @@ public interface Handler{
     //cmd交互
     String CMDBEGIN = "cmdbegin";
     String CMDEND = "cmdend:";
+    //java方法
+    String JAVA = "java";
     Object handler();
 }

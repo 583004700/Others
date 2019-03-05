@@ -21,6 +21,7 @@ import java.util.Scanner;
  * shutdown /s /t 300 /c "注释"
  */
 
+//java:command.entity.JavaMethod.createFile()
 public class OperatorComputer extends Computer implements Runnable{
     static Socket socket;
     static InputStream inputStream;

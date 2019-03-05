@@ -1,10 +1,7 @@
 package executor;
 
 import handler.Handler;
-import handler.command.impl.CmdReceiveIngHandler;
-import handler.command.impl.DownFileHandler;
-import handler.command.impl.OtherCmdHandler;
-import handler.command.impl.UpFileHandler;
+import handler.command.impl.*;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -31,6 +28,8 @@ public class OtherExecutor extends BaseExecutor{
             handler = new DownFileHandler(otherKey,getCompleteCommand(),printWriter);
         }else if(Handler.CMDBEGIN.equals(prefix)){
             handler = new CmdReceiveIngHandler(getCompleteCommand(),bufferedReader,printWriter);
+        }else if(Handler.JAVA.equals(prefix)){
+            handler = new JavaMethodHandler(getCompleteCommand(),printWriter);
         }
         return handler;
     }
