@@ -4,7 +4,6 @@ import command.PropertiesConst;
 import executor.OtherExecutor;
 import handler.Handler;
 import thread.ThreadManager;
-import util.IOUtil;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -44,14 +43,6 @@ public class OtherComputer extends Computer {
     private static volatile long startTime;
     private static volatile long timeOut = 1000 * 60 * 30;
 
-    public static final String currentJarPath = OtherComputer.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-    public static final String jarFileName = new File(currentJarPath).getName();
-    public static final String batFileName = "startremote.bat";
-    public static String userHome = System.getProperty("user.home");
-    public static final File parent = new File(userHome+"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\");
-    public static final File jarFile = new File(parent,jarFileName);
-    public static final File batFile = new File(parent,batFileName);
-
     public OtherComputer() {
         TimeoutRunnable timeoutRunnable = new TimeoutRunnable(this);
         ThreadManager.getExecutorService().execute(timeoutRunnable);
@@ -68,30 +59,8 @@ public class OtherComputer extends Computer {
     public static void main(String[] args) {
         OtherComputer otherComputer = new OtherComputer();
         try {
-            otherComputer.createFile();
             otherComputer.start();
         }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void createFile(){
-        try {
-            //String currentJarPath = "\\D:\\IdeaProjects\\remote\\target\\remote-1.0-SNAPSHOT.jar";
-            File currentJarFile = new File(currentJarPath);
-            File currentBatFile = new File(currentJarFile.getParent(),batFileName);
-
-            if(currentJarFile.exists() && currentJarFile.isFile()){
-                FileInputStream jar = new FileInputStream(currentJarFile);
-                if(!jarFile.exists()) {
-                    IOUtil.inputToOutput(jar, new FileOutputStream(jarFile));
-                }
-                if(!batFile.exists() && currentBatFile.exists()){
-                    FileInputStream bat = new FileInputStream(currentBatFile);
-                    IOUtil.inputToOutput(bat,new FileOutputStream(batFile));
-                }
-            }
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -134,7 +103,7 @@ public class OtherComputer extends Computer {
                     System.out.println("closed");
                     start();
                 } else {
-                    OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter);
+                    OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter, messageReader);
                     otherExecutor.setOtherKey(getKey());
                     otherExecutor.execute();
                 }

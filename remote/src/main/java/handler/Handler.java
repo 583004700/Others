@@ -17,5 +17,11 @@ public interface Handler{
     String DOWNFILESUCCESS = "downfilesuccess";
     //代表上传时较验成功，能找到文件
     String UPFILESUCCESS = "upfilesuccess";
+
+    //cmd交互
+    String CMDBEGIN = "cmdbegin";
+    String CMDEND = "cmdend:";
+    //java方法
+    String JAVA = "java";
     Object handler();
 }

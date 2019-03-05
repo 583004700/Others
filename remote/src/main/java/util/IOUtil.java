@@ -1,7 +1,6 @@
 package util;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
 
 public class IOUtil {
 
@@ -61,8 +60,14 @@ public class IOUtil {
         return new PrintWriter(new OutputStreamWriter(outputStream));
     }
 
-    public static BufferedReader wrapBufferedReader(InputStream inputStream){
-        return new BufferedReader(new InputStreamReader(inputStream));
+    public static BufferedReader wrapBufferedReader(InputStream inputStream,String charsetName){
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream,charsetName));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return bufferedReader;
     }
 
     public static void inputToOutput(InputStream inputStream,OutputStream outputStream){

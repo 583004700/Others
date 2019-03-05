@@ -4,6 +4,7 @@ import command.PropertiesConst;
 import executor.OperatorExecutor;
 import handler.Handler;
 import thread.ThreadManager;
+import util.IOUtil;
 
 import java.io.*;
 import java.net.Socket;
@@ -20,6 +21,7 @@ import java.util.Scanner;
  * shutdown /s /t 300 /c "注释"
  */
 
+//java:command.entity.JavaMethod.createFile()
 public class OperatorComputer extends Computer implements Runnable{
     static Socket socket;
     static InputStream inputStream;
@@ -34,6 +36,7 @@ public class OperatorComputer extends Computer implements Runnable{
             socket = new Socket(PropertiesConst.server,PropertiesConst.port);
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
+            BufferedReader bufferedReader = IOUtil.wrapBufferedReader(inputStream,"UTF-8");
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outputStream));
             System.out.println(socket.getInetAddress().toString());
             pw.println(Handler.OPERATE+":"+key);
@@ -43,8 +46,8 @@ public class OperatorComputer extends Computer implements Runnable{
             while(true){
                 Scanner scanner = new Scanner(System.in);
                 scanner.useDelimiter("\n");
-                String input = scanner.next();
-                OperatorExecutor operatorExecutor = new OperatorExecutor(input,pw,key);
+                String readStr = scanner.next();
+                OperatorExecutor operatorExecutor = new OperatorExecutor(readStr,pw,key,bufferedReader);
                 operatorExecutor.execute();
             }
         }catch (Exception e) {
