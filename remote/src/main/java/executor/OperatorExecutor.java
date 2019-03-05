@@ -1,19 +1,23 @@
 package executor;
 
 import handler.Handler;
+import handler.command.impl.CmdSendIngHandler;
 import handler.command.impl.DownFileHandler;
 import handler.command.impl.UpFileHandler;
 
+import java.io.BufferedReader;
 import java.io.PrintWriter;
 
 public class OperatorExecutor extends BaseExecutor{
     private PrintWriter printWriter;
     private String otherKey;
+    private BufferedReader bufferedReader;
 
-    public OperatorExecutor(String completeCommand, PrintWriter printWriter,String otherKey) {
+    public OperatorExecutor(String completeCommand, PrintWriter printWriter, String otherKey, BufferedReader bufferedReader) {
         super(completeCommand);
         this.printWriter = printWriter;
         this.otherKey = otherKey;
+        this.bufferedReader = bufferedReader;
     }
 
     public Handler getHandler(){
@@ -26,6 +30,8 @@ public class OperatorExecutor extends BaseExecutor{
             handler = new DownFileHandler(otherKey,getCompleteCommand(),printWriter);
         }else if(Handler.UPFILE.equals(prefix)){
             handler = new UpFileHandler(getCompleteCommand(),printWriter,getOtherKey());
+        }else if(Handler.CMDBEGIN.equals(prefix)){
+            handler = new CmdSendIngHandler(getOtherKey(),getCompleteCommand(),printWriter,bufferedReader);
         }
         return handler;
     }

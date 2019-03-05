@@ -4,6 +4,7 @@ import command.PropertiesConst;
 import executor.OperatorExecutor;
 import handler.Handler;
 import thread.ThreadManager;
+import util.IOUtil;
 
 import java.io.*;
 import java.net.Socket;
@@ -26,14 +27,15 @@ public class OperatorComputer extends Computer implements Runnable{
     static OutputStream outputStream;
     public static void main(String[] args) {
         //String key = "AdministratorPC-20181117FCPZ";  //邓声根
-        //String key = "zhuwbDESKTOP-DQ7BJCL"; //公司电脑
+        String key = "zhuwbDESKTOP-DQ7BJCL"; //公司电脑
         //copy startremote.bat "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
         //copy "remote-1.0-SNAPSHOT.jar" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
-        String key = "zhuwbDESKTOP-IHHLP8T";
+        //String key = "zhuwbDESKTOP-IHHLP8T";
         try {
             socket = new Socket(PropertiesConst.server,PropertiesConst.port);
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
+            BufferedReader bufferedReader = IOUtil.wrapBufferedReader(inputStream,"UTF-8");
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outputStream));
             System.out.println(socket.getInetAddress().toString());
             pw.println(Handler.OPERATE+":"+key);
@@ -43,8 +45,8 @@ public class OperatorComputer extends Computer implements Runnable{
             while(true){
                 Scanner scanner = new Scanner(System.in);
                 scanner.useDelimiter("\n");
-                String input = scanner.next();
-                OperatorExecutor operatorExecutor = new OperatorExecutor(input,pw,key);
+                String readStr = scanner.next();
+                OperatorExecutor operatorExecutor = new OperatorExecutor(readStr,pw,key,bufferedReader);
                 operatorExecutor.execute();
             }
         }catch (Exception e) {
