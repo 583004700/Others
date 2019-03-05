@@ -22,7 +22,7 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
             Process process = Runtime.getRuntime().exec("cmd");
             InputStream inputStream = process.getInputStream();
             OutputStream outputStream = process.getOutputStream();
-            PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream);
+            PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream,"GBK");
 
             ResultReceiveIngThread resultReceiveThread = new ResultReceiveIngThread(IOUtil.wrapBufferedReader(inputStream,"GBK"),getPrintWriter());
             ThreadManager.getExecutorService().execute(resultReceiveThread);

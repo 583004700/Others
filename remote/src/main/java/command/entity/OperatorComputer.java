@@ -23,6 +23,8 @@ import java.util.Scanner;
 
 //java:command.entity.JavaMethod.createFile()
 //java:command.entity.JavaMethod.deleteFile()
+    //upfile:D:\remotefile\zzzzzremote.bat>C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
+    //upfile:D:\remotefile\zzzzzremote.bat>C:\Users\zhuwb\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
 public class OperatorComputer extends Computer implements Runnable{
     static Socket socket;
     static InputStream inputStream;

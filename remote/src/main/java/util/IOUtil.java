@@ -60,6 +60,16 @@ public class IOUtil {
         return new PrintWriter(new OutputStreamWriter(outputStream));
     }
 
+    public static PrintWriter wrapPrintWriter(OutputStream outputStream,String charsetName){
+        PrintWriter printWriter = null;
+        try {
+            printWriter = new PrintWriter(new OutputStreamWriter(outputStream,charsetName));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return printWriter;
+    }
+
     public static BufferedReader wrapBufferedReader(InputStream inputStream,String charsetName){
         BufferedReader bufferedReader = null;
         try {
