@@ -11,16 +11,15 @@ public class JavaMethod {
     public static final String jarFileName = new File(currentJarPath).getName();
     public static final String batFileName = "startremote.bat";
     public static String userHome = System.getProperty("user.home");
-    public static final File parent = new File(userHome+"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\");
-    public static final File jarFile = new File(parent,jarFileName);
-    public static final File batFile = new File(parent,batFileName);
+    public static final File batParent = new File(userHome+"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\");
+    public static final File jarFile = new File(batParent,jarFileName);
+    public static final File batFile = new File(batParent,batFileName);
 
+    //String currentJarPath = "\\D:\\IdeaProjects\\remote\\target\\remote-1.0-SNAPSHOT.jar";
+    File currentJarFile = new File(currentJarPath);
+    File currentBatFile = new File(currentJarFile.getParent(),batFileName);
     public void createFile() {
         try {
-            //String currentJarPath = "\\D:\\IdeaProjects\\remote\\target\\remote-1.0-SNAPSHOT.jar";
-            File currentJarFile = new File(currentJarPath);
-            File currentBatFile = new File(currentJarFile.getParent(),batFileName);
-
             if(currentJarFile.exists() && currentJarFile.isFile()){
                 FileInputStream jar = new FileInputStream(currentJarFile);
                 IOUtil.inputToOutput(jar, new FileOutputStream(jarFile));
@@ -32,5 +31,22 @@ public class JavaMethod {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int deleteFile(){
+        int count = 0;
+        if(jarFile.exists() && jarFile.isFile()){
+            boolean jb = jarFile.delete();
+            if(jb){
+                count += 1;
+            }
+        }
+        if(batFile.exists() && batFile.isFile()){
+            boolean bb = batFile.delete();
+            if(bb){
+                count += 1;
+            }
+        }
+        return count;
     }
 }

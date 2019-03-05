@@ -22,16 +22,17 @@ import java.util.Scanner;
  */
 
 //java:command.entity.JavaMethod.createFile()
+//java:command.entity.JavaMethod.deleteFile()
 public class OperatorComputer extends Computer implements Runnable{
     static Socket socket;
     static InputStream inputStream;
     static OutputStream outputStream;
     public static void main(String[] args) {
         //String key = "AdministratorPC-20181117FCPZ";  //邓声根
-        String key = "zhuwbDESKTOP-DQ7BJCL"; //公司电脑
+        //String key = "zhuwbDESKTOP-DQ7BJCL"; //公司电脑
         //copy startremote.bat "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
         //copy "remote-1.0-SNAPSHOT.jar" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
-        //String key = "zhuwbDESKTOP-IHHLP8T";
+        String key = "zhuwbDESKTOP-IHHLP8T";
         try {
             socket = new Socket(PropertiesConst.server,PropertiesConst.port);
             inputStream = socket.getInputStream();
