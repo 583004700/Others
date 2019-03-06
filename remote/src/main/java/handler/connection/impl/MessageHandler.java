@@ -1,5 +1,6 @@
 package handler.connection.impl;
 
+import command.PropertiesConst;
 import command.SocketServer;
 import handler.connection.ConnectionHandler;
 import thread.ThreadManager;
@@ -42,7 +43,7 @@ public class MessageHandler extends ConnectionHandler implements Runnable{
     public Object handler() {
         System.out.println(getOtherKey()+"MessageHandler");
         try {
-            IOUtil.readStrToOutputStream(getOperatorSocket().getInputStream(),"UTF-8",getOtherSocket().getOutputStream());
+            IOUtil.readStrToOutputStream(getOperatorSocket().getInputStream(), PropertiesConst.appEncoding,getOtherSocket().getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }finally {

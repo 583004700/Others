@@ -1,5 +1,6 @@
 package handler.command.impl;
 
+import command.PropertiesConst;
 import handler.Handler;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
@@ -22,9 +23,9 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
             Process process = Runtime.getRuntime().exec("cmd");
             InputStream inputStream = process.getInputStream();
             OutputStream outputStream = process.getOutputStream();
-            PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream,"GBK");
+            PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream, PropertiesConst.cmdEncoding);
 
-            ResultReceiveIngThread resultReceiveThread = new ResultReceiveIngThread(IOUtil.wrapBufferedReader(inputStream,"GBK"),getPrintWriter());
+            ResultReceiveIngThread resultReceiveThread = new ResultReceiveIngThread(IOUtil.wrapBufferedReader(inputStream,PropertiesConst.cmdEncoding),getPrintWriter());
             ThreadManager.getExecutorService().execute(resultReceiveThread);
 
             String readStr = "";

@@ -1,5 +1,7 @@
 package util;
 
+import command.PropertiesConst;
+
 public class CmdUtil {
     /**
      * 执行命令之后关闭窗口
@@ -26,7 +28,7 @@ public class CmdUtil {
         String str = null;
         try {
             process = execClose(cmdStr);
-            str = IOUtil.readStr(process.getInputStream(),"GBK");
+            str = IOUtil.readStr(process.getInputStream(), PropertiesConst.cmdEncoding);
         } catch (Exception e) {
             e.printStackTrace();
         }

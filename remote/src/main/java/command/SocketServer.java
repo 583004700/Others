@@ -26,7 +26,7 @@ public class SocketServer {
                 String inetAddressStr = socket.getInetAddress().toString();
                 System.out.println(inetAddressStr);
                 InputStream in = socket.getInputStream();
-                String str = IOUtil.readLinStr(in, "UTF-8");
+                String str = IOUtil.readLinStr(in, PropertiesConst.appEncoding);
                 if(str == null){
                     System.out.println("null");
                 }else {

@@ -55,7 +55,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
         getPrintWriter().flush();
         try {
             fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
-            pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream());
+            pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream(),PropertiesConst.appEncoding);
             pw.println(getCompleteCommand()+":"+getOtherKey());
             pw.flush();
             if(!checkFile()){
@@ -75,7 +75,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             pw.flush();
         }
         try {
-            String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),"UTF-8");
+            String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),PropertiesConst.appEncoding);
             if(!Handler.UPFILESUCCESS.equals(otherStr)){
                 success = false;
                 System.out.println("对方较验：文件上传失败，可能是找不到文件");

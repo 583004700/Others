@@ -23,8 +23,6 @@ import java.util.Scanner;
 
 //java:command.entity.JavaMethod.createFile()
 //java:command.entity.JavaMethod.deleteFile()
-    //upfile:D:\remotefile\zzzzzremote.bat>C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
-    //upfile:D:\remotefile\zzzzzremote.bat>C:\Users\zhuwb\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
 public class OperatorComputer extends Computer implements Runnable{
     static Socket socket;
     static InputStream inputStream;
@@ -32,22 +30,24 @@ public class OperatorComputer extends Computer implements Runnable{
     public static void main(String[] args) {
         //String key = "AdministratorPC-20181117FCPZ";  //邓声根
         //String key = "zhuwbDESKTOP-DQ7BJCL"; //公司电脑
-        //copy startremote.bat "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
-        //copy "remote-1.0-SNAPSHOT.jar" "%appdata%/Microsoft/Windows/Start Menu/Programs/Startup/"
-        String key = "zhuwbDESKTOP-IHHLP8T";
+        //String key = "zhuwbDESKTOP-IHHLP8T"; //自己电脑
+        String key = System.getProperty("key");
+        if(key == null || key.equals("")){
+            key = "zhuwbDESKTOP-DQ7BJCL";
+        }
         try {
             socket = new Socket(PropertiesConst.server,PropertiesConst.port);
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
-            BufferedReader bufferedReader = IOUtil.wrapBufferedReader(inputStream,"UTF-8");
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter(outputStream));
+            BufferedReader bufferedReader = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
+            PrintWriter pw = IOUtil.wrapPrintWriter(outputStream,PropertiesConst.appEncoding);
             System.out.println(socket.getInetAddress().toString());
             pw.println(Handler.OPERATE+":"+key);
             pw.flush();
 
             ThreadManager.getExecutorService().execute(new OperatorComputer());
             while(true){
-                Scanner scanner = new Scanner(System.in);
+                Scanner scanner = new Scanner(System.in,PropertiesConst.consoleEncoding);
                 scanner.useDelimiter("\n");
                 String readStr = scanner.next();
                 OperatorExecutor operatorExecutor = new OperatorExecutor(readStr,pw,key,bufferedReader);
@@ -60,11 +60,7 @@ public class OperatorComputer extends Computer implements Runnable{
 
     public void run() {
         BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        br = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
         while(true){
             String result = null;
             try {

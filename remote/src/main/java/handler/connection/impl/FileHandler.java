@@ -1,5 +1,6 @@
 package handler.connection.impl;
 
+import command.PropertiesConst;
 import command.SocketServer;
 import handler.Handler;
 import handler.connection.ConnectionHandler;
@@ -41,11 +42,11 @@ public class FileHandler extends ConnectionHandler implements Runnable{
             InputStream downInStream = getOperatorSocket().getInputStream();
             downOutStream = getOperatorSocket().getOutputStream();
 
-            String upStr = IOUtil.readLinStr(upInStream,"UTF-8");
-            String downStr = IOUtil.readLinStr(downInStream,"UTF-8");
+            String upStr = IOUtil.readLinStr(upInStream, PropertiesConst.appEncoding);
+            String downStr = IOUtil.readLinStr(downInStream,PropertiesConst.appEncoding);
 
-            PrintWriter downPw = IOUtil.wrapPrintWriter(downOutStream);
-            PrintWriter upPw = IOUtil.wrapPrintWriter(upOutStream);
+            PrintWriter downPw = IOUtil.wrapPrintWriter(downOutStream,PropertiesConst.appEncoding);
+            PrintWriter upPw = IOUtil.wrapPrintWriter(upOutStream,PropertiesConst.appEncoding);
             if(Handler.UPFILESUCCESS.equals(upStr)){
                 //上传较验成功，通知下载流可以下载了
                 downPw.println(Handler.UPFILESUCCESS);
@@ -74,7 +75,7 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         }else{
             System.out.println("文件较验失败，服务器取消传输");
         }
-        System.out.println("服务器文件传输结束");
+        System.out.println("服务器文件传输线程结束");
     }
 
 }

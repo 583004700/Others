@@ -4,6 +4,7 @@ import command.PropertiesConst;
 import executor.OtherExecutor;
 import handler.Handler;
 import thread.ThreadManager;
+import util.IOUtil;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -79,8 +80,8 @@ public class OtherComputer extends Computer {
 
     public void connectServer() throws Exception {
         messageSocket = new Socket(getServer(), getPort());
-        messageReader = new BufferedReader(new InputStreamReader(messageSocket.getInputStream()));
-        messageWriter = new PrintWriter(new OutputStreamWriter(messageSocket.getOutputStream()));
+        messageReader = IOUtil.wrapBufferedReader(messageSocket.getInputStream(),PropertiesConst.appEncoding);
+        messageWriter = IOUtil.wrapPrintWriter(messageSocket.getOutputStream(),PropertiesConst.appEncoding);
         String key = getKey();
         sendMessage(Handler.REGISTER +":"+key);
         System.out.println("连接成功");

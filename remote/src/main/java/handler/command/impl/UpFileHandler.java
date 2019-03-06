@@ -43,7 +43,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         getPrintWriter().flush();
         try {
             fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
-            pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream());
+            pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream(),PropertiesConst.appEncoding);
             System.out.println("UpFileHandler:"+getCompleteCommand()+":"+key+":"+ Handler.UPFILE);
             pw.println(getCompleteCommand()+":"+key+":"+Handler.UPFILE);
             pw.flush();
@@ -64,7 +64,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
             pw.flush();
         }
         try {
-            String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),"UTF-8");
+            String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),PropertiesConst.appEncoding);
             if(!Handler.DOWNFILESUCCESS.equals(otherStr)){
                 success = false;
                 System.out.println("对方较验：文件下载失败，可能不能创建目录");

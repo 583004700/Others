@@ -1,13 +1,15 @@
 package util;
 
+import command.PropertiesConst;
+
 import java.io.*;
 
 public class IOUtil {
 
     public static void readStrToOutputStream(InputStream inputStream, String charsetName, OutputStream outputStream) throws Exception{
-        PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(outputStream));
+        PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream, PropertiesConst.appEncoding);
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream,charsetName));
+            BufferedReader br = IOUtil.wrapBufferedReader(inputStream,charsetName);
             String line = null;
             while((line = br.readLine()) != null){
                 printWriter.println(line);
@@ -28,7 +30,7 @@ public class IOUtil {
     public static String readStr(InputStream inputStream,String charsetName){
         StringBuilder sb = new StringBuilder();
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream,charsetName));
+            BufferedReader br = IOUtil.wrapBufferedReader(inputStream,charsetName);
             String line = null;
             while((line = br.readLine()) != null){
                 sb.append(line + "\n");
@@ -48,16 +50,12 @@ public class IOUtil {
     public static String readLinStr(InputStream inputStream,String charsetName) throws Exception{
         String line = null;
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream,charsetName));
+            BufferedReader br = IOUtil.wrapBufferedReader(inputStream,charsetName);
             line = br.readLine();
         }catch (Exception e){
             throw new Exception(e);
         }
         return line;
-    }
-
-    public static PrintWriter wrapPrintWriter(OutputStream outputStream){
-        return new PrintWriter(new OutputStreamWriter(outputStream));
     }
 
     public static PrintWriter wrapPrintWriter(OutputStream outputStream,String charsetName){
