@@ -6,6 +6,7 @@ import handler.Handler;
 import handler.command.OperatorCommandHandler;
 import thread.ThreadManager;
 import util.IOUtil;
+import util.OSUtil;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,6 +14,9 @@ import java.net.Socket;
 public class DownFileHandler extends OperatorCommandHandler implements Runnable{
     public DownFileHandler(String otherKey, String completeCommand, PrintWriter printWriter) {
         super(otherKey, completeCommand, printWriter);
+        if(OSUtil.isLinux()){
+            defaultDownPath = "/weblogic/remotefile";
+        }
     }
 
     private Socket fileSocket;
@@ -23,6 +27,12 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
     private boolean checkFile(){
         String downPath = defaultDownPath;
         fileName = new File(getCommand()).getName();
+        if(fileName.contains("\\") || fileName.contains("/")){
+            int last = fileName.lastIndexOf("\\");
+            int last2 = fileName.lastIndexOf("/");
+            int maxLast = Math.max(last,last2);
+            fileName = fileName.substring(maxLast+1,fileName.length());
+        }
         boolean b = true;
         File downPathFile = null;
         try{
@@ -43,6 +53,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             fileOutputStream = new FileOutputStream(downPathFile);
         }catch (Exception e){
             e.printStackTrace();
+            System.out.println("目录为:"+downPathFile);
             b = false;
         }
         return b;

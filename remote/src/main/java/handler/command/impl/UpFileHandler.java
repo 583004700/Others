@@ -32,6 +32,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         } catch (FileNotFoundException e) {
             b = false;
             e.printStackTrace();
+            System.out.println("未找到文件:"+filePath);
         }
         return b;
     }

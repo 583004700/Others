@@ -4,6 +4,7 @@ import command.PropertiesConst;
 import handler.Handler;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
+import util.CmdUtil;
 import util.IOUtil;
 
 import java.io.*;
@@ -20,7 +21,7 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
     public Object handler() {
         System.out.println("进入CmdReceiveIngHandler");
         try {
-            Process process = Runtime.getRuntime().exec("cmd");
+            Process process = CmdUtil.getProcess();
             InputStream inputStream = process.getInputStream();
             OutputStream outputStream = process.getOutputStream();
             PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream, PropertiesConst.cmdEncoding);

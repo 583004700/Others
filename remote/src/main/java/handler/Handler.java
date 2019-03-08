@@ -6,8 +6,9 @@ package handler;
 public interface Handler{
     //cmd指令
     String CMD = "cmd";
-    //添加
+    //添加OtherComputer
     String REGISTER = "register";
+
     String OPERATE = "operate";
     //下载文件
     String DOWNFILE = "downfile";

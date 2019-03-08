@@ -42,7 +42,7 @@ public class OtherComputer extends Computer {
     private BufferedReader messageReader;
     private PrintWriter messageWriter;
     private static volatile long startTime;
-    private static volatile long timeOut = 1000 * 60 * 30;
+    private static volatile long timeOut = PropertiesConst.timeOut;
 
     public OtherComputer() {
         TimeoutRunnable timeoutRunnable = new TimeoutRunnable(this);

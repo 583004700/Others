@@ -22,7 +22,7 @@ public class ServerExecutor extends BaseExecutor {
         String prefix = getPrefix();
         otherKey = getCommand();
         if(Handler.REGISTER.equals(prefix)){
-            System.out.println("添加"+getCompleteCommand());
+            System.out.println("添加OtherComputer:"+getCommand());
             socketServer.registerSocket(otherKey, socketServer.getSocket());
         }else if(Handler.OPERATE.equals(prefix)){
             Socket otherSocket = socketServer.getRegisterSocket(otherKey);

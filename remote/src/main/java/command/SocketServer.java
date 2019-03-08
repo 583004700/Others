@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SocketServer {
     private static ConcurrentHashMap<String, Socket> registerSockets = new ConcurrentHashMap<String, Socket>();
     private static ConcurrentHashMap<String, Socket> filesSockets = new ConcurrentHashMap<String, Socket>();
+    private static ConcurrentHashMap<String, Socket> registerOperators = new ConcurrentHashMap<String, Socket>();
     private Socket socket;
 
     public static void main(String[] args) throws Exception{
@@ -48,6 +49,10 @@ public class SocketServer {
         registerSockets.put(key,value);
     }
 
+    public void registerOperatorsSocket(String key,Socket value){
+        registerOperators.put(key,value);
+    }
+
     public Socket getFileSocket(String key){
         Socket target = filesSockets.get(key);
         Socket socket = SocketProxy.getInstance(filesSockets,key,target);
@@ -65,6 +70,12 @@ public class SocketServer {
     public Socket getRegisterSocket(String key){
         Socket target = registerSockets.get(key);
         Socket socket = SocketProxy.getInstance(registerSockets,key,target);
+        return socket;
+    }
+
+    public Socket getRegisterOperatorSocket(String key){
+        Socket target = registerOperators.get(key);
+        Socket socket = SocketProxy.getInstance(registerOperators,key,target);
         return socket;
     }
 
