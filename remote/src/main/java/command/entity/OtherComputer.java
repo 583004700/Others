@@ -6,8 +6,11 @@ import handler.Handler;
 import thread.ThreadManager;
 import util.IOUtil;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Date;
 
@@ -41,7 +44,7 @@ public class OtherComputer extends Computer {
     private Socket messageSocket;
     private BufferedReader messageReader;
     private PrintWriter messageWriter;
-    private static volatile long startTime;
+    private static volatile long startTime = new Date().getTime();
     private static volatile long timeOut = PropertiesConst.timeOut;
 
     public OtherComputer() {
@@ -79,7 +82,9 @@ public class OtherComputer extends Computer {
     }
 
     public void connectServer() throws Exception {
-        messageSocket = new Socket(getServer(), getPort());
+        messageSocket = new Socket();
+        //messageSocket.bind(new InetSocketAddress(PropertiesConst.operatorPort));//绑定本地端口
+        messageSocket.connect(new InetSocketAddress(getServer(), getPort()));//绑定服务器端口
         messageReader = IOUtil.wrapBufferedReader(messageSocket.getInputStream(),PropertiesConst.appEncoding);
         messageWriter = IOUtil.wrapPrintWriter(messageSocket.getOutputStream(),PropertiesConst.appEncoding);
         String key = getKey();

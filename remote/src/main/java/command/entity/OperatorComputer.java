@@ -6,7 +6,11 @@ import handler.Handler;
 import thread.ThreadManager;
 import util.IOUtil;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Scanner;
@@ -33,10 +37,12 @@ public class OperatorComputer extends Computer implements Runnable{
         //String key = "zhuwbDESKTOP-IHHLP8T"; //自己电脑
         String key = System.getProperty("key");
         if(key == null || key.equals("")){
-            key = "nullnullnull";
+            key = "zhuwbDESKTOP-DQ7BJCLDESKTOP-DQ7BJCL";
         }
         try {
-            socket = new Socket(PropertiesConst.server,PropertiesConst.port);
+            socket = new Socket();
+            //socket.bind(new InetSocketAddress(PropertiesConst.otherPort));//绑定本地端口
+            socket.connect(new InetSocketAddress(PropertiesConst.server,PropertiesConst.port));//绑定服务器端口
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
             BufferedReader bufferedReader = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);

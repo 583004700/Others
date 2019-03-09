@@ -20,7 +20,7 @@ public class SocketServer {
     private Socket socket;
 
     public static void main(String[] args) throws Exception{
-        ServerSocket serverSocket = new ServerSocket(8867);
+        ServerSocket serverSocket = new ServerSocket(PropertiesConst.serverLocalPort);
         while (true) {
             try {
                 Socket socket = serverSocket.accept();

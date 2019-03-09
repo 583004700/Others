@@ -7,11 +7,14 @@ import java.util.Properties;
 
 public class PropertiesConst {
     public static String server;
-    public static int port;
+    public static int port = 25558;
     public static String appEncoding;
     public static String cmdEncoding;
     public static String consoleEncoding;
     public static long timeOut = 1000;
+//    public static int otherPort = 9999;
+//    public static int operatorPort = 9998;
+    public static int serverLocalPort = 8867;
 
     static {
         Properties properties = null;
@@ -28,6 +31,9 @@ public class PropertiesConst {
             }
             consoleEncoding = (String) properties.get("consoleencoding");
             timeOut = Long.valueOf((String)properties.get("timeOut"));
+//            otherPort = Integer.valueOf((String)properties.get("otherPort"));
+//            operatorPort = Integer.valueOf((String)properties.get("operatorPort"));
+            serverLocalPort = Integer.valueOf((String)properties.get("serverLocalPort"));
         } catch (Exception e) {
             e.printStackTrace();
         }
