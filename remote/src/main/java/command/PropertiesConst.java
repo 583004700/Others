@@ -15,6 +15,7 @@ public class PropertiesConst {
 //    public static int otherPort = 9999;
 //    public static int operatorPort = 9998;
     public static int serverLocalPort = 8867;
+    public static String sshEncoding = "UTF-8";
 
     static {
         Properties properties = null;
@@ -34,6 +35,7 @@ public class PropertiesConst {
 //            otherPort = Integer.valueOf((String)properties.get("otherPort"));
 //            operatorPort = Integer.valueOf((String)properties.get("operatorPort"));
             serverLocalPort = Integer.valueOf((String)properties.get("serverLocalPort"));
+            sshEncoding = (String)properties.get("sshEncoding");
         } catch (Exception e) {
             e.printStackTrace();
         }
