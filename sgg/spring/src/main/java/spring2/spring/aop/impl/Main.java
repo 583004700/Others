@@ -11,6 +11,6 @@ public class Main {
 
         System.out.println(arithmeticCalculator.add(1,4));
 
-        System.out.println(arithmeticCalculator.div(10,4));
+        System.out.println(arithmeticCalculator.div(10,2));
     }
 }
