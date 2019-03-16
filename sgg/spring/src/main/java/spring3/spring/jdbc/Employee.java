@@ -4,6 +4,7 @@ public class Employee {
     private Integer id;
     private String lastName;
     private String email;
+    private String deptId;
 
     private Department department;
 
@@ -47,5 +48,13 @@ public class Employee {
                 ", email='" + email + '\'' +
                 ", department=" + department +
                 '}';
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
     }
 }

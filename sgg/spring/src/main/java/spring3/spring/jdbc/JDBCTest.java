@@ -6,11 +6,16 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class JDBCTest {
@@ -18,10 +23,44 @@ public class JDBCTest {
     private ApplicationContext ctx = null;
     private JdbcTemplate jdbcTemplate;
     private EmployeeDao employeeDao;
+    private DepartmentDao departmentDao;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     {
         ctx = new ClassPathXmlApplicationContext("spring3/applicationContext.xml");
         jdbcTemplate = (JdbcTemplate)ctx.getBean("jdbcTemplate");
         employeeDao = ctx.getBean(EmployeeDao.class);
+        departmentDao = ctx.getBean(DepartmentDao.class);
+        namedParameterJdbcTemplate = ctx.getBean(NamedParameterJdbcTemplate.class);
+    }
+
+    @Test
+    public void testNamedParameterJdbcTemplate2(){
+        String sql = "insert into employees(last_name,email,dept_id) values(:lastName,:email,:deptId)";
+        Employee employee = new Employee();
+        employee.setLastName("XYZ");
+        employee.setEmail("xyz@sina.com");
+        employee.setDeptId("2");
+
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(employee);
+        namedParameterJdbcTemplate.update(sql,parameterSource);
+    }
+
+    /**
+     * 可以为参数起名字
+     */
+    @Test
+    public void testNamedParameterJdbcTemplate(){
+        String sql = "insert into employees(last_name,email,dept_id) values(:ln,:email,:deptid)";
+        Map<String,Object> paramMap = new HashMap<String,Object>();
+        paramMap.put("ln","FF");
+        paramMap.put("email","89@qq.com");
+        paramMap.put("deptid",2);
+        namedParameterJdbcTemplate.update(sql,paramMap);
+    }
+
+    @Test
+    public void testDepartmentDao(){
+        System.out.println(departmentDao.get(1));
     }
 
     @Test
