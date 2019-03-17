@@ -32,11 +32,37 @@
         <constructor-arg ref="dataSource"></constructor-arg>
     </bean>
 
+    <bean id="bookShopDao" class="spring3.spring.tx.xml.BookShopDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"></property>
+    </bean>
+
+    <bean id="bookShopService" class="spring3.spring.tx.xml.service.impl.BookShopServiceImpl">
+        <property name="bookShopDao" ref="bookShopDao"></property>
+    </bean>
+
+    <bean id="cashier" class="spring3.spring.tx.xml.service.impl.CashierImpl">
+        <property name="bookShopService" ref="bookShopService"></property>
+    </bean>
+
     <!--配置事务管理器-->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"></property>
     </bean>
 
-    <!--启用事务注解-->
-    <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+    <!--配置事务属性-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="purchase" propagation="REQUIRES_NEW" />
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--配置事务切入点，以及把事务切入点和事务属性关联起来-->
+    <aop:config>
+        <aop:pointcut id="txPointCut" expression="execution(* spring3.spring.tx.xml.*.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut"></aop:advisor>
+    </aop:config>
+
 </beans>
