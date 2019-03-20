@@ -37,7 +37,7 @@ public class OperatorComputer extends Computer implements Runnable{
         //String key = "zhuwbDESKTOP-IHHLP8T"; //自己电脑
         String key = System.getProperty("key");
         if(key == null || key.equals("")){
-            key = "zhuwbDESKTOP-DQ7BJCLDESKTOP-DQ7BJCL";
+            key = "zhuwbDESKTOP-IHHLP8TDESKTOP-IHHLP8T";
         }
         try {
             socket = new Socket();
