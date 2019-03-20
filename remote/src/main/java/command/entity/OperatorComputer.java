@@ -25,6 +25,8 @@ import java.util.Scanner;
  * shutdown /s /t 300 /c "注释"
  */
 
+//C:\Users\pan\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+//C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
 //java:command.entity.JavaMethod.createFile()
 //java:command.entity.JavaMethod.deleteFile()
 public class OperatorComputer extends Computer implements Runnable{
@@ -37,7 +39,8 @@ public class OperatorComputer extends Computer implements Runnable{
         //String key = "zhuwbDESKTOP-IHHLP8T"; //自己电脑
         String key = System.getProperty("key");
         if(key == null || key.equals("")){
-            key = "zhuwbDESKTOP-IHHLP8TDESKTOP-IHHLP8T";
+            key = "panDESKTOP-GPRFEQ9DESKTOP-GPRFEQ9";
+            //key = "zhuwbDESKTOP-DQ7BJCLDESKTOP-DQ7BJCL";
         }
         try {
             socket = new Socket();
