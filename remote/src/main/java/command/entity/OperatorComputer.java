@@ -27,6 +27,15 @@ import java.util.Scanner;
 
 //C:\Users\pan\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
+
+//reg query HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+//reg add HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v baidujingyan /t REG_SZ /d c:\windows\system32\notepad.exe /f
+//reg delete HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run /v baidujingyan /f
+//1、HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+//2、HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run
+//3、HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
+//4、HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
+
 //java:command.entity.JavaMethod.createFile()
 //java:command.entity.JavaMethod.deleteFile()
 public class OperatorComputer extends Computer implements Runnable{
