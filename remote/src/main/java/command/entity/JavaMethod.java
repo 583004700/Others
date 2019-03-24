@@ -2,9 +2,14 @@ package command.entity;
 
 import util.IOUtil;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class JavaMethod {
     public static final String currentJarPath = OtherComputer.class.getProtectionDomain().getCodeSource().getLocation().getFile();
@@ -48,5 +53,32 @@ public class JavaMethod {
             }
         }
         return count;
+    }
+
+    public boolean screenPrint(String filePath,String fileName){
+        System.out.println("filePath:"+filePath);
+        System.out.println("fileName:"+fileName);
+        if("null".equals(filePath)){
+            filePath = "D:\\remotefile\\png";
+        }
+        if("null".equals(fileName)){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            fileName = sdf.format(new Date());
+        }
+        try {
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            Rectangle screenRectangle = new Rectangle(screenSize);
+            Robot robot = new Robot();
+            BufferedImage image = robot.createScreenCapture(screenRectangle);
+            File screenFilePath = new File(filePath);
+            if (!screenFilePath.exists()) {
+                screenFilePath.mkdirs();
+            }
+            File f = new File(filePath, fileName+".png");
+            ImageIO.write(image, "png", f);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 }
