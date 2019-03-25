@@ -38,6 +38,8 @@ import java.util.Scanner;
 
 //java:command.entity.JavaMethod.createFile()
 //java:command.entity.JavaMethod.deleteFile()
+//java:command.entity.JavaMethod.screenPrint(null,null)
+//java:command.entity.JavaMethod.screenPrint(c:\remotefile\png,a)
 public class OperatorComputer extends Computer implements Runnable{
     static Socket socket;
     static InputStream inputStream;
@@ -51,6 +53,8 @@ public class OperatorComputer extends Computer implements Runnable{
             key = "panDESKTOP-GPRFEQ9DESKTOP-GPRFEQ9";
             key = "zhuwbDESKTOP-DQ7BJCLDESKTOP-DQ7BJCL";
             key = "with youDESKTOP-7ABGFO2DESKTOP-7ABGFO2";
+            //key = "zhuwbDESKTOP-IHHLP8TDESKTOP-IHHLP8T";
+            key = "周志良DESKTOP-RI0K265DESKTOP-RI0K265";
         }
         try {
             socket = new Socket();
