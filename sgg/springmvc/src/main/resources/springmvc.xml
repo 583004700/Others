@@ -19,8 +19,20 @@
 
     <!--配置自动扫描的包-->
     <context:component-scan base-package="springmvc1.com.springmvc"></context:component-scan>
+
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"></property>
         <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!-- 配置视图  BeanNameViewResolver 解析器: 使用视图的名字来解析视图 -->
+    <!-- 通过 order 属性来定义视图解析器的优先级, order 值越小优先级越高 -->
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+        <property name="order" value="100"></property>
+    </bean>
+
+    <!--配置国际化资源文件-->
+    <bean class="org.springframework.context.support.ResourceBundleMessageSource" id="messageSource">
+        <property name="basename" value="i18n"></property>
     </bean>
 </beans>
