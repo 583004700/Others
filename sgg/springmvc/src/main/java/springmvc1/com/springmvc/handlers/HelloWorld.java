@@ -15,6 +15,17 @@ import java.util.Map;
 @SessionAttributes(value={"user"},types = {String.class})
 public class HelloWorld {
 
+    @RequestMapping("/testRedirect")
+    public String testRedirect(){
+        System.out.println("testRedirect");
+        return "redirect:/index.jsp";
+    }
+
+    @RequestMapping("/testView")
+    public String testView(){
+        return "helloView";
+    }
+
     /**
      * @ModelAttribute 标记的方法会在每个方法执行之前被调用
      * @param id

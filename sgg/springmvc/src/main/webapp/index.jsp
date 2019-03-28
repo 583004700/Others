@@ -11,6 +11,10 @@
     <title>index</title>
 </head>
 <body>
+    <a href="/testRedirect">Test Redirect</a>
+    <br/>
+    <a href="/testView">Test View</a>
+
     <form action="testModelAttribute" method="post">
         <input type="hidden" name="id" value="2"/>
         username:<input type="text" name="username" value="Tom"/>
