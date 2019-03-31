@@ -81,6 +81,14 @@ public class Docker {
          *
          * docker run -it -v /myDataVolume:/dataVolumeContainer centos        myDataVolume是机器上的目录；dataVolumeContainer是容器中的目录
          * docker run -it -v /myDataVolume:/dataVolume:ro centos        只读，在容器内不能修改
+         *
+         * vim Dockerfile
+         * docker build -f /mydocker/Dockerfile -t zzyy/centos .
+         * docker run -it --name dc02 --volumes-from dc01 zzyy/centos    容器间数据共享
+         *
+         * docker history 镜像id
+         *
+         * docker 同步到阿里云
          */
     }
 }
