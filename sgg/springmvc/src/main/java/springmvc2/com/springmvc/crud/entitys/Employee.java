@@ -25,7 +25,7 @@ public class Employee {
 	@Past
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date birth;
-	
+
 	@NumberFormat(pattern="#,###,###.#")
 	private Float salary;
 
