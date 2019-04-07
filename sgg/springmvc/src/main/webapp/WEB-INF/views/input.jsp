@@ -2,14 +2,29 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>input</title>
 </head>
 <body>
+    <form action="testConversionServiceConverter" method="post">
+        <!--lastname-email-gender-department.id 例如：gg-gg@qq.com-0-105-->
+        Employee：<input type="text" name="employee"/>
+        <input type="submit" value="Submit"/>
+    </form>
+
+    <br/><br/>
+
     <!--modelAttribute代表请求域中的变量-->
-    <form:form action="emp" method="post" modelAttribute="employee">
-        LastName：<form:input path="lastName"/>
+    <form:form action="${pageContext.request.contextPath}/emp" method="post" modelAttribute="employee">
+        <c:if test="${employee.id == null}">
+            LastName：<form:input path="lastName"/>
+        </c:if>
+        <c:if test="${employee.id != null}">
+            <form:hidden path="id"/>
+            <input type="hidden" name="_method" value="PUT"/>
+        </c:if>
         <br/>
         Email:<form:input path="email"/>
         <br/>
@@ -23,6 +38,8 @@
         <br/>
         Department：<form:select path="department.id" items="${departments}" itemLabel="departmentName"
         itemValue="id"></form:select>
+        <br/>
+        <%--Birth：<form:input path="birth" />--%>
         <br/>
         <input type="submit" value="Submit"/>
     </form:form>
