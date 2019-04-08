@@ -29,12 +29,18 @@
 
     <mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
 
+    <!--<mvc:annotation-driven></mvc:annotation-driven>-->
+
     <!--配置ConversionService-->
-    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="converters">
             <set>
                 <ref bean="employeeConverter" />
             </set>
         </property>
+    </bean>
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="springmvc2.i18n"></property>
     </bean>
 </beans>

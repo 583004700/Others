@@ -18,8 +18,12 @@
 
     <!--modelAttribute代表请求域中的变量-->
     <form:form action="${pageContext.request.contextPath}/emp" method="post" modelAttribute="employee">
+        <form:errors path="*"></form:errors>
+
+        <br/>
         <c:if test="${employee.id == null}">
             LastName：<form:input path="lastName"/>
+            <form:errors path="lastName" />
         </c:if>
         <c:if test="${employee.id != null}">
             <form:hidden path="id"/>
@@ -27,6 +31,7 @@
         </c:if>
         <br/>
         Email:<form:input path="email"/>
+        <form:errors path="email" />
         <br/>
         <%
             Map<String,String> genders = new HashMap<String,String>();
@@ -39,7 +44,10 @@
         Department：<form:select path="department.id" items="${departments}" itemLabel="departmentName"
         itemValue="id"></form:select>
         <br/>
-        <%--Birth：<form:input path="birth" />--%>
+        Birth：<form:input path="birth" />
+        <form:errors path="email" />
+        <br/>
+        Salary：<form:input path="salary" />
         <br/>
         <input type="submit" value="Submit"/>
     </form:form>
