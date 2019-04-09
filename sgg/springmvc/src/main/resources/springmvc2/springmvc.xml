@@ -27,9 +27,9 @@
 	-->
     <mvc:default-servlet-handler/>
 
-    <mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
+    <!--<mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>-->
 
-    <!--<mvc:annotation-driven></mvc:annotation-driven>-->
+    <mvc:annotation-driven></mvc:annotation-driven>
 
     <!--配置ConversionService-->
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
@@ -43,4 +43,11 @@
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="springmvc2.i18n"></property>
     </bean>
+
+    <!-- 配置 SessionLocalResolver -->
+    <bean id="localeResolver"
+          class="org.springframework.web.servlet.i18n.SessionLocaleResolver"></bean>
+    
+    <mvc:view-controller path="/i18n" view-name="i18n" />
+    <mvc:view-controller path="/i18n2" view-name="i18n2" />
 </beans>
