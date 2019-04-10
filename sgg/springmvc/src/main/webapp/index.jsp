@@ -29,6 +29,13 @@
     </script>
 </head>
 <body>
+    <form action="/testFileUpload" method="post" enctype="multipart/form-data">
+        File：<input type="file" name="file" />
+        Desc：<input type="text" name="desc" />
+        <input type="submit" value="Submit" />
+    </form>
+    <br/>
+
     <a href="/emps">List All Employees</a>
     <br/><br/>
     <a href="/testJson" id="testJson">Test Json</a>
