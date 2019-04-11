@@ -1,4 +1,4 @@
-package springmvc2.com.springmvc.crud.test;
+package springmvc2.com.springmvc.test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -6,11 +6,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import springmvc2.com.springmvc.crud.dao.EmployeeDao;
 import springmvc2.com.springmvc.crud.entitys.Employee;
 
@@ -28,6 +26,28 @@ public class SpringMVCTest {
 
     @Autowired
     private ResourceBundleMessageSource messageSource;
+
+//    @ExceptionHandler({RuntimeException.class})
+//    public ModelAndView handleArithmeticException2(Exception ex){
+//        System.out.println("[出异常了]："+ex);
+//        ModelAndView mv = new ModelAndView("error");
+//        mv.addObject("exception", ex);
+//        return mv;
+//    }
+
+//    @ExceptionHandler({ArithmeticException.class})
+//    public ModelAndView handleArithmeticException(Exception ex){
+//        System.out.println("出异常了："+ex);
+//        ModelAndView mv = new ModelAndView("error");
+//        mv.addObject("exception", ex);
+//        return mv;
+//    }
+
+    @RequestMapping("/testExceptionHandlerExceptionResolver")
+    public String testExceptionHandlerExceptionResolver(@RequestParam("i") int i){
+        System.out.println("result："+(10/i));
+        return "success";
+    }
 
     @RequestMapping("/testFileUpload")
     public String testFileUpload(@RequestParam("desc") String desc, @RequestParam("file")MultipartFile file){

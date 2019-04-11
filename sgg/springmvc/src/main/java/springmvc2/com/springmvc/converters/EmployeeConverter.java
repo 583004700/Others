@@ -1,4 +1,4 @@
-package springmvc2.com.springmvc.crud.converters;
+package springmvc2.com.springmvc.converters;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
