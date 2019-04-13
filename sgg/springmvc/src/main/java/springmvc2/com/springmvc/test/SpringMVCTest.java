@@ -27,6 +27,29 @@ public class SpringMVCTest {
     @Autowired
     private ResourceBundleMessageSource messageSource;
 
+    @RequestMapping(value="/testSimpleMappingExceptionResolver")
+    public String testSimpleMappingExceptionResolver(@RequestParam("i") int i){
+        String[] vals = new String[10];
+        System.out.println(vals[i]);
+        return "success";
+    }
+
+    @RequestMapping(value="/testDefaultHandlerExceptionResolver",method = RequestMethod.POST)
+    public String testDefaultHandlerExceptionResolver(){
+        System.out.println("testDefaultHandlerExceptionResolver...");
+        return "success";
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND,reason = "测试")
+    @RequestMapping("/testResponseStatusExceptionResolver")
+    public String testResponseStatusExceptionResolver(@RequestParam("i") int i){
+        if(i == 13){
+            throw new UserNameNotMatchPasswordException();
+        }
+        System.out.println("testResponseStatusExceptionResolver...");
+        return "success";
+    }
+
 //    @ExceptionHandler({RuntimeException.class})
 //    public ModelAndView handleArithmeticException2(Exception ex){
 //        System.out.println("[出异常了]："+ex);
