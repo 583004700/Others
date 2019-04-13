@@ -1,39 +1,15 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.springframework.core.env;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.SystemPropertyUtils;
 
-/**
- * Abstract base class for resolving properties against any underlying source.
- *
- * @author Chris Beams
- * @author Juergen Hoeller
- * @since 3.1
- */
+
 public abstract class AbstractPropertyResolver implements ConfigurablePropertyResolver {
 
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -43,7 +19,7 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 	private PropertyPlaceholderHelper nonStrictHelper;
 
 	private PropertyPlaceholderHelper strictHelper;
-
+	//是否忽略无法处理的属性占位符，这里是false，也就是遇到无法处理的属性占位符且没有默认值则抛出异常
 	private boolean ignoreUnresolvableNestedPlaceholders = false;
 
 	private String placeholderPrefix = SystemPropertyUtils.PLACEHOLDER_PREFIX;
@@ -115,28 +91,19 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 		return value;
 	}
 
-	/**
-	 * {@inheritDoc} The default is "${".
-	 * @see org.springframework.util.SystemPropertyUtils#PLACEHOLDER_PREFIX
-	 */
+	
 	@Override
 	public void setPlaceholderPrefix(String placeholderPrefix) {
 		this.placeholderPrefix = placeholderPrefix;
 	}
 
-	/**
-	 * {@inheritDoc} The default is "}".
-	 * @see org.springframework.util.SystemPropertyUtils#PLACEHOLDER_SUFFIX
-	 */
+	
 	@Override
 	public void setPlaceholderSuffix(String placeholderSuffix) {
 		this.placeholderSuffix = placeholderSuffix;
 	}
 
-	/**
-	 * {@inheritDoc} The default is ":".
-	 * @see org.springframework.util.SystemPropertyUtils#VALUE_SEPARATOR
-	 */
+	
 	@Override
 	public void setValueSeparator(String valueSeparator) {
 		this.valueSeparator = valueSeparator;
@@ -158,28 +125,11 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 		return doResolvePlaceholders(text, this.strictHelper);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * <p>The default value for this implementation is {@code false}.
-	 * @since 3.2
-	 */
 	@Override
 	public void setIgnoreUnresolvableNestedPlaceholders(boolean ignoreUnresolvableNestedPlaceholders) {
 		this.ignoreUnresolvableNestedPlaceholders = ignoreUnresolvableNestedPlaceholders;
 	}
 
-	/**
-	 * Resolve placeholders within the given string, deferring to the value of
-	 * {@link #setIgnoreUnresolvableNestedPlaceholders} to determine whether any
-	 * unresolvable placeholders should raise an exception or be ignored.
-	 * <p>Invoked from {@link #getProperty} and its variants, implicitly resolving
-	 * nested placeholders. In contrast, {@link #resolvePlaceholders} and
-	 * {@link #resolveRequiredPlaceholders} do <emphasis>not</emphasis> delegate
-	 * to this method but rather perform their own handling of unresolvable
-	 * placeholders, as specified by each of those methods.
-	 * @since 3.2
-	 * @see #setIgnoreUnresolvableNestedPlaceholders
-	 */
 	protected String resolveNestedPlaceholders(String value) {
 		return this.ignoreUnresolvableNestedPlaceholders ?
 				resolvePlaceholders(value) : resolveRequiredPlaceholders(value);
@@ -192,6 +142,12 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 
 	private String doResolvePlaceholders(String text, PropertyPlaceholderHelper helper) {
 		return helper.replacePlaceholders(text, new PropertyPlaceholderHelper.PlaceholderResolver() {
+
+			/**
+			 * 	得到占位符名称对应的值
+			 * @param placeholderName
+			 * @return
+			 */
 			@Override
 			public String resolvePlaceholder(String placeholderName) {
 				return getPropertyAsRawString(placeholderName);
@@ -199,12 +155,7 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 		});
 	}
 
-	/**
-	 * Retrieve the specified property as a raw String,
-	 * i.e. without resolution of nested placeholders.
-	 * @param key the property name to resolve
-	 * @return the property value or {@code null} if none found
-	 */
+	
 	protected abstract String getPropertyAsRawString(String key);
 
 }

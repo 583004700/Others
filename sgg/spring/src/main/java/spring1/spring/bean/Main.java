@@ -4,6 +4,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import spring1.spring.bean.collections.DataSource;
 
+//匹配java块级注释  \/\*([^\*^\/]*|[\*^\/*]*|[^\**\/]*)*\*\/
+
 public class Main {
     public static void main(String[] args) {
 //        HelloWorld helloWorld = new HelloWorld();
@@ -12,9 +14,9 @@ public class Main {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("spring1/applicationContext.xml");
         HelloWorld helloWorld = (HelloWorld) ctx.getBean("helloWorld");
 
-        HelloWorld helloWorld1 = ctx.getBean(HelloWorld.class);
-
         helloWorld.hello();
+
+        HelloWorld helloWorld1 = ctx.getBean(HelloWorld.class);
 
         System.out.println(helloWorld == helloWorld1);
 
@@ -35,5 +37,9 @@ public class Main {
 
         spring1.spring.bean.collections.Person person3 = (spring1.spring.bean.collections.Person)ctx.getBean("person3");
         System.out.println(person3);
+
+        System.out.println(System.getProperties());
+
+        System.out.println(System.getenv());
     }
 }

@@ -1,19 +1,3 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.springframework.core;
 
 import java.io.IOException;
@@ -28,54 +12,23 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
-/**
- * Internal utility class that can be used to obtain wrapped {@link Serializable} variants
- * of {@link java.lang.reflect.Type}s.
- *
- * <p>{@link #forField(Field) Fields} or {@link #forMethodParameter(MethodParameter)
- * MethodParameters} can be used as the root source for a serializable type. Alternatively
- * the {@link #forGenericSuperclass(Class) superclass},
- * {@link #forGenericInterfaces(Class) interfaces} or {@link #forTypeParameters(Class)
- * type parameters} or a regular {@link Class} can also be used as source.
- *
- * <p>The returned type will either be a {@link Class} or a serializable proxy of
- * {@link GenericArrayType}, {@link ParameterizedType}, {@link TypeVariable} or
- * {@link WildcardType}. With the exception of {@link Class} (which is final) calls to
- * methods that return further {@link Type}s (for example
- * {@link GenericArrayType#getGenericComponentType()}) will be automatically wrapped.
- *
- * @author Phillip Webb
- * @since 4.0
- */
 abstract class SerializableTypeWrapper {
 
 	private static final Class<?>[] SUPPORTED_SERIALAZABLE_TYPES = { GenericArrayType.class,
 		ParameterizedType.class, TypeVariable.class, WildcardType.class };
 
-
-	/**
-	 * Return a {@link Serializable} variant of {@link Field#getGenericType()}.
-	 */
 	public static Type forField(Field field) {
 		Assert.notNull(field, "Field must not be null");
 		return forTypeProvider(new FieldTypeProvider(field));
 	}
 
-	/**
-	 * Return a {@link Serializable} variant of
-	 * {@link MethodParameter#getGenericParameterType()}.
-	 */
 	public static Type forMethodParameter(MethodParameter methodParameter) {
 		return forTypeProvider(new MethodParameterTypeProvider(methodParameter));
 	}
 
-	/**
-	 * Return a {@link Serializable} variant of {@link Class#getGenericSuperclass()}.
-	 */
 	public static Type forGenericSuperclass(final Class<?> type) {
 		return forTypeProvider(new DefaultTypeProvider() {
 
@@ -89,9 +42,6 @@ abstract class SerializableTypeWrapper {
 		});
 	}
 
-	/**
-	 * Return a {@link Serializable} variant of {@link Class#getGenericInterfaces()}.
-	 */
 	public static Type[] forGenericInterfaces(final Class<?> type) {
 		Type[] result = new Type[type.getGenericInterfaces().length];
 		for (int i = 0; i < result.length; i++) {
@@ -110,9 +60,6 @@ abstract class SerializableTypeWrapper {
 		return result;
 	}
 
-	/**
-	 * Return a {@link Serializable} variant of {@link Class#getTypeParameters()}.
-	 */
 	public static Type[] forTypeParameters(final Class<?> type) {
 		Type[] result = new Type[type.getTypeParameters().length];
 		for (int i = 0; i < result.length; i++) {
@@ -131,10 +78,6 @@ abstract class SerializableTypeWrapper {
 		return result;
 	}
 
-
-	/**
-	 * Return a {@link Serializable} {@link Type} backed by a {@link TypeProvider} .
-	 */
 	static Type forTypeProvider(final TypeProvider provider) {
 		Assert.notNull(provider, "Provider must not be null");
 		if (provider.getType() instanceof Serializable || provider.getType() == null) {
@@ -152,28 +95,14 @@ abstract class SerializableTypeWrapper {
 				+ provider.getType().getClass().getName());
 	}
 
-
-	/**
-	 * A {@link Serializable} interface providing access to a {@link Type}.
-	 */
 	static interface TypeProvider extends Serializable {
 
-		/**
-		 * Return the (possibly non {@link Serializable}) {@link Type}.
-		 */
 		Type getType();
 
-		/**
-		 * Return the source of the type or {@code null}.
-		 */
 		Object getSource();
 
 	}
 
-
-	/**
-	 * Default implementation of {@link TypeProvider} with a {@code null} source.
-	 */
 	static abstract class DefaultTypeProvider implements TypeProvider {
 
 		private static final long serialVersionUID = 1L;
@@ -186,11 +115,6 @@ abstract class SerializableTypeWrapper {
 
 	}
 
-	/**
-	 * {@link Serializable} {@link InvocationHandler} used by the Proxied {@link Type}.
-	 * Provides serialization support and enhances any methods that return {@code Type}
-	 * or {@code Type[]}.
-	 */
 	private static class TypeProxyInvocationHandler implements InvocationHandler,
 			Serializable {
 
@@ -222,11 +146,6 @@ abstract class SerializableTypeWrapper {
 
 	}
 
-
-
-	/**
-	 * {@link TypeProvider} for {@link Type}s obtained from a {@link Field}.
-	 */
 	static class FieldTypeProvider implements TypeProvider {
 
 		private static final long serialVersionUID = 1L;
@@ -270,10 +189,6 @@ abstract class SerializableTypeWrapper {
 
 	}
 
-
-	/**
-	 * {@link TypeProvider} for {@link Type}s obtained from a {@link MethodParameter}.
-	 */
 	static class MethodParameterTypeProvider implements TypeProvider {
 
 		private static final long serialVersionUID = 1L;
@@ -338,10 +253,6 @@ abstract class SerializableTypeWrapper {
 
 	}
 
-
-	/**
-	 * {@link TypeProvider} for {@link Type}s obtained by invoking a no-arg method.
-	 */
 	static class MethodInvokeTypeProvider implements TypeProvider {
 
 		private static final long serialVersionUID = 1L;
@@ -384,6 +295,5 @@ abstract class SerializableTypeWrapper {
 					this.provider.getType().getClass(), this.methodName);
 			this.result = ReflectionUtils.invokeMethod(method, this.provider.getType());
 		}
-
 	}
 }

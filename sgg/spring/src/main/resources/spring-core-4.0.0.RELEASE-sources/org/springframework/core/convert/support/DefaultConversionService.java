@@ -1,64 +1,20 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.springframework.core.convert.support;
 
 import java.util.Locale;
 import java.util.UUID;
-
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.util.ClassUtils;
 
-/**
- * A specialization of {@link GenericConversionService} configured by default with
- * converters appropriate for most environments.
- *
- * <p>Designed for direct instantiation but also exposes the static
- * {@link #addDefaultConverters(ConverterRegistry)} utility method for ad hoc use against any
- * {@code ConverterRegistry} instance.
- *
- * @author Chris Beams
- * @author Juergen Hoeller
- * @since 3.1
- */
 public class DefaultConversionService extends GenericConversionService {
 
-	/** Java 8's java.time package available? */
 	private static final boolean zoneIdAvailable =
 			ClassUtils.isPresent("java.time.ZoneId", DefaultConversionService.class.getClassLoader());
 
-
-	/**
-	 * Create a new {@code DefaultConversionService} with the set of
-	 * {@linkplain DefaultConversionService#addDefaultConverters(ConverterRegistry) default converters}.
-	 */
 	public DefaultConversionService() {
 		addDefaultConverters(this);
 	}
 
-
-	// static utility methods
-
-	/**
-	 * Add converters appropriate for most environments.
-	 * @param converterRegistry the registry of converters to add to (must also be castable to ConversionService,
-	 * e.g. being a {@link ConfigurableConversionService})
-	 * @throws ClassCastException if the given ConverterRegistry could not be cast to a ConversionService
-	 */
 	public static void addDefaultConverters(ConverterRegistry converterRegistry) {
 		addScalarConverters(converterRegistry);
 		addCollectionConverters(converterRegistry);
@@ -74,7 +30,6 @@ public class DefaultConversionService extends GenericConversionService {
 	}
 
 	// internal helpers
-
 	private static void addScalarConverters(ConverterRegistry converterRegistry) {
 		converterRegistry.addConverterFactory(new NumberToNumberConverterFactory());
 
@@ -126,11 +81,7 @@ public class DefaultConversionService extends GenericConversionService {
 		converterRegistry.addConverter(new CollectionToObjectConverter(conversionService));
 		converterRegistry.addConverter(new ObjectToCollectionConverter(conversionService));
 	}
-
-
-	/**
-	 * Inner class to avoid a hard-coded dependency on Java 8's {@link java.time.ZoneId}.
-	 */
+	
 	private static final class ZoneIdConverterRegistrar {
 
 		public static void registerZoneIdConverters(ConverterRegistry converterRegistry) {
@@ -138,5 +89,4 @@ public class DefaultConversionService extends GenericConversionService {
 			converterRegistry.addConverter(new ZoneIdToTimeZoneConverter());
 		}
 	}
-
 }
