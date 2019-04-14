@@ -364,4 +364,5 @@ public class TypeDescriptor implements Serializable {
 		}
 		return new TypeDescriptor(type, null, source.annotations);
 	}
+
 }

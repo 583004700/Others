@@ -1,19 +1,3 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.springframework.core;
 
 import java.io.IOException;
@@ -37,33 +21,20 @@ import org.springframework.asm.SpringAsmInfo;
 import org.springframework.asm.Type;
 import org.springframework.util.ClassUtils;
 
-/**
- * Implementation of {@link ParameterNameDiscoverer} that uses the LocalVariableTable
- * information in the method attributes to discover parameter names. Returns
- * {@code null} if the class file was compiled without debug information.
- *
- * <p>Uses ObjectWeb's ASM library for analyzing class files. Each discoverer instance
- * caches the ASM discovered information for each introspected Class, in a thread-safe
- * manner. It is recommended to reuse ParameterNameDiscoverer instances as far as possible.
- *
- * @author Adrian Colyer
- * @author Costin Leau
- * @author Juergen Hoeller
- * @author Chris Beams
- * @since 2.0
- */
 public class LocalVariableTableParameterNameDiscoverer implements ParameterNameDiscoverer {
 
 	private static Log logger = LogFactory.getLog(LocalVariableTableParameterNameDiscoverer.class);
 
-	// marker object for classes that do not have any debug info
 	private static final Map<Member, String[]> NO_DEBUG_INFO_MAP = Collections.emptyMap();
 
-	// the cache uses a nested index (value is a map) to keep the top level cache relatively small in size
 	private final Map<Class<?>, Map<Member, String[]>> parameterNamesCache =
 			new ConcurrentHashMap<Class<?>, Map<Member, String[]>>(32);
 
-
+	/**
+	 * 获取方法参数名集合
+	 * @param method
+	 * @return
+	 */
 	@Override
 	public String[] getParameterNames(Method method) {
 		Method originalMethod = BridgeMethodResolver.findBridgedMethod(method);
@@ -93,15 +64,9 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 		return null;
 	}
 
-	/**
-	 * Inspects the target class. Exceptions will be logged and a maker map returned
-	 * to indicate the lack of debug information.
-	 */
 	private Map<Member, String[]> inspectClass(Class<?> clazz) {
 		InputStream is = clazz.getResourceAsStream(ClassUtils.getClassFileName(clazz));
 		if (is == null) {
-			// We couldn't load the class file, which is not fatal as it
-			// simply means this method of discovering parameter names won't work.
 			if (logger.isDebugEnabled()) {
 				logger.debug("Cannot find '.class' file for class [" + clazz
 						+ "] - unable to determine constructors/methods parameter names");
@@ -138,11 +103,6 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 		return NO_DEBUG_INFO_MAP;
 	}
 
-
-	/**
-	 * Helper class that inspects all methods (constructor included) and then
-	 * attempts to find the parameter names for that member.
-	 */
 	private static class ParameterNameDiscoveringVisitor extends ClassVisitor {
 
 		private static final String STATIC_CLASS_INIT = "<clinit>";
@@ -158,7 +118,6 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 
 		@Override
 		public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-			// exclude synthetic + bridged && static class initialization
 			if (!isSyntheticOrBridged(access) && !STATIC_CLASS_INIT.equals(name)) {
 				return new LocalVariableTableVisitor(clazz, memberMap, name, desc, isStatic(access));
 			}
@@ -188,10 +147,6 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 		private String[] parameterNames;
 		private boolean hasLvtInfo = false;
 
-		/*
-		 * The nth entry contains the slot index of the LVT table entry holding the
-		 * argument name for the nth parameter.
-		 */
 		private final int[] lvtSlotIndex;
 
 		public LocalVariableTableVisitor(Class<?> clazz, Map<Member, String[]> map, String name, String desc,
@@ -221,10 +176,6 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 		@Override
 		public void visitEnd() {
 			if (this.hasLvtInfo || (this.isStatic && this.parameterNames.length == 0)) {
-				// visitLocalVariable will never be called for static no args methods
-				// which doesn't use any local variables.
-				// This means that hasLvtInfo could be false for that kind of methods
-				// even if the class has local variable info.
 				memberMap.put(resolveMember(), parameterNames);
 			}
 		}

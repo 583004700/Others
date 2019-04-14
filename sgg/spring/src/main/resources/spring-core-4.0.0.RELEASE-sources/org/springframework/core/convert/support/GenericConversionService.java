@@ -78,8 +78,6 @@ public class GenericConversionService implements ConfigurableConversionService {
 		invalidateCache();
 	}
 
-	// implementing ConversionService
-
 	@Override
 	public boolean canConvert(Class<?> sourceType, Class<?> targetType) {
 		Assert.notNull(targetType, "The targetType to convert to cannot be null");
@@ -415,7 +413,6 @@ public class GenericConversionService implements ConfigurableConversionService {
 		private GenericConverter getRegisteredConverter(TypeDescriptor sourceType,
 				TypeDescriptor targetType, ConvertiblePair convertiblePair) {
 
-			// Check specifically registered converters
 			ConvertersForPair convertersForPair = converters.get(convertiblePair);
 			GenericConverter converter = convertersForPair == null ? null
 				: convertersForPair.getConverter(sourceType, targetType);
@@ -423,7 +420,6 @@ public class GenericConversionService implements ConfigurableConversionService {
 				return converter;
 			}
 
-			// Check ConditionalGenericConverter that match all types
 			for (GenericConverter globalConverter : this.globalConverters) {
 				if (((ConditionalConverter)globalConverter).matches(
 						sourceType, targetType)) {
@@ -434,7 +430,14 @@ public class GenericConversionService implements ConfigurableConversionService {
 			return null;
 		}
 
-		
+		/**
+		 * 返回类型的所有父类及接口的集合
+		 * @param type 如果type是数组，则集合中的泛型也是类似于Integer[].class
+		 * @return
+		 *
+		 * Integer[].class ,则 [Integer[].class,Number[].class, Serializable[].class,Object[].class,Object.class]
+		 * Integer[].class ,则 [Integer.class,Number.class, Serializable.class,Object.class]
+		 */
 		private List<Class<?>> getClassHierarchy(Class<?> type) {
 			List<Class<?>> hierarchy = new ArrayList<Class<?>>(20);
 			Set<Class<?>> visited = new HashSet<Class<?>>(20);
@@ -459,6 +462,14 @@ public class GenericConversionService implements ConfigurableConversionService {
 			return hierarchy;
 		}
 
+		/**
+		 * 如果visited中不存在，则将type 添加到 hierarchy和visited中
+		 * @param index
+		 * @param type
+		 * @param asArray
+		 * @param hierarchy
+		 * @param visited
+		 */
 		private void addToClassHierarchy(int index, Class<?> type, boolean asArray,
 				List<Class<?>> hierarchy, Set<Class<?>> visited) {
 			if(asArray) {

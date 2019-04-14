@@ -562,7 +562,7 @@ public final class ResolvableType implements Serializable {
 		if (type == null) {
 			return NONE;
 		}
-		// Check the cache, we may have a ResolvableType that may have already been resolved
+
 		ResolvableType key = new ResolvableType(type, typeProvider, variableResolver, null);
 		ResolvableType resolvableType = cache.get(key);
 		if (resolvableType == null) {
