@@ -1,14 +1,17 @@
-package readSource;
-
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+package org.springframework.core;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpringTest1 extends ArrayList<Integer> {
+public class SpringTest2 extends ArrayList<Integer> {
+    Integer i1 = 10;
+    boolean b1 = false;
+    List<Integer> l1 = new ArrayList<Integer>();
+
     public static void main(String[] args) throws Exception{
         System.out.println(Boolean.class == boolean.class);
         Class c1 = Boolean.class;
@@ -26,7 +29,7 @@ public class SpringTest1 extends ArrayList<Integer> {
 
         System.out.println(Integer[].class == Array.newInstance(Integer[].class.getComponentType(),0).getClass());
 
-        Method method = SpringTest1.class.getDeclaredMethod("m1", List.class, Long.class);
+        Method method = SpringTest2.class.getDeclaredMethod("m1", List.class, Long.class);
         Class<?> returnType = method.getReturnType();
         System.out.println(returnType);
         Class<?> parameter0 = method.getParameterTypes()[0];
@@ -47,7 +50,7 @@ public class SpringTest1 extends ArrayList<Integer> {
         System.out.println((method.getParameters()[0]).getName());
 
         //会在编译后生成桥接方法
-        System.out.println(SpringTest1.class.getMethod("add", Object.class).isBridge());
+        System.out.println(SpringTest2.class.getMethod("add", Object.class).isBridge());
 
         LocalVariableTableParameterNameDiscoverer localVariableTableParameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
         String[] names = localVariableTableParameterNameDiscoverer.getParameterNames(method);
@@ -56,6 +59,24 @@ public class SpringTest1 extends ArrayList<Integer> {
         System.out.println("11111"+(((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0].getClass()));
 
         System.out.println(method.getGenericParameterTypes()[0]);
+
+        Field f1 = SpringTest2.class.getDeclaredField("i1");
+
+        System.out.println(SerializableTypeWrapper.forField(f1));
+
+        Field f2 = SpringTest2.class.getDeclaredField("l1");
+
+        System.out.println(SerializableTypeWrapper.forField(f2));
+
+        Class p = ParameterizedType.class;
+
+        System.out.println(p.isAssignableFrom(f2.getGenericType().getClass()));
+
+        System.out.println(f2.getGenericType().getClass());
+
+        System.out.println(((ParameterizedType)f2.getGenericType()).getRawType());
+
+        System.out.println(f1.getGenericType() instanceof Class);
     }
 
     public List<Integer> m1(List<String> b, Long l){

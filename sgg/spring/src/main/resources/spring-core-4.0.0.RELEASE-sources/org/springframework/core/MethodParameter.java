@@ -190,10 +190,20 @@ public class MethodParameter {
 		}
 	}
 
+	/**
+	 * 返回方法的所有注解
+	 * @return
+	 */
 	public Annotation[] getMethodAnnotations() {
 		return getAnnotatedElement().getAnnotations();
 	}
 
+	/**
+	 * 返回方法特定类型的注解
+	 * @param annotationType
+	 * @param <T>
+	 * @return
+	 */
 	public <T extends Annotation> T getMethodAnnotation(Class<T> annotationType) {
 		return getAnnotatedElement().getAnnotation(annotationType);
 	}
