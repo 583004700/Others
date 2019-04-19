@@ -128,10 +128,22 @@ abstract class SerializableTypeWrapper {
 
 		private final TypeProvider provider;
 
+		/**
+		 *
+		 * @param provider 比如 FieldTypeProvider 等
+		 */
 		public TypeProxyInvocationHandler(TypeProvider provider) {
 			this.provider = provider;
 		}
 
+		/**
+		 * 执行 如ParameterizedType 接口中的方法时，会执行这个方法 比如 getRawType
+		 * @param proxy
+		 * @param method
+		 * @param args
+		 * @return
+		 * @throws Throwable
+		 */
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			if (Type.class.equals(method.getReturnType()) && args == null) {
@@ -268,6 +280,12 @@ abstract class SerializableTypeWrapper {
 		//method 在 provider.getType()上的执行结果
 		private transient Object result;
 
+		/**
+		 *
+		 * @param provider	比如 FieldTypeProvider 等
+		 * @param method	比如 ParameterizedType.getRawType()
+		 * @param index		下标
+		 */
 		public MethodInvokeTypeProvider(TypeProvider provider, Method method, int index) {
 			this.provider = provider;
 			this.methodName = method.getName();
@@ -275,6 +293,10 @@ abstract class SerializableTypeWrapper {
 			this.result = ReflectionUtils.invokeMethod(method, provider.getType());
 		}
 
+		/**
+		 * 如果result 是type类型，则返回result,否则返回result[index]
+		 * @return
+		 */
 		@Override
 		public Type getType() {
 			if (this.result instanceof Type || this.result == null) {
