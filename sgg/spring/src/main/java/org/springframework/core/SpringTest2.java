@@ -62,11 +62,11 @@ public class SpringTest2 extends ArrayList<Integer> {
 
         Field f1 = SpringTest2.class.getDeclaredField("i1");
 
-        System.out.println(SerializableTypeWrapper.forField(f1));
+        System.out.println("SerializableTypeWrapper.forField"+SerializableTypeWrapper.forField(f1));
 
         Field f2 = SpringTest2.class.getDeclaredField("l1");
 
-        System.out.println(SerializableTypeWrapper.forField(f2));
+        System.out.println("SerializableTypeWrapper.forField l1"+SerializableTypeWrapper.forField(f2));
 
         Class p = ParameterizedType.class;
 

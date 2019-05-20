@@ -13,11 +13,21 @@ abstract class SerializableTypeWrapper {
 	private static final Class<?>[] SUPPORTED_SERIALAZABLE_TYPES = { GenericArrayType.class,
 		ParameterizedType.class, TypeVariable.class, WildcardType.class };
 
+	/**
+	 * 返回field.getGenericType() 的代理对象
+	 * @param field
+	 * @return
+	 */
 	public static Type forField(Field field) {
 		Assert.notNull(field, "Field must not be null");
 		return forTypeProvider(new FieldTypeProvider(field));
 	}
 
+	/**
+	 * 得到方法参数的methodParameter.getGenericParameterType() 代理对象
+	 * @param methodParameter
+	 * @return
+	 */
 	public static Type forMethodParameter(MethodParameter methodParameter) {
 		return forTypeProvider(new MethodParameterTypeProvider(methodParameter));
 	}
