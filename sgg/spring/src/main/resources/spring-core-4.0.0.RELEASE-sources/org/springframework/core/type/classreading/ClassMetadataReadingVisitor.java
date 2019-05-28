@@ -1,19 +1,3 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.springframework.core.type.classreading;
 
 import java.util.LinkedHashSet;
@@ -29,32 +13,20 @@ import org.springframework.asm.SpringAsmInfo;
 import org.springframework.core.type.ClassMetadata;
 import org.springframework.util.ClassUtils;
 
-/**
- * ASM class visitor which looks only for the class name and implemented types,
- * exposing them through the {@link org.springframework.core.type.ClassMetadata}
- * interface.
- *
- * @author Rod Johnson
- * @author Costin Leau
- * @author Mark Fisher
- * @author Ramnivas Laddad
- * @author Chris Beams
- * @since 2.5
- */
 class ClassMetadataReadingVisitor extends ClassVisitor implements ClassMetadata {
-
+	//类名
 	private String className;
-
+	//是否是接口
 	private boolean isInterface;
-
+	//是否是抽象类
 	private boolean isAbstract;
-
+	//是否是final修饰的
 	private boolean isFinal;
 
 	private String enclosingClassName;
 
 	private boolean independentInnerClass;
-
+	//父类
 	private String superClassName;
 
 	private String[] interfaces;
@@ -65,7 +37,6 @@ class ClassMetadataReadingVisitor extends ClassVisitor implements ClassMetadata 
 	public ClassMetadataReadingVisitor() {
 		super(SpringAsmInfo.ASM_VERSION);
 	}
-
 
 	@Override
 	public void visit(int version, int access, String name, String signature, String supername, String[] interfaces) {

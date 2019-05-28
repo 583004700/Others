@@ -35,7 +35,6 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 
 	public ClassPathXmlApplicationContext(String[] configLocations, boolean refresh, ApplicationContext parent)
 			throws BeansException {
-
 		super(parent);
 		setConfigLocations(configLocations);
 		if (refresh) {

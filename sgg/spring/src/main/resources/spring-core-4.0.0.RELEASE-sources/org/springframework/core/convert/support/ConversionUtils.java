@@ -7,6 +7,14 @@ import org.springframework.core.convert.converter.GenericConverter;
 
 abstract class ConversionUtils {
 
+	/**
+	 * 执行	GenericConverter
+	 * @param converter
+	 * @param source
+	 * @param sourceType
+	 * @param targetType
+	 * @return
+	 */
 	public static Object invokeConverter(GenericConverter converter, Object source, TypeDescriptor sourceType,
 			TypeDescriptor targetType) {
 		try {

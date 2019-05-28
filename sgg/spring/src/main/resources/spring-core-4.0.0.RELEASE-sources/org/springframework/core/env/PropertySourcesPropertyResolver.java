@@ -11,6 +11,11 @@ public class PropertySourcesPropertyResolver extends AbstractPropertyResolver {
 		this.propertySources = propertySources;
 	}
 
+	/**
+	 * 判断是否包含某个键
+	 * @param key
+	 * @return
+	 */
 	@Override
 	public boolean containsProperty(String key) {
 		if (this.propertySources != null) {
@@ -38,6 +43,14 @@ public class PropertySourcesPropertyResolver extends AbstractPropertyResolver {
 		return getProperty(key, String.class, false);
 	}
 
+	/**
+	 * 获取属性值并转换为对应的类型
+	 * @param key
+	 * @param targetValueType
+	 * @param resolveNestedPlaceholders
+	 * @param <T>
+	 * @return
+	 */
 	protected <T> T getProperty(String key, Class<T> targetValueType, boolean resolveNestedPlaceholders) {
 		boolean debugEnabled = logger.isDebugEnabled();
 		if (logger.isTraceEnabled()) {

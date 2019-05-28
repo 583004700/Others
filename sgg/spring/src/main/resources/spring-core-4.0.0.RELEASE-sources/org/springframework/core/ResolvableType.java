@@ -52,11 +52,14 @@ public final class ResolvableType implements Serializable {
 		this.componentType = componentType;
 	}
 
+	/**
+	 * 获取自身类型
+	 * @return
+	 */
 	public Type getType() {
 		return this.type;
 	}
 
-	
 	public Class<?> getRawClass() {
 		Type rawType = this.type;
 		if (rawType instanceof ParameterizedType) {
@@ -77,43 +80,33 @@ public final class ResolvableType implements Serializable {
 	private boolean isAssignableFrom(ResolvableType type, boolean checkingGeneric) {
 		Assert.notNull(type, "Type must not be null");
 
-		// If we cannot resolve types, we are not assignable
 		if (this == NONE || type == NONE) {
 			return false;
 		}
 
-		// Deal with array by delegating to the component type
 		if (isArray()) {
 			return (type.isArray() && getComponentType().isAssignableFrom(type.getComponentType()));
 		}
 
-		// Deal with wildcard bounds
 		WildcardBounds ourBounds = WildcardBounds.get(this);
 		WildcardBounds typeBounds = WildcardBounds.get(type);
 
-		// in the from X is assignable to <? extends Number>
 		if (typeBounds != null) {
 			return (ourBounds != null && ourBounds.isSameKind(typeBounds) &&
 					ourBounds.isAssignableFrom(typeBounds.getBounds()));
 		}
 
-		// in the form <? extends Number> is assignable to X ...
 		if (ourBounds != null) {
 			return ourBounds.isAssignableFrom(type);
 		}
 
-		// Main assignability check
 		boolean rtn = resolve(Object.class).isAssignableFrom(type.resolve(Object.class));
 
-		// We need an exact type match for generics
-		// List<CharSequence> is not assignable from List<String>
 		rtn &= (!checkingGeneric || resolve(Object.class).equals(type.resolve(Object.class)));
 
-		// Recursively check each generic
 		for (int i = 0; i < getGenerics().length; i++) {
 			rtn &= getGeneric(i).isAssignableFrom(type.as(resolve(Object.class)).getGeneric(i), true);
 		}
-
 		return rtn;
 	}
 
@@ -127,6 +120,10 @@ public final class ResolvableType implements Serializable {
 				this.resolveType().isArray());
 	}
 
+	/**
+	 * 得到数组类型的 类类型
+	 * @return
+	 */
 	public ResolvableType getComponentType() {
 		if (this == NONE) {
 			return NONE;
@@ -152,6 +149,11 @@ public final class ResolvableType implements Serializable {
 		return as(Map.class);
 	}
 
+	/**
+	 * 作为超类返回
+	 * @param type
+	 * @return
+	 */
 	public ResolvableType as(Class<?> type) {
 		if (this == NONE) {
 			return NONE;
@@ -168,6 +170,10 @@ public final class ResolvableType implements Serializable {
 		return getSuperType().as(type);
 	}
 
+	/**
+	 * 获取父类
+	 * @return
+	 */
 	public ResolvableType getSuperType() {
 		Class<?> resolved = resolve();
 		if (resolved == null || resolved.getGenericSuperclass() == null) {
@@ -323,19 +329,14 @@ public final class ResolvableType implements Serializable {
 
 		if (this.type instanceof TypeVariable) {
 			TypeVariable<?> variable = (TypeVariable<?>) this.type;
-
-			// Try default variable resolution
 			if (this.variableResolver != null) {
 				ResolvableType resolved = this.variableResolver.resolveVariable(variable);
 				if (resolved != null) {
 					return resolved;
 				}
 			}
-
-			// Fallback to bounds
 			return forType(resolveBounds(variable.getBounds()), this.variableResolver);
 		}
-
 		return NONE;
 	}
 
@@ -388,6 +389,11 @@ public final class ResolvableType implements Serializable {
 		return result.toString();
 	}
 
+	/**
+	 * 重写equals
+	 * @param obj
+	 * @return
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) {
@@ -404,6 +410,10 @@ public final class ResolvableType implements Serializable {
 		return false;
 	}
 
+	/**
+	 * 重写hashCode
+	 * @return
+	 */
 	@Override
 	public int hashCode() {
 		int hashCode = ObjectUtils.nullSafeHashCode(this.type);
@@ -438,6 +448,11 @@ public final class ResolvableType implements Serializable {
 		return result;
 	}
 
+	/**
+	 * 构建ResolvableType对象
+	 * @param sourceClass
+	 * @return
+	 */
 	public static ResolvableType forClass(Class<?> sourceClass) {
 		Assert.notNull(sourceClass, "Source class must not be null");
 		return forType(sourceClass);
@@ -449,6 +464,11 @@ public final class ResolvableType implements Serializable {
 		return (asType == NONE ? forType(sourceClass) : asType);
 	}
 
+	/**
+	 * 构建ResolvableType对象
+	 * @param field
+	 * @return
+	 */
 	public static ResolvableType forField(Field field) {
 		Assert.notNull(field, "Field must not be null");
 		return forType(null, new FieldTypeProvider(field), null);
@@ -484,6 +504,11 @@ public final class ResolvableType implements Serializable {
 		return forMethodParameter(methodParameter);
 	}
 
+	/**
+	 * 获取方法返回值类型
+	 * @param method
+	 * @return
+	 */
 	public static ResolvableType forMethodReturnType(Method method) {
 		Assert.notNull(method, "Method must not be null");
 		return forMethodParameter(MethodParameter.forMethodOrConstructor(method, -1));
@@ -508,6 +533,11 @@ public final class ResolvableType implements Serializable {
 		return forMethodParameter(methodParameter);
 	}
 
+	/**
+	 * 构建ResolvableType
+	 * @param methodParameter
+	 * @return
+	 */
 	public static ResolvableType forMethodParameter(MethodParameter methodParameter) {
 		Assert.notNull(methodParameter, "MethodParameter must not be null");
 		ResolvableType owner = forType(methodParameter.getContainingClass()).as(methodParameter.getDeclaringClass());
@@ -516,6 +546,11 @@ public final class ResolvableType implements Serializable {
 				methodParameter.typeIndexesPerLevel);
 	}
 
+	/**
+	 * 构建ResolvableType
+	 * @param componentType
+	 * @return
+	 */
 	public static ResolvableType forArrayComponent(final ResolvableType componentType) {
 		Assert.notNull(componentType, "ComponentType must not be null");
 		Class<?> arrayClass = Array.newInstance(componentType.resolve(), 0).getClass();
@@ -680,8 +715,6 @@ public final class ResolvableType implements Serializable {
 			}
 			return new WildcardBounds(boundsType, resolvableBounds);
 		}
-
-		
 		static enum Kind {UPPER, LOWER}
 	}
 }

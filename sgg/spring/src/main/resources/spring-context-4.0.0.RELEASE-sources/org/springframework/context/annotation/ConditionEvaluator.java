@@ -1,19 +1,3 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.springframework.context.annotation;
 
 import java.util.Collections;
@@ -32,42 +16,18 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MultiValueMap;
 
-/**
- * Internal class used to evaluate {@link Conditional} annotations.
- *
- * @author Phillip Webb
- * @since 4.0
- */
 class ConditionEvaluator {
 
 	private final ConditionContextImpl context;
 
-
-	/**
-	 * Create a new {@link ConditionEvaluator} instance.
-	 */
 	public ConditionEvaluator(BeanDefinitionRegistry registry, Environment environment, ResourceLoader resourceLoader) {
 		this.context = new ConditionContextImpl(registry, environment, resourceLoader);
 	}
 
-
-	/**
-	 * Determine if an item should be skipped based on {@code @Conditional} annotations.
-	 * The {@link ConfigurationPhase} will be deduced from the type of item (i.e. a
-	 * {@code @Configuration} class will be {@link ConfigurationPhase#PARSE_CONFIGURATION})
-	 * @param metadata the meta data
-	 * @return if the item should be skipped
-	 */
 	public boolean shouldSkip(AnnotatedTypeMetadata metadata) {
 		return shouldSkip(metadata, null);
 	}
 
-	/**
-	 * Determine if an item should be skipped based on {@code @Conditional} annotations.
-	 * @param metadata the meta data
-	 * @param phase the phase of the call
-	 * @return if the item should be skipped
-	 */
 	public boolean shouldSkip(AnnotatedTypeMetadata metadata, ConfigurationPhase phase) {
 		if (metadata == null || !metadata.isAnnotated(Conditional.class.getName())) {
 			return false;
@@ -111,10 +71,6 @@ class ConditionEvaluator {
 		return (Condition) BeanUtils.instantiateClass(conditionClass);
 	}
 
-
-	/**
-	 * Implementation of a {@link ConditionContext}.
-	 */
 	private static class ConditionContextImpl implements ConditionContext {
 
 		private final BeanDefinitionRegistry registry;

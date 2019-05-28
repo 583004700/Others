@@ -142,15 +142,10 @@ public class GenericConversionService implements ConfigurableConversionService {
 		return this.converters.toString();
 	}
 
-
-	// subclassing hooks
-
-	
 	protected Object convertNullSource(TypeDescriptor sourceType, TypeDescriptor targetType) {
 		return null;
 	}
 
-	
 	protected GenericConverter getConverter(TypeDescriptor sourceType, TypeDescriptor targetType) {
 		ConverterCacheKey key = new ConverterCacheKey(sourceType, targetType);
 		GenericConverter converter = this.converterCache.get(key);

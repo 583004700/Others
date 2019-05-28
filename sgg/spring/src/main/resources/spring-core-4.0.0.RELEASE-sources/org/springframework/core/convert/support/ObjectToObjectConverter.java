@@ -1,19 +1,3 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.springframework.core.convert.support;
 
 import java.lang.reflect.Constructor;
@@ -28,19 +12,6 @@ import org.springframework.core.convert.converter.ConditionalGenericConverter;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
-/**
- * Generic converter that attempts to convert a source Object to a target type
- * by delegating to methods on the target type.
- *
- * <p>Calls a static {@code valueOf(sourceType)} or Java 8 style {@code of(sourceType)} method
- * on the target type to perform the conversion, if such a method exists. Otherwise, it calls
- * the target type's constructor that accepts a single {@code sourceType} argument, if such
- * a constructor exists. If neither strategy works, it throws a ConversionFailedException.
- *
- * @author Keith Donald
- * @author Juergen Hoeller
- * @since 3.0
- */
 final class ObjectToObjectConverter implements ConditionalGenericConverter {
 
 	@Override
@@ -87,10 +58,22 @@ final class ObjectToObjectConverter implements ConditionalGenericConverter {
 				") method or Constructor(" + sourceClass.getName() + ") exists on " + targetClass.getName());
 	}
 
+	/**
+	 * 判断是否有 valueOf方法或者构造方法
+	 * @param clazz
+	 * @param sourceParameterType 方法参数
+	 * @return
+	 */
 	static boolean hasValueOfMethodOrConstructor(Class<?> clazz, Class<?> sourceParameterType) {
 		return getValueOfMethodOn(clazz, sourceParameterType) != null || getConstructor(clazz, sourceParameterType) != null;
 	}
 
+	/**
+	 * 获取clazz上的 valueOf 或者 of方法
+	 * @param clazz
+	 * @param sourceParameterType 方法参数
+	 * @return
+	 */
 	private static Method getValueOfMethodOn(Class<?> clazz, Class<?> sourceParameterType) {
 		Method method = ClassUtils.getStaticMethod(clazz, "valueOf", sourceParameterType);
 		if (method == null) {
@@ -99,6 +82,12 @@ final class ObjectToObjectConverter implements ConditionalGenericConverter {
 		return method;
 	}
 
+	/**
+	 * 获取clazz的构造方法
+	 * @param clazz
+	 * @param sourceParameterType	方法参数
+	 * @return
+	 */
 	private static Constructor<?> getConstructor(Class<?> clazz, Class<?> sourceParameterType) {
 		return ClassUtils.getConstructorIfAvailable(clazz, sourceParameterType);
 	}

@@ -185,6 +185,12 @@ public abstract class ClassUtils {
 		return result;
 	}
 
+	/**
+	 * 判断是否能加载到类
+	 * @param className
+	 * @param classLoader
+	 * @return
+	 */
 	public static boolean isPresent(String className, ClassLoader classLoader) {
 		try {
 			forName(className, classLoader);
@@ -331,6 +337,13 @@ public abstract class ClassUtils {
 		return (getConstructorIfAvailable(clazz, paramTypes) != null);
 	}
 
+	/**
+	 * 获取clazz 上的构造方法
+	 * @param clazz
+	 * @param paramTypes	方法参数
+	 * @param <T>
+	 * @return
+	 */
 	public static <T> Constructor<T> getConstructorIfAvailable(Class<T> clazz, Class<?>... paramTypes) {
 		Assert.notNull(clazz, "Class must not be null");
 		try {
@@ -484,11 +497,19 @@ public abstract class ClassUtils {
 		return getPackageName(method.getDeclaringClass()).equals(getPackageName(targetClass));
 	}
 
+	/**
+	 * 获取某个类的静态方法
+	 * @param clazz
+	 * @param methodName
+	 * @param args
+	 * @return
+	 */
 	public static Method getStaticMethod(Class<?> clazz, String methodName, Class<?>... args) {
 		Assert.notNull(clazz, "Class must not be null");
 		Assert.notNull(methodName, "Method name must not be null");
 		try {
 			Method method = clazz.getMethod(methodName, args);
+			//Modifier.isStatic	判断是否用static修饰
 			return Modifier.isStatic(method.getModifiers()) ? method : null;
 		}
 		catch (NoSuchMethodException ex) {

@@ -67,55 +67,37 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	public static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
 
-
 	static {
-		// Eagerly load the ContextClosedEvent class to avoid weird classloader issues
-		// on application shutdown in WebLogic 8.1. (Reported by Dustin Woods.)
 		ContextClosedEvent.class.getName();
 	}
-
-
 	
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	
 	private String id = ObjectUtils.identityToString(this);
 
-	
 	private String displayName = ObjectUtils.identityToString(this);
 
-	
 	private ApplicationContext parent;
 
-	
 	private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors =
 			new ArrayList<BeanFactoryPostProcessor>();
 
-	
 	private long startupDate;
 
-	
 	private boolean active = false;
 
-	
 	private boolean closed = false;
 
-	
 	private final Object activeMonitor = new Object();
 
-	
 	private final Object startupShutdownMonitor = new Object();
-
 	
 	private Thread shutdownHook;
 
-	
 	private ResourcePatternResolver resourcePatternResolver;
 
-	
 	private LifecycleProcessor lifecycleProcessor;
 
-	
 	private MessageSource messageSource;
 
 	private ApplicationEventMulticaster applicationEventMulticaster;
@@ -124,12 +106,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	private ConfigurableEnvironment environment;
 
-
 	public AbstractApplicationContext() {
 		this.resourcePatternResolver = getResourcePatternResolver();
 	}
 
-	
 	public AbstractApplicationContext(ApplicationContext parent) {
 		this();
 		setParent(parent);
@@ -155,18 +135,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		this.displayName = displayName;
 	}
 
-	
 	@Override
 	public String getDisplayName() {
 		return this.displayName;
 	}
 
-	
 	@Override
 	public ApplicationContext getParent() {
 		return this.parent;
 	}
-
 	
 	@Override
 	public ConfigurableEnvironment getEnvironment() {
@@ -176,25 +153,21 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return this.environment;
 	}
 
-	
 	@Override
 	public void setEnvironment(ConfigurableEnvironment environment) {
 		this.environment = environment;
 	}
 
-	
 	@Override
 	public AutowireCapableBeanFactory getAutowireCapableBeanFactory() throws IllegalStateException {
 		return getBeanFactory();
 	}
 
-	
 	@Override
 	public long getStartupDate() {
 		return this.startupDate;
 	}
 
-	
 	@Override
 	public void publishEvent(ApplicationEvent event) {
 		Assert.notNull(event, "Event must not be null");
@@ -207,7 +180,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 	}
 
-	
 	ApplicationEventMulticaster getApplicationEventMulticaster() throws IllegalStateException {
 		if (this.applicationEventMulticaster == null) {
 			throw new IllegalStateException("ApplicationEventMulticaster not initialized - " +
@@ -216,7 +188,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return this.applicationEventMulticaster;
 	}
 
-	
 	LifecycleProcessor getLifecycleProcessor() {
 		if (this.lifecycleProcessor == null) {
 			throw new IllegalStateException("LifecycleProcessor not initialized - " +
@@ -225,17 +196,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return this.lifecycleProcessor;
 	}
 
-	
 	protected ResourcePatternResolver getResourcePatternResolver() {
 		return new PathMatchingResourcePatternResolver(this);
 	}
 
-
-	//---------------------------------------------------------------------
-	// Implementation of ConfigurableApplicationContext interface
-	//---------------------------------------------------------------------
-
-	
 	@Override
 	public void setParent(ApplicationContext parent) {
 		this.parent = parent;
@@ -251,8 +215,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void addBeanFactoryPostProcessor(BeanFactoryPostProcessor beanFactoryPostProcessor) {
 		this.beanFactoryPostProcessors.add(beanFactoryPostProcessor);
 	}
-
-
 	
 	public List<BeanFactoryPostProcessor> getBeanFactoryPostProcessors() {
 		return this.beanFactoryPostProcessors;
@@ -268,7 +230,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 	}
 
-	
 	public Collection<ApplicationListener<?>> getApplicationListeners() {
 		return this.applicationListeners;
 	}
@@ -335,7 +296,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 	}
 
-	
 	protected void prepareRefresh() {
 		this.startupDate = System.currentTimeMillis();
 
@@ -347,20 +307,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			logger.info("Refreshing " + this);
 		}
 
-		// Initialize any placeholder property sources in the context environment
 		initPropertySources();
 
-		// Validate that all properties marked as required are resolvable
-		// see ConfigurablePropertyResolver#setRequiredProperties
 		getEnvironment().validateRequiredProperties();
 	}
 
-	
 	protected void initPropertySources() {
 		// For subclasses: do nothing by default.
 	}
 
-	
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 		refreshBeanFactory();
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
@@ -370,7 +325,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return beanFactory;
 	}
 
-	
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
 		beanFactory.setBeanClassLoader(getClassLoader());
@@ -411,21 +365,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 	}
 
-	
 	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 	}
 
-	
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 	}
-
 	
 	protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		PostProcessorRegistrationDelegate.registerBeanPostProcessors(beanFactory, this);
 	}
 
-	
 	protected void initMessageSource() {
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		if (beanFactory.containsLocalBean(MESSAGE_SOURCE_BEAN_NAME)) {
@@ -456,7 +406,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 	}
 
-	
 	protected void initApplicationEventMulticaster() {
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		if (beanFactory.containsLocalBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) {
@@ -559,14 +508,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		LiveBeansView.registerApplicationContext(this);
 	}
 
-	
 	protected void cancelRefresh(BeansException ex) {
 		synchronized (this.activeMonitor) {
 			this.active = false;
 		}
 	}
-
-
 	
 	@Override
 	public void registerShutdownHook() {
@@ -582,13 +528,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 	}
 
-	
 	@Override
 	public void destroy() {
 		close();
 	}
 
-	
 	@Override
 	public void close() {
 		synchronized (this.startupShutdownMonitor) {
@@ -606,7 +550,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 	}
 
-	
 	protected void doClose() {
 		boolean actuallyClose;
 		synchronized (this.activeMonitor) {
@@ -683,11 +626,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 	}
 
-
-	//---------------------------------------------------------------------
-	// Implementation of BeanFactory interface
-	//---------------------------------------------------------------------
-
 	@Override
 	public Object getBean(String name) throws BeansException {
 		assertBeanFactoryActive();
@@ -746,10 +684,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return getBeanFactory().getAliases(name);
 	}
 
-
-	//---------------------------------------------------------------------
-	// Implementation of ListableBeanFactory interface
-	//---------------------------------------------------------------------
 
 	@Override
 	public boolean containsBeanDefinition(String beanName) {
@@ -814,11 +748,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return getBeanFactory().findAnnotationOnBean(beanName, annotationType);
 	}
 
-
-	//---------------------------------------------------------------------
-	// Implementation of HierarchicalBeanFactory interface
-	//---------------------------------------------------------------------
-
 	@Override
 	public BeanFactory getParentBeanFactory() {
 		return getParent();
@@ -834,11 +763,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return (getParent() instanceof ConfigurableApplicationContext) ?
 				((ConfigurableApplicationContext) getParent()).getBeanFactory() : getParent();
 	}
-
-
-	//---------------------------------------------------------------------
-	// Implementation of MessageSource interface
-	//---------------------------------------------------------------------
 
 	@Override
 	public String getMessage(String code, Object args[], String defaultMessage, Locale locale) {
@@ -870,20 +794,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			((AbstractApplicationContext) getParent()).messageSource : getParent();
 	}
 
-
-	//---------------------------------------------------------------------
-	// Implementation of ResourcePatternResolver interface
-	//---------------------------------------------------------------------
-
 	@Override
 	public Resource[] getResources(String locationPattern) throws IOException {
 		return this.resourcePatternResolver.getResources(locationPattern);
 	}
-
-
-	//---------------------------------------------------------------------
-	// Implementation of Lifecycle interface
-	//---------------------------------------------------------------------
 
 	@Override
 	public void start() {
@@ -902,23 +816,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return getLifecycleProcessor().isRunning();
 	}
 
-
-	//---------------------------------------------------------------------
-	// Abstract methods that must be implemented by subclasses
-	//---------------------------------------------------------------------
-
-	
 	protected abstract void refreshBeanFactory() throws BeansException, IllegalStateException;
 
-	
 	protected abstract void closeBeanFactory();
-
 	
 	@Override
 	public abstract ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException;
 
-
-	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(getDisplayName());

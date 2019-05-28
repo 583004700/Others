@@ -1,19 +1,3 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.springframework.beans.factory.support;
 
 import java.lang.reflect.Constructor;
@@ -30,30 +14,13 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-/**
- * Simple object instantiation strategy for use in a BeanFactory.
- *
- * <p>Does not support Method Injection, although it provides hooks for subclasses
- * to override to add Method Injection support, for example by overriding methods.
- *
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @since 1.1
- */
 public class SimpleInstantiationStrategy implements InstantiationStrategy {
 
 	private static final ThreadLocal<Method> currentlyInvokedFactoryMethod = new ThreadLocal<Method>();
 
-
-	/**
-	 * Return the factory method currently being invoked or {@code null} if none.
-	 * <p>Allows factory method implementations to determine whether the current
-	 * caller is the container itself as opposed to user code.
-	 */
 	public static Method getCurrentlyInvokedFactoryMethod() {
 		return currentlyInvokedFactoryMethod.get();
 	}
-
 
 	@Override
 	public Object instantiate(RootBeanDefinition beanDefinition, String beanName, BeanFactory owner) {
@@ -94,12 +61,6 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 		}
 	}
 
-	/**
-	 * Subclasses can override this method, which is implemented to throw
-	 * UnsupportedOperationException, if they can instantiate an object with
-	 * the Method Injection specified in the given RootBeanDefinition.
-	 * Instantiation should use a no-arg constructor.
-	 */
 	protected Object instantiateWithMethodInjection(
 			RootBeanDefinition beanDefinition, String beanName, BeanFactory owner) {
 
@@ -129,12 +90,6 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 		}
 	}
 
-	/**
-	 * Subclasses can override this method, which is implemented to throw
-	 * UnsupportedOperationException, if they can instantiate an object with
-	 * the Method Injection specified in the given RootBeanDefinition.
-	 * Instantiation should use the given constructor and parameters.
-	 */
 	protected Object instantiateWithMethodInjection(RootBeanDefinition beanDefinition,
 			String beanName, BeanFactory owner, Constructor<?> ctor, Object[] args) {
 
@@ -188,5 +143,4 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					"Factory method [" + factoryMethod + "] threw exception", ex.getTargetException());
 		}
 	}
-
 }
