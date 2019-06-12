@@ -10,7 +10,7 @@ public class CircleArrayQueueDemo {
 		System.out.println("测试数组模拟环形队列的案例~~~");
 
 		// 创建一个环形队列
-		MyCircleArray queue = new MyCircleArray(5); //说明设置4, 其队列的有效数据最大是3
+		CircleArray queue = new CircleArray(5); //说明设置4, 其队列的有效数据最大是3
 		char key = ' '; // 接收用户输入
 		Scanner scanner = new Scanner(System.in);//
 		boolean loop = true;
