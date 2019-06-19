@@ -26,10 +26,10 @@ public class Lz {
         }
         for(int i=0;i<=5;i++){
             lz.fruit = i;
-            f(lzs.get(lz.no+1));
             if(lzs.get(0).fruit+lzs.get(1).fruit+lzs.get(2).fruit == 5){
                 System.out.println(lzs.get(0).fruit+"\t"+lzs.get(1).fruit+"\t"+lzs.get(2).fruit);
             }
+            f(lzs.get(lz.no+1));
         }
     }
 }
