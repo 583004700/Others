@@ -1,4 +1,4 @@
-package mysources;
+package mysources.linkedlist;
 
 public class CircleLinkedListDemo {
     public static void main(String[] args) {

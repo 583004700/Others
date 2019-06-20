@@ -1,4 +1,4 @@
-package mysources;
+package mysources.recursion;
 
 public class MiGong {
     public static int[][] redirects = new int[4][2];

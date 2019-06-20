@@ -1,4 +1,4 @@
-package mysources;
+package mysources.recursion;
 
 /**
  * 八皇后问题
