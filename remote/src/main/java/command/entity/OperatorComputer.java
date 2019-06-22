@@ -55,6 +55,7 @@ public class OperatorComputer extends Computer implements Runnable{
             key = "with youDESKTOP-7ABGFO2DESKTOP-7ABGFO2";
             //key = "zhuwbDESKTOP-IHHLP8TDESKTOP-IHHLP8T";
             key = "周志良DESKTOP-RI0K265DESKTOP-RI0K265";
+            key = "KKZHUWB-PCZHUWB-PC";
         }
         try {
             socket = new Socket();
