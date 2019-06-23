@@ -67,7 +67,7 @@ public class QuickSort {
 				l += 1;
 			}
 		}
-		
+
 		// 如果 l == r, 必须l++, r--, 否则为出现栈溢出
 		if (l == r) {
 			l += 1;
