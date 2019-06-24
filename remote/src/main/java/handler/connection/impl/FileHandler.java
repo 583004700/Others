@@ -44,6 +44,8 @@ public class FileHandler extends ConnectionHandler implements Runnable{
 
             String upStr = IOUtil.readLinStr(upInStream, PropertiesConst.appEncoding);
             String downStr = IOUtil.readLinStr(downInStream,PropertiesConst.appEncoding);
+            long length = Long.parseLong(downStr.split(":")[1]);
+            downStr = downStr.split(":")[0];
 
             PrintWriter downPw = IOUtil.wrapPrintWriter(downOutStream,PropertiesConst.appEncoding);
             PrintWriter upPw = IOUtil.wrapPrintWriter(upOutStream,PropertiesConst.appEncoding);
@@ -58,11 +60,12 @@ public class FileHandler extends ConnectionHandler implements Runnable{
             }
             if(Handler.DOWNFILESUCCESS.equals(downStr)){
                 //下载较验成功，通知上传流可以上传了
-                upPw.println(Handler.DOWNFILESUCCESS);
+                upPw.println(Handler.DOWNFILESUCCESS+":"+length);
                 upPw.flush();
+                System.out.println("FileHandler:服务器接收到length"+length+"并发送给上传方");
             }else{
                 b = false;
-                upPw.println("downFail");
+                upPw.println("downFail:"+length);
                 upPw.flush();
             }
         } catch (Exception e) {

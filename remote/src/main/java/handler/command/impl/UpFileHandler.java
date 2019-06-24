@@ -20,6 +20,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
     private Socket fileSocket;
     private String filePath;
     private FileInputStream inputStream;
+    private File upFile;
 
     private boolean checkFile(){
         boolean b = true;
@@ -28,7 +29,8 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
             if(filePath.split(">").length > 1){
                 filePath = filePath.split(">")[0];
             }
-            inputStream = new FileInputStream(new File(filePath));
+            upFile = new File(filePath);
+            inputStream = new FileInputStream(upFile);
         } catch (FileNotFoundException e) {
             b = false;
             e.printStackTrace();
@@ -66,9 +68,14 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         }
         try {
             String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),PropertiesConst.appEncoding);
+            long length = Long.parseLong(otherStr.split(":")[1]);
+            otherStr = otherStr.split(":")[0];
             if(!Handler.DOWNFILESUCCESS.equals(otherStr)){
                 success = false;
                 System.out.println("对方较验：文件下载失败，可能不能创建目录");
+            }else{
+                inputStream.skip(length);
+                System.out.println("UpFileHandler:接收到length"+length+"关跳转");
             }
         } catch (Exception e) {
             e.printStackTrace();

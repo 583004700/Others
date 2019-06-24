@@ -23,6 +23,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
     private String defaultDownPath = "d:/remotefile/";
     private String fileName;
     private FileOutputStream fileOutputStream;
+    private File downPathFile;
 
     private boolean checkFile(){
         String downPath = defaultDownPath;
@@ -34,7 +35,6 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             fileName = fileName.substring(maxLast+1,fileName.length());
         }
         boolean b = true;
-        File downPathFile = null;
         try{
             downPathFile = new File(downPath,fileName);
             String[] comArr = getCommand().split(">");
@@ -50,7 +50,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
                     }
                 }
             }
-            fileOutputStream = new FileOutputStream(downPathFile);
+            fileOutputStream = new FileOutputStream(downPathFile,true);
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("目录为:"+downPathFile);
@@ -76,13 +76,15 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             success = false;
             e.printStackTrace();
         }
+        long length = downPathFile.exists() ? downPathFile.length() : 0;
         if(success){
             //告诉服务器下载较验成功
-            pw.println(Handler.DOWNFILESUCCESS);
+            pw.println(Handler.DOWNFILESUCCESS+":"+length);
             pw.flush();
+            System.out.println("DownFileHandler:发送length给服务器"+Handler.DOWNFILESUCCESS+":"+length);
         }else{
             System.out.println("本机较验：文件下载失败，可能是不能创建目录");
-            pw.println("downFail");
+            pw.println("downFail:"+length);
             pw.flush();
         }
         try {
