@@ -2,9 +2,10 @@ package mysources;
 
 public class Linked {
     public static Node node = new Node(1);
-    public static Node head = node;
+    public static Node head = new Node(0);
     public static int k = 3;
     static{
+        head.next = node;
         node.next = new Node(2);
         node.next.next = new Node(3);
         node.next.next.next = new Node(4);
