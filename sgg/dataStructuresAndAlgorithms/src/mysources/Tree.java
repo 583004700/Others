@@ -6,41 +6,33 @@ import java.util.List;
 
 public class Tree {
     //指向第一个节点
-    public static TreeNode first;
+    public TreeNode first;
     //指向当前要给哪个节点添加子节点
-    public static TreeNode current;
-    //指向要切换的左边的节点
-    public static TreeNode firstLeftNode;
+    public TreeNode current;
+    //当前被添加节点的上一个节点
+    public TreeNode preNode;
 
-    public static void add(TreeNode treeNode){
+    public void add(TreeNode treeNode){
         if(first == null){
             first = treeNode;
             current = treeNode;
             //第一个节点的父节点的value为null
             treeNode.parent = new TreeNode(null);
-            firstLeftNode = treeNode;
+            preNode = treeNode;
             return;
+        }
+        if(current.left != null && current.right != null){
+           current = current.next;
         }
         if(current.left == null){
             current.left = treeNode;
-            if(firstLeftNode == current){
-                firstLeftNode = treeNode;
-            }
             treeNode.parent = current;
         }else if(current.right == null){
             current.right = treeNode;
             treeNode.parent = current;
-            if(current.parent.right != null && current.parent.right != current){
-                current = current.parent.right;
-                return;
-            }
-            TreeNode index = current.parent;
-            while(index.parent == null || index.parent.right == null || index.parent.right == index){
-                index = index.parent;
-            }
-            current = index.parent.right.left;
-            //current = firstLeftNode;
         }
+        preNode.next = treeNode;
+        preNode = treeNode;
     }
 
     /**
@@ -76,7 +68,7 @@ public class Tree {
 
         System.out.println(tree);
         //从头节点开始遍历
-        fore(Tree.first);
+        fore(tree.first);
     }
 }
 
@@ -85,6 +77,8 @@ class TreeNode{
     public TreeNode left;
     public TreeNode right;
     public TreeNode parent;
+    //指向下一个节点
+    public TreeNode next;
 
     public TreeNode(Integer value) {
         this.value = value;
