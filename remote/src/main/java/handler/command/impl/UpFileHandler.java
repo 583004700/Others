@@ -57,6 +57,13 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
             success = false;
             e.printStackTrace();
         }
+
+        try{
+            Thread.sleep(2000);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         if(success){
             //告诉服务器上传较验成功
             pw.println(Handler.UPFILESUCCESS);

@@ -17,15 +17,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
         if(OSUtil.isLinux()){
             defaultDownPath = "/weblogic/remotefile";
         }
-    }
 
-    private Socket fileSocket;
-    private String defaultDownPath = "d:/remotefile/";
-    private String fileName;
-    private FileOutputStream fileOutputStream;
-    private File downPathFile;
-
-    private boolean checkFile(){
         String downPath = defaultDownPath;
         fileName = new File(getCommand()).getName();
         if(fileName.contains("\\") || fileName.contains("/")){
@@ -34,22 +26,33 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             int maxLast = Math.max(last,last2);
             fileName = fileName.substring(maxLast+1,fileName.length());
         }
-        boolean b = true;
-        try{
-            downPathFile = new File(downPath,fileName);
-            String[] comArr = getCommand().split(">");
-            if(comArr.length > 1){
-                fileName = new File(comArr[0]).getName();
-                downPath = comArr[1];
-                downPathFile = new File(downPath);
-                if(downPathFile.isDirectory()){
-                    downPathFile = new File(downPath,fileName);
-                }else{
-                    if(!downPathFile.getParentFile().exists()){
-                        downPathFile.getParentFile().mkdirs();
-                    }
+        downPathFile = new File(downPath,fileName);
+        String[] comArr = getCommand().split(">");
+        if(comArr.length > 1){
+            fileName = new File(comArr[0]).getName();
+            downPath = comArr[1];
+            downPathFile = new File(downPath);
+            if(downPathFile.isDirectory()){
+                downPathFile = new File(downPath,fileName);
+            }else{
+                if(!downPathFile.getParentFile().exists()){
+                    downPathFile.getParentFile().mkdirs();
                 }
             }
+        }
+        fullDownPath = downPathFile.toString().intern();
+    }
+
+    private Socket fileSocket;
+    private String defaultDownPath = "d:/remotefile/";
+    private String fileName;
+    private FileOutputStream fileOutputStream;
+    private File downPathFile;
+    private volatile String fullDownPath;
+
+    private boolean checkFile(){
+        boolean b = true;
+        try{
             fileOutputStream = new FileOutputStream(downPathFile,true);
         }catch (Exception e){
             e.printStackTrace();
@@ -74,6 +77,12 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             }
         } catch (IOException e) {
             success = false;
+            e.printStackTrace();
+        }
+
+        try{
+            Thread.sleep(2000);
+        }catch (Exception e){
             e.printStackTrace();
         }
         long length = downPathFile.exists() ? downPathFile.length() : 0;
@@ -107,19 +116,23 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
 
     @Override
     public void run() {
-        boolean b = connection();
-        if(!b){
-            System.out.println("文件传输取消，线程结束");
-            return;
+        System.out.println("fullDownPath为"+fullDownPath);
+        synchronized (fullDownPath) {
+            System.out.println("线程：" + Thread.currentThread().getName());
+            boolean b = connection();
+            if (!b) {
+                System.out.println("文件传输取消，线程结束");
+                return;
+            }
+            System.out.println(fileName + "文件下载开始DownFileHandler");
+            try {
+                InputStream inputStream = fileSocket.getInputStream();
+                IOUtil.inputToOutput(inputStream, fileOutputStream);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            OtherComputer.resetStartTime();
+            System.out.println(fileName + "文件下载结束DownFileHandler");
         }
-        System.out.println(fileName+"文件下载开始DownFileHandler");
-        try {
-            InputStream inputStream = fileSocket.getInputStream();
-            IOUtil.inputToOutput(inputStream,fileOutputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        OtherComputer.resetStartTime();
-        System.out.println(fileName+"文件下载结束DownFileHandler");
     }
 }

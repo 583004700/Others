@@ -41,7 +41,6 @@ public class FileHandler extends ConnectionHandler implements Runnable{
             OutputStream upOutStream = otherSocket.getOutputStream();
             InputStream downInStream = getOperatorSocket().getInputStream();
             downOutStream = getOperatorSocket().getOutputStream();
-
             String upStr = IOUtil.readLinStr(upInStream, PropertiesConst.appEncoding);
             String downStr = IOUtil.readLinStr(downInStream,PropertiesConst.appEncoding);
             long length = Long.parseLong(downStr.split(":")[1]);
