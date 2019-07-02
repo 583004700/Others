@@ -26,13 +26,12 @@ public class HuffmanCode {
 		
 		
 		//测试解压文件
-		String zipFile = "d://Uninstall.zip";
-		String dstFile = "d://Uninstall2.xml";
-		unZipFile(zipFile, dstFile);
-		System.out.println("解压成功!");
+//		String zipFile = "d://Uninstall.zip";
+//		String dstFile = "d://Uninstall2.xml";
+//		unZipFile(zipFile, dstFile);
+//		System.out.println("解压成功!");
 		
-		/*
-		String content = "i like like like java do you like a java";
+		String content = "i like like like java do you like a ja";
 		byte[] contentBytes = content.getBytes();
 		System.out.println(contentBytes.length); //40
 		
@@ -45,8 +44,7 @@ public class HuffmanCode {
 		byte[] sourceBytes = decode(huffmanCodes, huffmanCodesBytes);
 		
 		System.out.println("原来的字符串=" + new String(sourceBytes)); // "i like like like java do you like a java"
-		*/
-		
+
 		
 		
 		//如何将 数据进行解压(解码)  
@@ -175,8 +173,9 @@ public class HuffmanCode {
 	//1. 将huffmanCodeBytes [-88, -65, -56, -65, -56, -65, -55, 77, -57, 6, -24, -14, -117, -4, -60, -90, 28]
 	//   重写先转成 赫夫曼编码对应的二进制的字符串 "1010100010111..."
 	//2.  赫夫曼编码对应的二进制的字符串 "1010100010111..." =》 对照 赫夫曼编码  =》 "i like like like java do you like a java"
-	
-	
+
+
+	public static Map<String, Byte>  map = new HashMap<String,Byte>();
 	//编写一个方法，完成对压缩数据的解码
 	/**
 	 * 
@@ -197,7 +196,7 @@ public class HuffmanCode {
 		}
 		//把字符串安装指定的赫夫曼编码进行解码
 		//把赫夫曼编码表进行调换，因为反向查询 a->100 100->a
-		Map<String, Byte>  map = new HashMap<String,Byte>();
+
 		for(Map.Entry<Byte, String> entry: huffmanCodes.entrySet()) {
 			map.put(entry.getValue(), entry.getKey());
 		}
@@ -252,6 +251,11 @@ public class HuffmanCode {
 		if(flag) {
 			return str.substring(str.length() - 8);
 		} else {
+			int lastLength = map.get("lastLength");
+			System.out.println("lastLength:"+lastLength);
+			while(str.length() < lastLength){
+				str = "0"+str;
+			}
 			return str;
 		}
 	}
@@ -295,7 +299,7 @@ public class HuffmanCode {
 			stringBuilder.append(huffmanCodes.get(b));
 		}
 		
-		//System.out.println("测试 stringBuilder~~~=" + stringBuilder.toString());
+		System.out.println("测试 stringBuilder~~~=" + stringBuilder.toString());
 		
 		//将 "1010100010111111110..." 转成 byte[]
 		
@@ -314,6 +318,7 @@ public class HuffmanCode {
 				String strByte;
 				if(i+8 > stringBuilder.length()) {//不够8位
 					strByte = stringBuilder.substring(i);
+					map.put("lastLength",(byte)strByte.length());
 				}else{
 					strByte = stringBuilder.substring(i, i + 8);
 				}	
