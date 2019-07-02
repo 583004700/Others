@@ -18,18 +18,18 @@ public class HuffmanCode {
 	public static void main(String[] args) {
 		
 		//测试压缩文件
-//		String srcFile = "d://Uninstall.xml";
-//		String dstFile = "d://Uninstall.zip";
-//		
+//		String srcFile = "d:/npp_7.5.3_Installer.exe";
+//		String dstFile = "d:/npp_7.5.3_Installer.zip";
+//
 //		zipFile(srcFile, dstFile);
 //		System.out.println("压缩文件ok~~");
 		
 		
 		//测试解压文件
-//		String zipFile = "d://Uninstall.zip";
-//		String dstFile = "d://Uninstall2.xml";
-//		unZipFile(zipFile, dstFile);
-//		System.out.println("解压成功!");
+		String zipFile = "d:/npp_7.5.3_Installer.zip";
+		String dstFile = "d:/npp_7.5.3_Installer.exe";
+		unZipFile(zipFile, dstFile);
+		System.out.println("解压成功!");
 		
 		String content = "i like like like java do you like a ja";
 		byte[] contentBytes = content.getBytes();
@@ -41,7 +41,7 @@ public class HuffmanCode {
 		
 		//测试一把byteToBitString方法
 		//System.out.println(byteToBitString((byte)1));
-		byte[] sourceBytes = decode(huffmanCodes, huffmanCodesBytes);
+		byte[] sourceBytes = decode(map, huffmanCodesBytes);
 		
 		System.out.println("原来的字符串=" + new String(sourceBytes)); // "i like like like java do you like a java"
 
@@ -94,10 +94,10 @@ public class HuffmanCode {
 			//读取byte数组  huffmanBytes
 			byte[] huffmanBytes = (byte[])ois.readObject();
 			//读取赫夫曼编码表
-			Map<Byte,String> huffmanCodes = (Map<Byte,String>)ois.readObject();
+			map = (Map<String,Byte>)ois.readObject();
 			
 			//解码
-			byte[] bytes = decode(huffmanCodes, huffmanBytes);
+			byte[] bytes = decode(map, huffmanBytes);
 			//将bytes 数组写入到目标文件
 			os = new FileOutputStream(dstFile);
 			//写数据到 dstFile 文件
@@ -149,7 +149,7 @@ public class HuffmanCode {
 			oos.writeObject(huffmanBytes); //我们是把
 			//这里我们以对象流的方式写入 赫夫曼编码，是为了以后我们恢复源文件时使用
 			//注意一定要把赫夫曼编码 写入压缩文件
-			oos.writeObject(huffmanCodes);
+			oos.writeObject(map);
 			
 			
 		}catch (Exception e) {
@@ -179,11 +179,11 @@ public class HuffmanCode {
 	//编写一个方法，完成对压缩数据的解码
 	/**
 	 * 
-	 * @param huffmanCodes 赫夫曼编码表 map
+	 * @param map 赫夫曼编码表 map
 	 * @param huffmanBytes 赫夫曼编码得到的字节数组
 	 * @return 就是原来的字符串对应的数组
 	 */
-	private static byte[] decode(Map<Byte,String> huffmanCodes, byte[] huffmanBytes) {
+	private static byte[] decode(Map<String,Byte> map, byte[] huffmanBytes) {
 		
 		//1. 先得到 huffmanBytes 对应的 二进制的字符串 ， 形式 1010100010111...
 		StringBuilder stringBuilder = new StringBuilder();
@@ -197,9 +197,9 @@ public class HuffmanCode {
 		//把字符串安装指定的赫夫曼编码进行解码
 		//把赫夫曼编码表进行调换，因为反向查询 a->100 100->a
 
-		for(Map.Entry<Byte, String> entry: huffmanCodes.entrySet()) {
-			map.put(entry.getValue(), entry.getKey());
-		}
+//		for(Map.Entry<Byte, String> entry: huffmanCodes.entrySet()) {
+//			map.put(entry.getValue(), entry.getKey());
+//		}
 		
 		//创建要给集合，存放byte
 		List<Byte> list = new ArrayList<>();
@@ -299,7 +299,7 @@ public class HuffmanCode {
 			stringBuilder.append(huffmanCodes.get(b));
 		}
 		
-		System.out.println("测试 stringBuilder~~~=" + stringBuilder.toString());
+		//System.out.println("测试 stringBuilder~~~=" + stringBuilder.toString());
 		
 		//将 "1010100010111111110..." 转成 byte[]
 		
@@ -371,6 +371,7 @@ public class HuffmanCode {
 			} else { //说明是一个叶子结点
 				//就表示找到某个叶子结点的最后
 				huffmanCodes.put(node.data, stringBuilder2.toString());
+				map.put(stringBuilder2.toString(),node.data);
 			}
 		}
 	}
