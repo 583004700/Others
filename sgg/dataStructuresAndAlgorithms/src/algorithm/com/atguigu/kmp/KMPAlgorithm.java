@@ -6,11 +6,11 @@ public class KMPAlgorithm {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String str1 = "BBC ABCDAB ABCDABCDABDE";
-		String str2 = "ABCDABD";
+		String str1 = "BBC ABCDABDCBDE";
+		String str2 =         "ABCDABD";
 		//String str2 = "BBC";
 		
-		int[] next = kmpNext("ABCDABD"); //[0, 1, 2, 0]
+		int[] next = kmpNext(str2); //[0, 1, 2, 0]
 		System.out.println("next=" + Arrays.toString(next));
 		
 		int index = kmpSearch(str1, str2, next);
