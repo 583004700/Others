@@ -8,10 +8,10 @@ public class QuickSort {
     public static int[] arr = {3,9,-1,10,-2,7,9,5,3,2,8,6,-10,-9,-1};
 
     public static void main(String[] args) {
-        int[] arr = new int[8000000];
-        for (int i = 0; i < 8000000; i++) {
-            arr[i] = (int) (Math.random() * 8000000); // 生成一个[0, 8000000) 数
-        }
+//        int[] arr = new int[8000000];
+//        for (int i = 0; i < 8000000; i++) {
+//            arr[i] = (int) (Math.random() * 8000000); // 生成一个[0, 8000000) 数
+//        }
 
         System.out.println("排序前");
         Date data1 = new Date();
@@ -25,7 +25,7 @@ public class QuickSort {
         String date2Str = simpleDateFormat.format(data2);
         System.out.println("排序前的时间是=" + date2Str);
 
-        //System.out.println(Arrays.toString(arr));
+        System.out.println(Arrays.toString(arr));
     }
 
     public static void quickSort(int[] arr,int left,int right){
@@ -48,7 +48,7 @@ public class QuickSort {
         }
         swap(arr,oldLeft,left);
         quickSort(arr,oldLeft,left-1);
-        quickSort(arr,left+1,oldRight);
+        //quickSort(arr,left+1,oldRight);
     }
 
     public static void swap(int[] arr,int a,int b){
