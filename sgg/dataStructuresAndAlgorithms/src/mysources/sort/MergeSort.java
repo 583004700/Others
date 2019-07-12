@@ -9,10 +9,10 @@ public class MergeSort {
     public static int arr[] = { 2,4,6,8,10 ,1,3,5,7,9 ,10,11,13 , 8,7,12,45,22,3,24,456};
 
     public static void main(String[] args) {
-        int[] arr = new int[8000000];
-        for (int i = 0; i < 8000000; i++) {
-            arr[i] = (int) (Math.random() * 8000000); // 生成一个[0, 8000000) 数
-        }
+//        int[] arr = new int[8000000];
+//        for (int i = 0; i < 8000000; i++) {
+//            arr[i] = (int) (Math.random() * 8000000); // 生成一个[0, 8000000) 数
+//        }
         System.out.println("排序前");
         Date data1 = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -24,7 +24,7 @@ public class MergeSort {
         Date data2 = new Date();
         String date2Str = simpleDateFormat.format(data2);
         System.out.println("排序前的时间是=" + date2Str);
-        //System.out.println(Arrays.toString(sortArr));
+        System.out.println(Arrays.toString(sortArr));
     }
 
     public static int[] mergeSort(int[] arr,int left,int right){
