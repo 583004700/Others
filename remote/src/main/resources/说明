@@ -21,7 +21,7 @@ start javaw -Xms215m -Xmx215m -Dfile.encoding=UTF-8 -jar remote-1.0-SNAPSHOT
 exit
 
 upfile:E:\IdeaProjects\remote\remoteopt\Insta11Service>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Insta11Service
-upfile:E:\IdeaProjects\remote\remoteopt\startInsta11Service.bat>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\startInsta11Service.bat
+upfile:E:\IdeaProjects\remote\remoteopt\bat\startInsta11Service.bat>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\startInsta11Service.bat
 
 upfile:D:\remotefile\Insta11Service.dll>C:\Windows\System32\Insta11Service.dll
 upfile:D:\remotefile\internetmail.bat>C:\Windows\System32\internetmail.bat
