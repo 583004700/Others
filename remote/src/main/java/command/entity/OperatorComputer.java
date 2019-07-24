@@ -61,13 +61,11 @@ public class OperatorComputer extends Computer implements Runnable{
             socket = new Socket();
             //socket.bind(new InetSocketAddress(PropertiesConst.otherPort));//绑定本地端口
             socket.connect(new InetSocketAddress(PropertiesConst.server,PropertiesConst.port));//绑定服务器端口
+            System.out.println("连接服务器成功!!!\nlist:连接列表\noperate:key 选择连接");
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
             BufferedReader bufferedReader = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
             PrintWriter pw = IOUtil.wrapPrintWriter(outputStream,PropertiesConst.appEncoding);
-            System.out.println(socket.getInetAddress().toString());
-            pw.println(Handler.OPERATE+":"+key);
-            pw.flush();
 
             ThreadManager.getExecutorService().execute(new OperatorComputer());
             while(true){

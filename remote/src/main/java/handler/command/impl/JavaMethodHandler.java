@@ -41,8 +41,8 @@ public class JavaMethodHandler extends OtherCommandHandler implements Runnable{
                     }else {
                         ret = m.invoke(obj, param.split(","));
                     }
-                    pw.println(ret);
-                    pw.println("执行成功");
+                    pw.println("方法返回值为"+ret);
+                    pw.println("方法执行成功");
                     pw.flush();
                 }
             }

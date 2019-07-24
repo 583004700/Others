@@ -73,6 +73,11 @@ public class SocketServer {
         return socket;
     }
 
+    //获取列表
+    public String getRegisterSocketList(){
+        return registerSockets.toString();
+    }
+
     public Socket getRegisterOperatorSocket(String key){
         Socket target = registerOperators.get(key);
         Socket socket = SocketProxy.getInstance(registerOperators,key,target);

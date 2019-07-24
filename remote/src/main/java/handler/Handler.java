@@ -24,5 +24,7 @@ public interface Handler{
     String CMDEND = "cmdend:";
     //java方法
     String JAVA = "java";
+    //查看列表
+    String LIST = "list";
     Object handler();
 }
