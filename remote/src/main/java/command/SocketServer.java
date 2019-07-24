@@ -38,6 +38,7 @@ public class SocketServer {
 
                     ServerExecutor serverExecutor = new ServerExecutor(str,socketServer);
                     serverExecutor.execute();
+                    System.out.println("-----------------------------------------------");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

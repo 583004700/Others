@@ -4,6 +4,7 @@ import command.PropertiesConst;
 import command.SocketServer;
 import handler.Handler;
 import handler.connection.impl.FileHandler;
+import handler.connection.impl.ListHandler;
 import handler.connection.impl.MessageHandler;
 import thread.ThreadManager;
 import util.IOUtil;
@@ -50,16 +51,8 @@ public class ServerExecutor extends BaseExecutor {
                 fileHandler.handler();
             }
         }else if(Handler.LIST.equals(prefix)){
-            String list = socketServer.getRegisterSocketList();
-            try {
-                operatorPrintWriter.println(list);
-                operatorPrintWriter.flush();
-                String str = IOUtil.readLinStr(socketServer.getSocket().getInputStream(), PropertiesConst.appEncoding);
-                this.setCompleteCommand(str);
-                this.execute();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            ListHandler listHandler = new ListHandler(socketServer,getCompleteCommand()).setServerExecutor(this);
+            listHandler.handler();
         }
         return handler;
     }
