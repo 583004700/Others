@@ -11,8 +11,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Date;
 
 public class FileHandler extends ConnectionHandler implements Runnable{
+
+    private InputStream upInStream = null;
+    private OutputStream downOutStream = null;
+    private volatile String upStr;
+    private volatile String downStr;
+
+    private OutputStream upOutStream;
+    private InputStream downInStream;
 
     public FileHandler(SocketServer socketServer,String completeCommand) {
         super(socketServer,completeCommand);
@@ -25,24 +34,54 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         return null;
     }
 
+    class UpCheck implements Runnable{
+        @Override
+        public void run() {
+            try {
+                System.out.println("开始接收upStr"+new Date().getTime());
+                upStr = IOUtil.readLinStr(upInStream, PropertiesConst.appEncoding);
+                System.out.println("接收到upStr");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+    class DownCheck implements Runnable{
+        @Override
+        public void run() {
+            try {
+                System.out.println("开始接收downStr"+new Date().getTime());
+                downStr = IOUtil.readLinStr(downInStream, PropertiesConst.appEncoding);
+                System.out.println("接收到downStr");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void run() {
         System.out.println("服务器文件传输开始");
         Socket otherSocket = null;
         boolean b = true;
-        InputStream upInStream = null;
-        OutputStream downOutStream = null;
+
         try {
+            System.out.println("查找文件"+getCompleteCommand() + ":" + Handler.UPFILE);
             while(otherSocket == null) {
                 otherSocket = getSocketServer().getFileSocket(getCompleteCommand() + ":" + Handler.UPFILE);
             }
+            System.out.println("服务器找到文件");
             getSocketServer().removeFileSocket(getCompleteCommand() + ":" + Handler.UPFILE);
             upInStream = otherSocket.getInputStream();
-            OutputStream upOutStream = otherSocket.getOutputStream();
-            InputStream downInStream = getOperatorSocket().getInputStream();
+            upOutStream = otherSocket.getOutputStream();
+            downInStream = getOperatorSocket().getInputStream();
             downOutStream = getOperatorSocket().getOutputStream();
-            String upStr = IOUtil.readLinStr(upInStream, PropertiesConst.appEncoding);
-            String downStr = IOUtil.readLinStr(downInStream,PropertiesConst.appEncoding);
+            ThreadManager.getExecutorService().execute(this.new UpCheck());
+            ThreadManager.getExecutorService().execute(this.new DownCheck());
+
+            while(upStr == null || downStr == null){}
+            System.out.println("接收到upStr和downStr");
+
             long length = Long.parseLong(downStr.split(":")[1]);
             downStr = downStr.split(":")[0];
 

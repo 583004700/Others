@@ -9,11 +9,12 @@ import util.IOUtil;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Date;
 
 public class UpFileHandler extends OtherCommandHandler implements Runnable{
     private volatile boolean success = true;
     private volatile boolean finish = false;
-    private int timeOut = 2000;
+
     private String key;
     public UpFileHandler(String completeCommand, PrintWriter printWriter, String key) {
         super(completeCommand, printWriter);
@@ -70,6 +71,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         }
 
         if(success){
+            System.out.println("上传检验成功"+new Date().getTime());
             //告诉服务器上传较验成功
             pw.println(Handler.UPFILESUCCESS);
             pw.flush();

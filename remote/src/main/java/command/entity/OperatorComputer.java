@@ -50,12 +50,12 @@ public class OperatorComputer extends Computer implements Runnable{
         //String key = "zhuwbDESKTOP-IHHLP8T"; //自己电脑
         String key = System.getProperty("key");
         if(key == null || key.equals("")){
-            key = "panDESKTOP-GPRFEQ9DESKTOP-GPRFEQ9";
-            key = "zhuwbDESKTOP-DQ7BJCLDESKTOP-DQ7BJCL";
-            key = "with youDESKTOP-7ABGFO2DESKTOP-7ABGFO2";
-            //key = "zhuwbDESKTOP-IHHLP8TDESKTOP-IHHLP8T";
-            key = "周志良DESKTOP-RI0K265DESKTOP-RI0K265";
-            key = "KKZHUWB-PCZHUWB-PC";
+//            key = "panDESKTOP-GPRFEQ9DESKTOP-GPRFEQ9";
+//            key = "zhuwbDESKTOP-DQ7BJCLDESKTOP-DQ7BJCL";
+//            key = "with youDESKTOP-7ABGFO2DESKTOP-7ABGFO2";
+//            //key = "zhuwbDESKTOP-IHHLP8TDESKTOP-IHHLP8T";
+//            key = "周志良DESKTOP-RI0K265DESKTOP-RI0K265";
+//            key = "KKZHUWB-PCZHUWB-PC";
         }
         try {
             socket = new Socket();
@@ -76,6 +76,9 @@ public class OperatorComputer extends Computer implements Runnable{
                 Scanner scanner = new Scanner(System.in,PropertiesConst.consoleEncoding);
                 scanner.useDelimiter("\n");
                 String readStr = scanner.next();
+                if(readStr.contains(Handler.OPERATE+":")){
+                    key = readStr.split(":").length > 1 ? readStr.split(":")[1] : null;
+                }
                 OperatorExecutor operatorExecutor = new OperatorExecutor(readStr,pw,key,bufferedReader);
                 operatorExecutor.execute();
             }

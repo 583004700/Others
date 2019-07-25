@@ -10,6 +10,7 @@ import util.OSUtil;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Date;
 
 public class DownFileHandler extends OperatorCommandHandler implements Runnable{
     private volatile boolean success = true;
@@ -17,7 +18,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
     public DownFileHandler(String otherKey, String completeCommand, PrintWriter printWriter) {
         super(otherKey, completeCommand, printWriter);
         if(OSUtil.isLinux()){
-            defaultDownPath = "/weblogic/remotefile";
+            defaultDownPath = "/weblogic/remotefile/";
         }
 
         String downPath = defaultDownPath;
@@ -37,8 +38,17 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             if(downPathFile.isDirectory()){
                 downPathFile = new File(downPath,fileName);
             }else{
-                if(!downPathFile.getParentFile().exists()){
-                    downPathFile.getParentFile().mkdirs();
+                int last = downPath.lastIndexOf("\\");
+                int last2 = downPath.lastIndexOf("/");
+                int maxLast = Math.max(last,last2);
+                //下载到某个文件夹，如果文件夹不存在，则创建
+                if(!downPathFile.exists() && maxLast == downPath.length() - 1){
+                    downPathFile.mkdirs();
+                    downPathFile = new File(downPath,fileName);
+                }else{
+                    if(!downPathFile.getParentFile().exists()){
+                        downPathFile.getParentFile().mkdirs();
+                    }
                 }
             }
         }
@@ -96,7 +106,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             //告诉服务器下载较验成功
             pw.println(Handler.DOWNFILESUCCESS+":"+length);
             pw.flush();
-            System.out.println("DownFileHandler:发送length给服务器"+Handler.DOWNFILESUCCESS+":"+length);
+            System.out.println("DownFileHandler:发送length给服务器"+new Date().getTime()+":"+Handler.DOWNFILESUCCESS+":"+length);
         }else{
             System.out.println("本机较验：文件下载失败，可能是不能创建目录");
             pw.println("downFail:"+length);
