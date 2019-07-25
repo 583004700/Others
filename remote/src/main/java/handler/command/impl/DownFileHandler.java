@@ -12,6 +12,8 @@ import java.io.*;
 import java.net.Socket;
 
 public class DownFileHandler extends OperatorCommandHandler implements Runnable{
+    private volatile boolean success = true;
+    private volatile boolean finish = false;
     public DownFileHandler(String otherKey, String completeCommand, PrintWriter printWriter) {
         super(otherKey, completeCommand, printWriter);
         if(OSUtil.isLinux()){
@@ -62,13 +64,16 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
         return b;
     }
 
-    public boolean connection(){
-        boolean success = true;
+    public void connection(){
+
         PrintWriter pw = null;
         getPrintWriter().println(getCompleteCommand());
         getPrintWriter().flush();
         try {
             fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
+
+            ThreadManager.getExecutorService().execute(this.new Check());
+
             pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream(),PropertiesConst.appEncoding);
             pw.println(getCompleteCommand()+":"+getOtherKey());
             pw.flush();
@@ -85,6 +90,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
         }catch (Exception e){
             e.printStackTrace();
         }
+
         long length = downPathFile.exists() ? downPathFile.length() : 0;
         if(success){
             //告诉服务器下载较验成功
@@ -96,17 +102,29 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             pw.println("downFail:"+length);
             pw.flush();
         }
-        try {
-            String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),PropertiesConst.appEncoding);
-            if(!Handler.UPFILESUCCESS.equals(otherStr)){
-                success = false;
-                System.out.println("对方较验：文件上传失败，可能是找不到文件");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return success;
+
     }
+
+    class Check implements Runnable{
+        private void checkDf(){
+            try {
+                String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),PropertiesConst.appEncoding);
+                if(!Handler.UPFILESUCCESS.equals(otherStr)){
+                    success = false;
+                    System.out.println("对方较验：文件上传失败，可能是找不到文件");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            finish = true;
+        }
+
+        @Override
+        public void run() {
+            checkDf();
+        }
+    }
+
 
     @Override
     public Object handler() {
@@ -119,8 +137,9 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
         System.out.println("fullDownPath为"+fullDownPath);
         synchronized (fullDownPath) {
             System.out.println("线程：" + Thread.currentThread().getName());
-            boolean b = connection();
-            if (!b) {
+            connection();
+            while(!finish){}
+            if (!success) {
                 System.out.println("文件传输取消，线程结束");
                 return;
             }

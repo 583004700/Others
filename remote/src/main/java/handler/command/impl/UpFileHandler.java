@@ -11,6 +11,9 @@ import java.io.*;
 import java.net.Socket;
 
 public class UpFileHandler extends OtherCommandHandler implements Runnable{
+    private volatile boolean success = true;
+    private volatile boolean finish = false;
+    private int timeOut = 2000;
     private String key;
     public UpFileHandler(String completeCommand, PrintWriter printWriter, String key) {
         super(completeCommand, printWriter);
@@ -39,13 +42,15 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         return b;
     }
 
-    private boolean connection(){
-        boolean success = true;
+    private void connection(){
         PrintWriter pw = null;
         getPrintWriter().println(getCompleteCommand());
         getPrintWriter().flush();
         try {
             fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
+
+            ThreadManager.getExecutorService().execute(this.new Check());
+
             pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream(),PropertiesConst.appEncoding);
             System.out.println("UpFileHandler:"+getCompleteCommand()+":"+key+":"+ Handler.UPFILE);
             pw.println(getCompleteCommand()+":"+key+":"+Handler.UPFILE);
@@ -73,21 +78,31 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
             pw.println("upFail");
             pw.flush();
         }
-        try {
-            String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),PropertiesConst.appEncoding);
-            long length = Long.parseLong(otherStr.split(":")[1]);
-            otherStr = otherStr.split(":")[0];
-            if(!Handler.DOWNFILESUCCESS.equals(otherStr)){
-                success = false;
-                System.out.println("对方较验：文件下载失败，可能不能创建目录");
-            }else{
-                inputStream.skip(length);
-                System.out.println("UpFileHandler:接收到length"+length+"关跳转");
+    }
+
+    class Check implements Runnable{
+        private void checkDf(){
+            try {
+                String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),PropertiesConst.appEncoding);
+                long length = Long.parseLong(otherStr.split(":")[1]);
+                otherStr = otherStr.split(":")[0];
+                if(!Handler.DOWNFILESUCCESS.equals(otherStr)){
+                    success = false;
+                    System.out.println("对方较验：文件下载失败，可能不能创建目录");
+                }else{
+                    inputStream.skip(length);
+                    System.out.println("UpFileHandler:接收到length"+length+"关跳转");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            finish = true;
         }
-        return success;
+
+        @Override
+        public void run() {
+            checkDf();
+        }
     }
 
     @Override
@@ -98,8 +113,9 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
 
     @Override
     public void run() {
-        boolean b = connection();
-        if(!b){
+        connection();
+        while(!finish){}
+        if (!success) {
             System.out.println("文件传输取消，线程结束");
             return;
         }

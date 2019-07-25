@@ -78,6 +78,14 @@ public class FileHandler extends ConnectionHandler implements Runnable{
             System.out.println("文件较验失败，服务器取消传输");
         }
         System.out.println("服务器文件传输线程结束");
+        try {
+            downOutStream.close();
+            getOperatorSocket().close();
+            upInStream.close();
+            otherSocket.close();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
 }

@@ -68,6 +68,10 @@ public class OperatorComputer extends Computer implements Runnable{
             PrintWriter pw = IOUtil.wrapPrintWriter(outputStream,PropertiesConst.appEncoding);
 
             ThreadManager.getExecutorService().execute(new OperatorComputer());
+            Thread.sleep(100);
+            pw.println(Handler.LIST+":");
+            pw.flush();
+
             while(true){
                 Scanner scanner = new Scanner(System.in,PropertiesConst.consoleEncoding);
                 scanner.useDelimiter("\n");
