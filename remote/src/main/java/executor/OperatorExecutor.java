@@ -7,23 +7,35 @@ import handler.command.impl.UpFileHandler;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 public class OperatorExecutor extends BaseExecutor{
     private PrintWriter printWriter;
-    private String otherKey;
+    private static String otherKey;
     private BufferedReader bufferedReader;
+    private static Set<String> ignoreKeys;
 
-    public OperatorExecutor(String completeCommand, PrintWriter printWriter, String otherKey, BufferedReader bufferedReader) {
+    public OperatorExecutor(String completeCommand, PrintWriter printWriter, BufferedReader bufferedReader) {
         super(completeCommand);
         this.printWriter = printWriter;
-        this.otherKey = otherKey;
         this.bufferedReader = bufferedReader;
+        ignoreKeys = new HashSet<String>();
+        ignoreKeys.add(Handler.LIST);
+        ignoreKeys.add(Handler.OPERATE);
     }
 
     public Handler getHandler(){
         Handler handler = null;
         String prefix = getPrefix();
+        if(!ignoreKeys.contains(getPrefix()) && getOtherKey() == null){
+            System.out.println("请先选择连接");
+            return null;
+        }
         if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix) || Handler.OPERATE.equals(prefix) || Handler.LIST.equals(prefix)){
+            if(Handler.OPERATE.equals(getPrefix())){
+                this.setOtherKey(getCommand());
+            }
             printWriter.println(getCompleteCommand());
             printWriter.flush();
         }else if(Handler.DOWNFILE.equals(prefix)){

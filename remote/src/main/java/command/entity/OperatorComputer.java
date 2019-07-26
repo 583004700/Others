@@ -48,7 +48,7 @@ public class OperatorComputer extends Computer implements Runnable{
         //String key = "AdministratorPC-20181117FCPZ";  //邓声根
         //String key = "zhuwbDESKTOP-DQ7BJCL"; //公司电脑
         //String key = "zhuwbDESKTOP-IHHLP8T"; //自己电脑
-        String key = System.getProperty("key");
+        String key = null;
         if(key == null || key.equals("")){
 //            key = "panDESKTOP-GPRFEQ9DESKTOP-GPRFEQ9";
 //            key = "zhuwbDESKTOP-DQ7BJCLDESKTOP-DQ7BJCL";
@@ -76,10 +76,7 @@ public class OperatorComputer extends Computer implements Runnable{
                 Scanner scanner = new Scanner(System.in,PropertiesConst.consoleEncoding);
                 scanner.useDelimiter("\n");
                 String readStr = scanner.next();
-                if(readStr.contains(Handler.OPERATE+":")){
-                    key = readStr.split(":").length > 1 ? readStr.split(":")[1] : null;
-                }
-                OperatorExecutor operatorExecutor = new OperatorExecutor(readStr,pw,key,bufferedReader);
+                OperatorExecutor operatorExecutor = new OperatorExecutor(readStr,pw,bufferedReader);
                 operatorExecutor.execute();
             }
         }catch (Exception e) {

@@ -11,10 +11,19 @@ import util.OSUtil;
 import java.io.*;
 import java.net.Socket;
 import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
-public class DownFileHandler extends OperatorCommandHandler implements Runnable{
+public class DownFileHandler extends OperatorCommandHandler implements Callable<Object> {
     private volatile boolean success = true;
     private volatile boolean finish = false;
+    private volatile Future future;
+
+    public boolean cancel(){
+        System.out.println(this+"===========cancelFuture"+future);
+        return future.cancel(true);
+    }
+
     public DownFileHandler(String otherKey, String completeCommand, PrintWriter printWriter) {
         super(otherKey, completeCommand, printWriter);
         if(OSUtil.isLinux()){
@@ -96,7 +105,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
         }
 
         try{
-            Thread.sleep(2000);
+            Thread.sleep(8000);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -138,12 +147,13 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
 
     @Override
     public Object handler() {
-        ThreadManager.getExecutorService().execute(this);
+        future = ThreadManager.getExecutorService().submit(this);
+        System.out.println(this+"==============future:"+future);
         return null;
     }
 
     @Override
-    public void run() {
+    public Object call() {
         System.out.println("fullDownPath为"+fullDownPath);
         synchronized (fullDownPath) {
             System.out.println("线程：" + Thread.currentThread().getName());
@@ -151,7 +161,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             while(!finish){}
             if (!success) {
                 System.out.println("文件传输取消，线程结束");
-                return;
+                return null;
             }
             System.out.println(fileName + "文件下载开始DownFileHandler");
             try {
@@ -163,5 +173,6 @@ public class DownFileHandler extends OperatorCommandHandler implements Runnable{
             OtherComputer.resetStartTime();
             System.out.println(fileName + "文件下载结束DownFileHandler");
         }
+        return null;
     }
 }

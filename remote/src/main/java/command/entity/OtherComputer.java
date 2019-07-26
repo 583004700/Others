@@ -13,6 +13,8 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 class TimeoutRunnable implements Runnable {
     private OtherComputer otherComputer;
@@ -46,6 +48,8 @@ public class OtherComputer extends Computer {
     private PrintWriter messageWriter;
     private static volatile long startTime = new Date().getTime();
     private static volatile long timeOut = PropertiesConst.timeOut;
+
+    private Set<OtherExecutor> otherExecutors = new HashSet<OtherExecutor>();
 
     public OtherComputer() {
         TimeoutRunnable timeoutRunnable = new TimeoutRunnable(this);
@@ -107,9 +111,16 @@ public class OtherComputer extends Computer {
             } finally {
                 if (command == null || !success) {
                     System.out.println("closed");
+                    cancelOtherExecutors();
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     start();
                 } else {
                     OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter, messageReader);
+                    otherExecutors.add(otherExecutor);
                     otherExecutor.setOtherKey(getKey());
                     otherExecutor.execute();
                 }
@@ -117,17 +128,18 @@ public class OtherComputer extends Computer {
         }
     }
 
-
+    public void cancelOtherExecutors(){
+        for(OtherExecutor o : otherExecutors){
+            o.cancel();
+            otherExecutors.remove(o);
+            System.out.println("取消："+o.getCompleteCommand());
+        }
+    }
 
     public void start() {
         messageSocket = null;
         connect();
         message();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public void sendMessage(String message) {

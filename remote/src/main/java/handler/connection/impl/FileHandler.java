@@ -23,6 +23,9 @@ public class FileHandler extends ConnectionHandler implements Runnable{
     private OutputStream upOutStream;
     private InputStream downInStream;
 
+    private Socket otherSocket;
+    private final static long timeOut = 30000;
+
     public FileHandler(SocketServer socketServer,String completeCommand) {
         super(socketServer,completeCommand);
     }
@@ -62,7 +65,6 @@ public class FileHandler extends ConnectionHandler implements Runnable{
     @Override
     public void run() {
         System.out.println("服务器文件传输开始");
-        Socket otherSocket = null;
         boolean b = true;
 
         try {
@@ -79,7 +81,14 @@ public class FileHandler extends ConnectionHandler implements Runnable{
             ThreadManager.getExecutorService().execute(this.new UpCheck());
             ThreadManager.getExecutorService().execute(this.new DownCheck());
 
-            while(upStr == null || downStr == null){}
+            long startTime = new Date().getTime();
+            while(upStr == null || downStr == null){
+                if(new Date().getTime() - startTime > timeOut){
+                    close();
+                    System.out.println("等待超时");
+                    return;
+                };
+            }
             System.out.println("接收到upStr和downStr");
 
             long length = Long.parseLong(downStr.split(":")[1]);
@@ -117,6 +126,10 @@ public class FileHandler extends ConnectionHandler implements Runnable{
             System.out.println("文件较验失败，服务器取消传输");
         }
         System.out.println("服务器文件传输线程结束");
+        close();
+    }
+
+    private void close(){
         try {
             downOutStream.close();
             getOperatorSocket().close();

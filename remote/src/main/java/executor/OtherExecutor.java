@@ -10,6 +10,7 @@ public class OtherExecutor extends BaseExecutor{
     private PrintWriter printWriter;
     private String otherKey;
     private BufferedReader bufferedReader;
+    public Handler handler;
 
     public OtherExecutor(String completeCommand, PrintWriter printWriter,BufferedReader bufferedReader) {
         super(completeCommand);
@@ -18,7 +19,6 @@ public class OtherExecutor extends BaseExecutor{
     }
 
     public Handler getHandler(){
-        Handler handler = null;
         String prefix = getPrefix();
         if(Handler.CMD.equals(prefix)){
             handler = new OtherCmdHandler(getCompleteCommand(),printWriter);
@@ -35,9 +35,15 @@ public class OtherExecutor extends BaseExecutor{
     }
 
     public void execute(){
-        Handler handler = getHandler();
+        handler = getHandler();
         if(handler != null){
             handler.handler();
+        }
+    }
+
+    public void cancel(){
+        if(handler instanceof DownFileHandler){
+            ((DownFileHandler)handler).cancel();
         }
     }
 

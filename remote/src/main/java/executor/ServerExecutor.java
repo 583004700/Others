@@ -6,6 +6,7 @@ import handler.Handler;
 import handler.connection.impl.FileHandler;
 import handler.connection.impl.ListHandler;
 import handler.connection.impl.MessageHandler;
+import handler.connection.impl.OperateHandler;
 import thread.ThreadManager;
 import util.IOUtil;
 
@@ -35,12 +36,8 @@ public class ServerExecutor extends BaseExecutor {
             System.out.println("添加OtherComputer:"+getCommand());
             socketServer.registerSocket(otherKey, socketServer.getSocket());
         }else if(Handler.OPERATE.equals(prefix)){
-            Socket otherSocket = socketServer.getRegisterSocket(otherKey);
-            MessageHandler messageHandler = (MessageHandler) new MessageHandler(socketServer,getCompleteCommand()).setOperatorSocket(socketServer.getSocket()).setOtherSocket(otherSocket);
-            messageHandler.setOtherKey(otherKey);
-            ThreadManager.getExecutorService().execute(messageHandler);
-            operatorPrintWriter.println("选择连接成功");
-            operatorPrintWriter.flush();
+            OperateHandler operateHandler = new OperateHandler(socketServer,getCompleteCommand()).setServerExecutor(this);
+            operateHandler.handler();
         }else if(Handler.DOWNFILE.equals(prefix) || Handler.UPFILE.equals(prefix)){
             if(getCommand().contains(":"+Handler.UPFILE)){
                 System.out.println("添加文件socket:"+getCompleteCommand());

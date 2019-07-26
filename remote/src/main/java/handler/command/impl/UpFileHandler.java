@@ -65,7 +65,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         }
 
         try{
-            Thread.sleep(2000);
+            Thread.sleep(8000);
         }catch (Exception e){
             e.printStackTrace();
         }
