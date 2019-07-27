@@ -27,7 +27,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
     public DownFileHandler(String otherKey, String completeCommand, PrintWriter printWriter) {
         super(otherKey, completeCommand, printWriter);
         if(OSUtil.isLinux()){
-            defaultDownPath = "/weblogic/remotefile/";
+            defaultDownPath = "/remotefile/";
         }
 
         String downPath = defaultDownPath;

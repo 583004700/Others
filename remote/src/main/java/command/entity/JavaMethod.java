@@ -1,5 +1,7 @@
 package command.entity;
 
+import util.OSUtil;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -14,7 +16,11 @@ public class JavaMethod {
         System.out.println("filePath:"+filePath);
         System.out.println("fileName:"+fileName);
         if("null".equals(filePath)){
-            filePath = "D:\\remotefile\\png";
+            if(OSUtil.isLinux()){
+                filePath = "/remotefile/png/";
+            }else {
+                filePath = "D:\\remotefile\\png\\";
+            }
         }
         if("null".equals(fileName)){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssS");
