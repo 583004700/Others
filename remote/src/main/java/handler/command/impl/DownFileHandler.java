@@ -19,7 +19,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
     private volatile boolean success = true;
     private volatile boolean finish = false;
     private volatile Future future;
-    private long timeOut = 30000;
+    private long timeOut = 18000000;
 
     public boolean cancel(){
         System.out.println(this+"===========cancelFuture"+future);
@@ -168,6 +168,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
                 System.out.println("文件传输取消，线程结束");
                 return null;
             }
+            long downStartTime = new Date().getTime();
             System.out.println(fileName + "文件下载开始DownFileHandler");
             try {
                 InputStream inputStream = fileSocket.getInputStream();
@@ -176,7 +177,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
                 e.printStackTrace();
             }
             OtherComputer.resetStartTime();
-            System.out.println(fileName + "文件下载结束DownFileHandler");
+            System.out.println(fileName + "文件下载结束DownFileHandler,所用时间为："+(new Date().getTime() - downStartTime));
         }
         return null;
     }

@@ -65,7 +65,11 @@ public class OperatorComputer extends Computer implements Runnable{
 
     public static void submitCommand(String completeCommand){
         OperatorExecutor operatorExecutor = new OperatorExecutor(completeCommand,pw,bufferedReader);
-        ThreadManager.getExecutorService().execute(operatorExecutor);
+        if((Handler.CMDBEGIN+Handler.separator).equals(completeCommand)){
+            operatorExecutor.execute();
+        }else {
+            ThreadManager.getExecutorService().execute(operatorExecutor);
+        }
     }
 
     public void run() {
@@ -77,7 +81,7 @@ public class OperatorComputer extends Computer implements Runnable{
                 result = br.readLine();
                 System.out.println(result);
                 //如果是screenPrintUp方法，还需要上传图片到本机，如果业务多的话要
-                if(result.contains("screenPrintUp")){
+                if(result!=null && result.contains("screenPrintUp")){
                     ScreenPrintUpHandler printUpHandler = new ScreenPrintUpHandler(result).setPw(pw);
                     ThreadManager.getExecutorService().execute(printUpHandler);
                 }
@@ -87,6 +91,7 @@ public class OperatorComputer extends Computer implements Runnable{
                 e.printStackTrace();
             }
             if(result == null){
+                System.out.println("连接已退出");
                 break;
             }
         }

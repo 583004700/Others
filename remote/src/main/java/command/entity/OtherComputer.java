@@ -123,7 +123,12 @@ public class OtherComputer extends Computer {
                     OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter, messageReader);
                     otherExecutors.add(otherExecutor);
                     otherExecutor.setOtherKey(key);
-                    ThreadManager.getExecutorService().execute(otherExecutor);
+                    if((Handler.CMDBEGIN+Handler.separator).equals(command)) {
+                        System.out.println("OtherComputer:执行cmdbegin");
+                        otherExecutor.execute();
+                    }else{
+                        ThreadManager.getExecutorService().execute(otherExecutor);
+                    }
                 }
             }
         }
