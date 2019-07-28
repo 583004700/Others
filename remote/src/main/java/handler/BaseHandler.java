@@ -3,7 +3,6 @@ package handler;
 public abstract class BaseHandler implements Handler{
     //完整的命令
     private String completeCommand;
-    private String separator = ":";
 
     public BaseHandler(String completeCommand) {
         this.completeCommand = completeCommand;

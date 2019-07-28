@@ -10,22 +10,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class JavaMethod {
+    //截图默认保存的路径
+    public static final String pFilePath = OSUtil.isLinux() ? "/remotefile/png/" : "D:\\remotefile\\png\\";
+
+    private final String separator = ">";
 
     //java:command.entity.JavaMethod.screenPrint(null,null)
-    public boolean screenPrint(String filePath,String fileName){
+    public String screenPrint(String filePath,String fileName){
         System.out.println("filePath:"+filePath);
         System.out.println("fileName:"+fileName);
         if("null".equals(filePath)){
-            if(OSUtil.isLinux()){
-                filePath = "/remotefile/png/";
-            }else {
-                filePath = "D:\\remotefile\\png\\";
-            }
+            filePath = pFilePath;
         }
         if("null".equals(fileName)){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssS");
             fileName = sdf.format(new Date());
         }
+        File f = null;
         try {
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             Rectangle screenRectangle = new Rectangle(screenSize);
@@ -35,12 +36,18 @@ public class JavaMethod {
             if (!screenFilePath.exists()) {
                 screenFilePath.mkdirs();
             }
-            File f = new File(filePath, fileName+".png");
+            f = new File(filePath, fileName+".png");
+            System.out.println("图片保存路径："+f.getAbsolutePath());
             ImageIO.write(image, "png", f);
-            return true;
+            return "success"+separator+f.getAbsolutePath();
         }catch (Exception e){
-            return false;
+            e.printStackTrace();
+            return "fail"+separator+f.getAbsolutePath();
         }
+    }
+
+    public String screenPrintUp(String filePath,String fileName){
+        return screenPrint(filePath,fileName);
     }
 
     //java:command.entity.JavaMethod.screenPrintFor(null,null)

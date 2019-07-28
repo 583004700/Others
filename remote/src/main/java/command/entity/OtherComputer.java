@@ -12,9 +12,10 @@ import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 class TimeoutRunnable implements Runnable {
     private OtherComputer otherComputer;
@@ -40,6 +41,7 @@ class TimeoutRunnable implements Runnable {
 }
 
 public class OtherComputer extends Computer {
+    private static String key = getKey();
     private String server = PropertiesConst.server;
     private int port = PropertiesConst.port;
 
@@ -49,7 +51,7 @@ public class OtherComputer extends Computer {
     private static volatile long startTime = new Date().getTime();
     private static volatile long timeOut = PropertiesConst.timeOut;
 
-    private Set<OtherExecutor> otherExecutors = new HashSet<OtherExecutor>();
+    private Set<OtherExecutor> otherExecutors = Collections.newSetFromMap(new ConcurrentHashMap<OtherExecutor, Boolean>());
 
     public OtherComputer() {
         TimeoutRunnable timeoutRunnable = new TimeoutRunnable(this);
@@ -91,7 +93,6 @@ public class OtherComputer extends Computer {
         messageSocket.connect(new InetSocketAddress(getServer(), getPort()));//绑定服务器端口
         messageReader = IOUtil.wrapBufferedReader(messageSocket.getInputStream(),PropertiesConst.appEncoding);
         messageWriter = IOUtil.wrapPrintWriter(messageSocket.getOutputStream(),PropertiesConst.appEncoding);
-        String key = getKey();
         sendMessage(Handler.REGISTER +":"+key);
         System.out.println("连接成功");
     }
@@ -111,18 +112,18 @@ public class OtherComputer extends Computer {
             } finally {
                 if (command == null || !success) {
                     System.out.println("closed");
-                    cancelOtherExecutors();
                     try {
+                        cancelOtherExecutors();
                         Thread.sleep(10000);
+                        start();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    start();
                 } else {
                     OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter, messageReader);
                     otherExecutors.add(otherExecutor);
-                    otherExecutor.setOtherKey(getKey());
-                    otherExecutor.execute();
+                    otherExecutor.setOtherKey(key);
+                    ThreadManager.getExecutorService().execute(otherExecutor);
                 }
             }
         }

@@ -14,11 +14,17 @@ import java.util.Date;
 public class UpFileHandler extends OtherCommandHandler implements Runnable{
     private volatile boolean success = true;
     private volatile boolean finish = false;
+    private long timeOut = 18000000;
 
     private String key;
     public UpFileHandler(String completeCommand, PrintWriter printWriter, String key) {
         super(completeCommand, printWriter);
         this.key = key;
+        filePath = getCommand();
+        if(filePath.split(">").length > 1){
+            filePath = filePath.split(">")[0];
+        }
+        filePath = filePath.intern();
     }
 
     private Socket fileSocket;
@@ -29,10 +35,6 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
     private boolean checkFile(){
         boolean b = true;
         try {
-            filePath = getCommand();
-            if(filePath.split(">").length > 1){
-                filePath = filePath.split(">")[0];
-            }
             upFile = new File(filePath);
             inputStream = new FileInputStream(upFile);
         } catch (FileNotFoundException e) {
@@ -115,22 +117,42 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
 
     @Override
     public void run() {
-        connection();
-        while(!finish){}
-        if (!success) {
-            System.out.println("文件传输取消，线程结束");
-            return;
+        synchronized (filePath) {
+            connection();
+            long startTime = new Date().getTime();
+            while (!finish) {
+                if (new Date().getTime() - startTime > timeOut) {
+                    closeInputStream();
+                    System.out.println("上传文件等待超时");
+                    return;
+                }
+            }
+            if (!success) {
+                System.out.println("文件传输取消，线程结束");
+                closeInputStream();
+                return;
+            }
+            System.out.println(filePath + "文件上传开始UpFileHandler");
+            try {
+                Thread.sleep(1000);
+                OutputStream outputStream = fileSocket.getOutputStream();
+                IOUtil.inputToOutput(inputStream, outputStream);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            OtherComputer.resetStartTime();
+            System.out.println(filePath + "文件上传结束UpFileHandler");
         }
-        System.out.println(filePath+"文件上传开始UpFileHandler");
-        try {
-            Thread.sleep(1000);
-            OutputStream outputStream = fileSocket.getOutputStream();
-            IOUtil.inputToOutput(inputStream,outputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
+    }
+
+    private void closeInputStream(){
+        if(inputStream != null){
+            try {
+                inputStream.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-        OtherComputer.resetStartTime();
-        System.out.println(filePath+"文件上传结束UpFileHandler");
     }
 
     public String getKey() {

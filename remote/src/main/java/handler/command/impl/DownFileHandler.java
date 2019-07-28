@@ -5,6 +5,7 @@ import command.entity.OtherComputer;
 import handler.Handler;
 import handler.command.OperatorCommandHandler;
 import thread.ThreadManager;
+import util.FileUtil;
 import util.IOUtil;
 import util.OSUtil;
 
@@ -18,6 +19,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
     private volatile boolean success = true;
     private volatile boolean finish = false;
     private volatile Future future;
+    private long timeOut = 30000;
 
     public boolean cancel(){
         System.out.println(this+"===========cancelFuture"+future);
@@ -29,39 +31,32 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
         if(OSUtil.isLinux()){
             defaultDownPath = "/remotefile/";
         }
-
         String downPath = defaultDownPath;
-        fileName = new File(getCommand()).getName();
-        if(fileName.contains("\\") || fileName.contains("/")){
-            int last = fileName.lastIndexOf("\\");
-            int last2 = fileName.lastIndexOf("/");
-            int maxLast = Math.max(last,last2);
-            fileName = fileName.substring(maxLast+1,fileName.length());
-        }
-        downPathFile = new File(downPath,fileName);
         String[] comArr = getCommand().split(">");
+        fileName = FileUtil.getName(comArr[0]);
         if(comArr.length > 1){
-            fileName = new File(comArr[0]).getName();
-            downPath = comArr[1];
-            downPathFile = new File(downPath);
-            if(downPathFile.isDirectory()){
-                downPathFile = new File(downPath,fileName);
-            }else{
-                int last = downPath.lastIndexOf("\\");
-                int last2 = downPath.lastIndexOf("/");
-                int maxLast = Math.max(last,last2);
-                //下载到某个文件夹，如果文件夹不存在，则创建
-                if(!downPathFile.exists() && maxLast == downPath.length() - 1){
-                    downPathFile.mkdirs();
-                    downPathFile = new File(downPath,fileName);
-                }else{
-                    if(!downPathFile.getParentFile().exists()){
-                        downPathFile.getParentFile().mkdirs();
-                    }
-                }
+            String newFileName = FileUtil.getName(comArr[1]);
+            if("".equals(newFileName)){
+                newFileName = fileName;
             }
+            fileName = newFileName;
+            String newDownPath = FileUtil.getPath(comArr[1]);
+            if("".equals(newDownPath)){
+                newDownPath = downPath;
+            }
+            if(new File(comArr[1]).isDirectory()){
+                newDownPath = comArr[1];
+            }
+            downPath = newDownPath;
         }
-        fullDownPath = downPathFile.toString().intern();
+        fileName = fileName.replaceAll(" ","空格");
+        downPath = downPath.replaceAll(" ","空格");
+        downPathFile = new File(downPath);
+        if(!downPathFile.exists()){
+            downPathFile.mkdirs();
+        }
+        downPathFile = new File(downPathFile,fileName);
+        fullDownPath = downPathFile.getAbsolutePath().intern();
     }
 
     private Socket fileSocket;
@@ -158,8 +153,18 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
         synchronized (fullDownPath) {
             System.out.println("线程：" + Thread.currentThread().getName());
             connection();
-            while(!finish){}
+            long startTime = new Date().getTime();
+            while(!finish){
+                if (new Date().getTime() - startTime > timeOut) {
+                    closeFileOutputStream();
+                    deleteFile();
+                    System.out.println("下载文件等待超时");
+                    return null;
+                }
+            }
             if (!success) {
+                closeFileOutputStream();
+                deleteFile();
                 System.out.println("文件传输取消，线程结束");
                 return null;
             }
@@ -174,5 +179,21 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             System.out.println(fileName + "文件下载结束DownFileHandler");
         }
         return null;
+    }
+
+    private void closeFileOutputStream(){
+        if(fileOutputStream != null){
+            try {
+                fileOutputStream.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void deleteFile(){
+        if(downPathFile.exists() && downPathFile.length() == 0){
+            downPathFile.delete();
+        }
     }
 }

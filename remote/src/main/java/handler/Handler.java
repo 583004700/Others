@@ -4,6 +4,8 @@ package handler;
  * 处理不同的指令类型
  */
 public interface Handler{
+    //命令分隔符
+    String separator = ":";
     //cmd指令
     String CMD = "cmd";
     //添加OtherComputer

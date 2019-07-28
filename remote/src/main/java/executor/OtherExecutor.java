@@ -6,7 +6,7 @@ import handler.command.impl.*;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
-public class OtherExecutor extends BaseExecutor{
+public class OtherExecutor extends BaseExecutor implements Runnable{
     private PrintWriter printWriter;
     private String otherKey;
     private BufferedReader bufferedReader;
@@ -32,6 +32,11 @@ public class OtherExecutor extends BaseExecutor{
             handler = new JavaMethodHandler(getCompleteCommand(),printWriter);
         }
         return handler;
+    }
+
+    @Override
+    public void run() {
+        execute();
     }
 
     public void execute(){

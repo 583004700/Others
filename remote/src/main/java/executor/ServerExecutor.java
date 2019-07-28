@@ -5,18 +5,16 @@ import command.SocketServer;
 import handler.Handler;
 import handler.connection.impl.FileHandler;
 import handler.connection.impl.ListHandler;
-import handler.connection.impl.MessageHandler;
 import handler.connection.impl.OperateHandler;
-import thread.ThreadManager;
 import util.IOUtil;
 
 import java.io.PrintWriter;
-import java.net.Socket;
 
-public class ServerExecutor extends BaseExecutor {
+public class ServerExecutor extends BaseExecutor implements Runnable{
     private SocketServer socketServer;
     private String otherKey = "";
     private PrintWriter operatorPrintWriter;
+    private String fileKey;
 
     public ServerExecutor(String completeCommand, SocketServer socketServer) {
         super(completeCommand);
@@ -26,6 +24,12 @@ public class ServerExecutor extends BaseExecutor {
         }catch (Exception e){
             e.printStackTrace();
         }
+        fileKey = getCompleteCommand().intern();
+    }
+
+    @Override
+    public void run() {
+        execute();
     }
 
     public Handler getHandler(){
@@ -39,14 +43,9 @@ public class ServerExecutor extends BaseExecutor {
             OperateHandler operateHandler = new OperateHandler(socketServer,getCompleteCommand()).setServerExecutor(this);
             operateHandler.handler();
         }else if(Handler.DOWNFILE.equals(prefix) || Handler.UPFILE.equals(prefix)){
-            if(getCommand().contains(":"+Handler.UPFILE)){
-                System.out.println("添加文件socket:"+getCompleteCommand());
-                socketServer.addFileSocket(getCompleteCommand(),socketServer.getSocket());
-            }else {
-                FileHandler fileHandler = (FileHandler) new FileHandler(socketServer,getCompleteCommand()).setOperatorSocket(socketServer.getSocket());
-                fileHandler.setOtherKey(getCommand());
-                fileHandler.handler();
-            }
+            FileHandler fileHandler = (FileHandler) new FileHandler(socketServer,getCompleteCommand()).setOperatorSocket(socketServer.getSocket());
+            fileHandler.setOtherKey(getCommand());
+            fileHandler.handler();
         }else if(Handler.LIST.equals(prefix)){
             ListHandler listHandler = new ListHandler(socketServer,getCompleteCommand()).setServerExecutor(this);
             listHandler.handler();

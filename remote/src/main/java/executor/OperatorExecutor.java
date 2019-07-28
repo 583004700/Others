@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 
-public class OperatorExecutor extends BaseExecutor{
+public class OperatorExecutor extends BaseExecutor implements Runnable{
     private PrintWriter printWriter;
     private static String otherKey;
     private BufferedReader bufferedReader;
@@ -48,6 +48,11 @@ public class OperatorExecutor extends BaseExecutor{
         return handler;
     }
 
+    @Override
+    public void run() {
+        execute();
+    }
+
     public void execute(){
         Handler handler = getHandler();
         if(handler != null){
@@ -63,7 +68,7 @@ public class OperatorExecutor extends BaseExecutor{
         this.printWriter = printWriter;
     }
 
-    public String getOtherKey() {
+    public static String getOtherKey() {
         return otherKey;
     }
 

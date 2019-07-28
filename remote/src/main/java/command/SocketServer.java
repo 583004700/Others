@@ -4,18 +4,20 @@ import executor.ServerExecutor;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import thread.ThreadManager;
 import util.IOUtil;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SocketServer {
     private static ConcurrentHashMap<String, Socket> registerSockets = new ConcurrentHashMap<String, Socket>();
-    private static ConcurrentHashMap<String, Socket> filesSockets = new ConcurrentHashMap<String, Socket>();
+    private static Hashtable<String, Socket> filesSockets = new Hashtable<String, Socket>();
     private static ConcurrentHashMap<String, Socket> registerOperators = new ConcurrentHashMap<String, Socket>();
     private Socket socket;
 
@@ -37,7 +39,7 @@ public class SocketServer {
                     socketServer.setSocket(socket);
 
                     ServerExecutor serverExecutor = new ServerExecutor(str,socketServer);
-                    serverExecutor.execute();
+                    ThreadManager.getExecutorService().execute(serverExecutor);
                     System.out.println("-----------------------------------------------");
                 }
             } catch (Exception e) {
@@ -56,8 +58,8 @@ public class SocketServer {
 
     public Socket getFileSocket(String key){
         Socket target = filesSockets.get(key);
-        Socket socket = SocketProxy.getInstance(filesSockets,key,target);
-        return socket;
+//        Socket socket = SocketProxy.getInstance(filesSockets,key,target);
+        return target;
     }
 
     public void addFileSocket(String key,Socket value){
@@ -113,7 +115,6 @@ class SocketProxy implements MethodInterceptor{
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
         if(method.getName().equals("close")){
             if(map.containsKey(key)){
-                System.out.println("从map中移除");
                 map.remove(key);
             }
         }

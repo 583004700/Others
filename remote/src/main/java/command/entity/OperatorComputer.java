@@ -3,6 +3,7 @@ package command.entity;
 import command.PropertiesConst;
 import executor.OperatorExecutor;
 import handler.Handler;
+import handler.resultHandler.ScreenPrintUpHandler;
 import thread.ThreadManager;
 import util.IOUtil;
 
@@ -32,6 +33,8 @@ public class OperatorComputer extends Computer implements Runnable{
     static Socket socket;
     static InputStream inputStream;
     static OutputStream outputStream;
+    static PrintWriter pw;
+    static BufferedReader bufferedReader;
     public static void main(String[] args) {
         String key = null;
         try {
@@ -41,8 +44,8 @@ public class OperatorComputer extends Computer implements Runnable{
             System.out.println("连接服务器成功!!!\nlist:连接列表\noperate:key 选择连接");
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
-            BufferedReader bufferedReader = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
-            PrintWriter pw = IOUtil.wrapPrintWriter(outputStream,PropertiesConst.appEncoding);
+            bufferedReader = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
+            pw = IOUtil.wrapPrintWriter(outputStream,PropertiesConst.appEncoding);
 
             ThreadManager.getExecutorService().execute(new OperatorComputer());
             Thread.sleep(100);
@@ -53,12 +56,16 @@ public class OperatorComputer extends Computer implements Runnable{
                 Scanner scanner = new Scanner(System.in,PropertiesConst.consoleEncoding);
                 scanner.useDelimiter("\n");
                 String readStr = scanner.next();
-                OperatorExecutor operatorExecutor = new OperatorExecutor(readStr,pw,bufferedReader);
-                operatorExecutor.execute();
+                submitCommand(readStr);
             }
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void submitCommand(String completeCommand){
+        OperatorExecutor operatorExecutor = new OperatorExecutor(completeCommand,pw,bufferedReader);
+        ThreadManager.getExecutorService().execute(operatorExecutor);
     }
 
     public void run() {
@@ -69,6 +76,11 @@ public class OperatorComputer extends Computer implements Runnable{
             try {
                 result = br.readLine();
                 System.out.println(result);
+                //如果是screenPrintUp方法，还需要上传图片到本机，如果业务多的话要
+                if(result.contains("screenPrintUp")){
+                    ScreenPrintUpHandler printUpHandler = new ScreenPrintUpHandler(result).setPw(pw);
+                    ThreadManager.getExecutorService().execute(printUpHandler);
+                }
             }catch (SocketTimeoutException s){
                 result = "";
             } catch (Exception e) {
