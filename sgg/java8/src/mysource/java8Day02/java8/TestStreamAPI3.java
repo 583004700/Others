@@ -63,7 +63,8 @@ public class TestStreamAPI3 {
 		
 		System.out.println(sum.get());
 	}
-	
+
+	//收集
 	//collect——将流转换为其他形式。接收一个 Collector接口的实现，用于给Stream中元素做汇总的方法
 	@Test
 	public void test3(){

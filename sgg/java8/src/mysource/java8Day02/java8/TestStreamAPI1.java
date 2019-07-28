@@ -61,6 +61,18 @@ public class TestStreamAPI1 {
 			   .flatMap(TestStreamAPI1::filterCharacter);
 		
 		stream3.forEach(System.out::println);
+
+		Arrays.stream(new String[]{"aa","bb","cc"});
+		Stream.of("aa","bb","cc");
+
+		//创建无限流
+		//迭代
+		Stream<Integer> stream4 = Stream.iterate(0,(x)->x+2);
+		stream4.limit(10).forEach(System.out::println);
+
+		//生成
+		Stream<Double> stream5 = Stream.generate(() -> Math.random());
+		stream5.limit(5).forEach(System.out::println);
 	}
 
 	public static Stream<Character> filterCharacter(String str){
