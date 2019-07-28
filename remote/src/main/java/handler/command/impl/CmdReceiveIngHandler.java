@@ -27,24 +27,23 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
             OutputStream outputStream = process.getOutputStream();
             PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream, PropertiesConst.cmdEncoding);
 
-            ResultReceiveIngThread resultReceiveThread = new ResultReceiveIngThread(IOUtil.wrapBufferedReader(inputStream,PropertiesConst.cmdEncoding),getPrintWriter()).setProcess(process);
+            ResultReceiveIngThread resultReceiveThread = new ResultReceiveIngThread(IOUtil.wrapBufferedReader(inputStream,PropertiesConst.cmdEncoding),getPrintWriter());
             ThreadManager.getExecutorService().execute(resultReceiveThread);
 
-            ResultReceiveIngThread errorResultReceiveThread = new ResultReceiveIngThread(IOUtil.wrapBufferedReader(errorStream,PropertiesConst.cmdEncoding),getPrintWriter()).setProcess(process);
-            ThreadManager.getExecutorService().execute(errorResultReceiveThread);
+            ResultReceiveIngThread errorReceiveThread = new ResultReceiveIngThread(IOUtil.wrapBufferedReader(errorStream,PropertiesConst.cmdEncoding),getPrintWriter());
+            ThreadManager.getExecutorService().execute(errorReceiveThread);
 
             String readStr = "";
             while ((readStr = bufferedReader.readLine()) != null){
                 System.out.println("进入CmdReceiveIngHandler while");
-                System.out.println("向cmd中输入命令"+readStr);
-                printWriter.println(readStr);
-                printWriter.flush();
-                //先输入到cmd中告诉控制台要退出
                 if(Handler.CMDEND.equals(readStr)){
                     printWriter.close();
                     outputStream.close();
                     break;
                 }
+                System.out.println("向cmd中输入命令"+readStr);
+                printWriter.println(readStr);
+                printWriter.flush();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,8 +60,6 @@ class ResultReceiveIngThread implements Runnable{
     //打印结果的流
     PrintWriter printWriter;
 
-    private Process process;
-
     public ResultReceiveIngThread(BufferedReader bufferedReader, PrintWriter printWriter) {
         this.bufferedReader = bufferedReader;
         this.printWriter = printWriter;
@@ -70,10 +67,6 @@ class ResultReceiveIngThread implements Runnable{
 
     @Override
     public void run() {
-        execProcess(this.bufferedReader);
-    }
-
-    public void execProcess(BufferedReader bufferedReader){
         try {
             String readStr = "";
             while((readStr = bufferedReader.readLine()) != null){
@@ -81,15 +74,9 @@ class ResultReceiveIngThread implements Runnable{
                 if(readStr != null && readStr.endsWith(Handler.CMDEND)){
                     break;
                 }
-                try {
-                    Process process = Runtime.getRuntime().exec(readStr);
-//                    InputStream inputStream = process.geti
-                }catch (Exception e){
-                    printWriter.println(readStr);
-                    printWriter.flush();
-                }
+                printWriter.println(readStr);
+                printWriter.flush();
             }
-            System.out.println("ResultReceiveIngThread线程结束");
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
@@ -98,11 +85,7 @@ class ResultReceiveIngThread implements Runnable{
             }catch (Exception e){
                 e.printStackTrace();
             }
+            System.out.println("ResultReceiveIngThread线程结束");
         }
-    }
-
-    public ResultReceiveIngThread setProcess(Process process) {
-        this.process = process;
-        return this;
     }
 }
