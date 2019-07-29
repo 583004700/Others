@@ -46,6 +46,7 @@ public class JavaMethod {
         }
     }
 
+    //java:command.entity.JavaMethod.screenPrintUp(null,null)
     public String screenPrintUp(String filePath,String fileName){
         return screenPrint(filePath,fileName);
     }

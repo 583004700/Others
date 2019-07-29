@@ -26,7 +26,6 @@ public class FileHandler extends ConnectionHandler implements Runnable{
     private Socket otherSocket;
     private final static long timeOut = 18000000;
     private String fileKey;
-    private volatile boolean downSuccess = true;
 
     public FileHandler(SocketServer socketServer,String completeCommand) {
         super(socketServer,completeCommand);
@@ -68,21 +67,11 @@ public class FileHandler extends ConnectionHandler implements Runnable{
 
     @Override
     public void run() {
-        synchronized (fileKey) {
-            if (getCommand().contains(":" + Handler.UPFILE)) {
-                long startTime = new Date().getTime();
-                System.out.println("服务器等待下载完成...");
-                while (!downSuccess) {
-                    if (new Date().getTime() - startTime > timeOut) {
-                        System.out.println("服务器上传文件等待超时");
-                        return;
-                    }
-                }
-                System.out.println("添加文件socket:" + getCompleteCommand());
-                getSocketServer().addFileSocket(getCompleteCommand(), getSocketServer().getSocket());
-                downSuccess = false;
-                return;
-            }
+
+        if (getCommand().contains(":" + Handler.UPFILE)) {
+            System.out.println("添加文件socket:" + getCompleteCommand());
+            getSocketServer().addFileSocket(getCompleteCommand(), getSocketServer().getSocket());
+            return;
         }
 
         System.out.println("服务器文件传输开始");
@@ -97,8 +86,8 @@ public class FileHandler extends ConnectionHandler implements Runnable{
                 }
                 otherSocket = getSocketServer().getFileSocket(fileKey);
             }
-            System.out.println("服务器找到文件");
             getSocketServer().removeFileSocket(fileKey);
+            System.out.println("服务器找到文件");
             upInStream = otherSocket.getInputStream();
             upOutStream = otherSocket.getOutputStream();
             downInStream = getOperatorSocket().getInputStream();
@@ -153,7 +142,6 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         System.out.println("服务器文件传输线程结束");
         close();
 
-        downSuccess = true;
     }
 
     private void close(){

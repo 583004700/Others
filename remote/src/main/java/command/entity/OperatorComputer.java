@@ -49,8 +49,8 @@ public class OperatorComputer extends Computer implements Runnable{
 
             ThreadManager.getExecutorService().execute(new OperatorComputer());
             Thread.sleep(100);
-            pw.println(Handler.LIST+":");
-            pw.flush();
+
+            submitCommand(Handler.LIST+":");
 
             while(true){
                 Scanner scanner = new Scanner(System.in,PropertiesConst.consoleEncoding);
