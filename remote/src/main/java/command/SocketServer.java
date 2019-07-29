@@ -23,7 +23,6 @@ public class SocketServer {
     static class HeartThread implements Runnable{
         @Override
         public void run() {
-            System.out.println("发送心跳run...");
             Set<Map.Entry<String,Socket>> set = registerSockets.entrySet();
             for(Map.Entry<String,Socket> r : set){
                 Socket socket = r.getValue();
@@ -32,7 +31,6 @@ public class SocketServer {
                     printWriter = IOUtil.wrapPrintWriter(socket.getOutputStream(),PropertiesConst.appEncoding);
                     printWriter.println(Handler.HEART+Handler.separator);
                     printWriter.flush();
-                    System.out.println("发送心跳...");
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -42,7 +40,7 @@ public class SocketServer {
 
     static {
         HeartThread heartThread = new HeartThread();
-        ThreadManager.getScheduledExecutorService().scheduleWithFixedDelay(heartThread,1,1, TimeUnit.SECONDS);
+        ThreadManager.getScheduledExecutorService().scheduleWithFixedDelay(heartThread,30,30, TimeUnit.SECONDS);
     }
 
     public static ConcurrentHashMap<String, Socket> registerSockets = new ConcurrentHashMap<String, Socket>();

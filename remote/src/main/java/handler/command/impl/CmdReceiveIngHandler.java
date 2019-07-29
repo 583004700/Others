@@ -37,7 +37,6 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
             String readStr = "";
             while ((readStr = bufferedReader.readLine()) != null){
                 if(readStr.equals(Handler.HEART+Handler.separator)){
-                    System.out.println("接收到心跳");
                     OtherComputer.resetHeartTime();
                 }else {
                     System.out.println("进入CmdReceiveIngHandler while");

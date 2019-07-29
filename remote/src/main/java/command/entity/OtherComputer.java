@@ -3,21 +3,16 @@ package command.entity;
 import command.PropertiesConst;
 import executor.OtherExecutor;
 import handler.Handler;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
 import thread.ThreadManager;
 import util.IOUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +27,7 @@ public class OtherComputer extends Computer {
             try {
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - OtherComputer.getStartTime() >= OtherComputer.getTimeOut()
-                        || currentTime - OtherComputer.getHeartTime() >= OtherComputer.getHeartTimeOut()) {
+                        || currentTime - OtherComputer.getHeartTime() >= OtherComputer.getHeartTimeOut() + 5) {
                     OtherComputer.getMessageSocket().getInputStream().close();
                 }
             } catch (Exception e) {
@@ -43,7 +38,7 @@ public class OtherComputer extends Computer {
 
     static{
         TimeoutRunnable timeoutRunnable = new TimeoutRunnable();
-        ThreadManager.getScheduledExecutorService().scheduleWithFixedDelay(timeoutRunnable,1,1, TimeUnit.SECONDS);
+        ThreadManager.getScheduledExecutorService().scheduleWithFixedDelay(timeoutRunnable,30,30, TimeUnit.SECONDS);
     }
 
     private static String key = getKey();
@@ -126,7 +121,7 @@ public class OtherComputer extends Computer {
                         e.printStackTrace();
                     }
                 } else if(command.equals(Handler.HEART+Handler.separator)){
-                    System.out.println("接收到心跳");
+
                 } else{
                     OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter, messageReader);
                     otherExecutors.add(otherExecutor);
