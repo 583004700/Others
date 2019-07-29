@@ -1,8 +1,10 @@
 package util;
 
 import command.PropertiesConst;
+import command.entity.OtherComputer;
 
 import java.io.*;
+import java.util.Date;
 
 public class IOUtil {
 
@@ -78,18 +80,23 @@ public class IOUtil {
         return bufferedReader;
     }
 
+    /**
+     * 用于文件传输
+     * @param inputStream
+     * @param outputStream
+     */
     public static void inputToOutput(InputStream inputStream,OutputStream outputStream){
         BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
         try {
-            byte[] b = new byte[2048];
+            byte[] b = new byte[1024000];
             int n = 0;
             while ((n = bufferedInputStream.read(b)) != -1) {
                 bufferedOutputStream.write(b, 0, n);
                 bufferedOutputStream.flush();
             }
             bufferedInputStream.close();
-            bufferedOutputStream.close();;
+            bufferedOutputStream.close();
             inputStream.close();
             outputStream.close();
         } catch (Exception e) {

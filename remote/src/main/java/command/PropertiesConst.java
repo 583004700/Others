@@ -12,6 +12,7 @@ public class PropertiesConst {
     public static String cmdEncoding;
     public static String consoleEncoding;
     public static long timeOut = 1000;
+    public static long heartTimeOut = 1000;
 //    public static int otherPort = 9999;
 //    public static int operatorPort = 9998;
     public static int serverLocalPort = 8867;
@@ -32,6 +33,7 @@ public class PropertiesConst {
             }
             consoleEncoding = (String) properties.get("consoleencoding");
             timeOut = Long.valueOf((String)properties.get("timeOut"));
+            heartTimeOut = Long.valueOf((String)properties.get("heartTimeOut"));
 //            otherPort = Integer.valueOf((String)properties.get("otherPort"));
 //            operatorPort = Integer.valueOf((String)properties.get("operatorPort"));
             serverLocalPort = Integer.valueOf((String)properties.get("serverLocalPort"));

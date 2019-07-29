@@ -44,7 +44,7 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         @Override
         public void run() {
             try {
-                System.out.println("开始接收upStr"+new Date().getTime());
+                System.out.println("开始接收upStr"+System.currentTimeMillis());
                 upStr = IOUtil.readLinStr(upInStream, PropertiesConst.appEncoding);
                 System.out.println("接收到upStr");
             }catch (Exception e){
@@ -56,7 +56,7 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         @Override
         public void run() {
             try {
-                System.out.println("开始接收downStr"+new Date().getTime());
+                System.out.println("开始接收downStr"+System.currentTimeMillis());
                 downStr = IOUtil.readLinStr(downInStream, PropertiesConst.appEncoding);
                 System.out.println("接收到downStr");
             }catch (Exception e){
@@ -78,9 +78,9 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         boolean b = true;
         try {
             System.out.println("查找文件" + fileKey);
-            long startTime = new Date().getTime();
+            long startTime = System.currentTimeMillis();
             while (otherSocket == null) {
-                if (new Date().getTime() - startTime > timeOut) {
+                if (System.currentTimeMillis() - startTime > timeOut) {
                     System.out.println("查找文件等待超时");
                     return;
                 }
@@ -95,9 +95,9 @@ public class FileHandler extends ConnectionHandler implements Runnable{
             ThreadManager.getExecutorService().execute(this.new UpCheck());
             ThreadManager.getExecutorService().execute(this.new DownCheck());
 
-            startTime = new Date().getTime();
+            startTime = System.currentTimeMillis();
             while (upStr == null || downStr == null) {
-                if (new Date().getTime() - startTime > timeOut) {
+                if (System.currentTimeMillis() - startTime > timeOut) {
                     close();
                     System.out.println("等待超时");
                     return;

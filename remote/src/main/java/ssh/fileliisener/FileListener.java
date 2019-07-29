@@ -12,7 +12,7 @@ public class FileListener {
     private File file;
     public FileListener(String filePath){
         this.filePath = filePath;
-        preModified = new Date().getTime();
+        preModified = System.currentTimeMillis();
         this.file = new File(filePath);
     }
 

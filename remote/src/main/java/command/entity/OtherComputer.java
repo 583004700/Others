@@ -3,66 +3,72 @@ package command.entity;
 import command.PropertiesConst;
 import executor.OtherExecutor;
 import handler.Handler;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 import thread.ThreadManager;
 import util.IOUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Collections;
-import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
-class TimeoutRunnable implements Runnable {
-    private OtherComputer otherComputer;
-
-    public TimeoutRunnable(OtherComputer otherComputer) {
-        this.otherComputer = otherComputer;
-    }
-
-    @Override
-    public void run() {
-        while (true) {
+public class OtherComputer extends Computer {
+    /**
+     * 检测心跳和长时间没操作的线程
+     */
+    static class TimeoutRunnable implements Runnable {
+        @Override
+        public void run() {
             try {
-                Thread.sleep(10000);
-                long currentTime = new Date().getTime();
-                if (currentTime - otherComputer.getStartTime() >= otherComputer.getTimeOut()) {
-                    otherComputer.getMessageSocket().getInputStream().close();
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - OtherComputer.getStartTime() >= OtherComputer.getTimeOut()
+                        || currentTime - OtherComputer.getHeartTime() >= OtherComputer.getHeartTimeOut()) {
+                    OtherComputer.getMessageSocket().getInputStream().close();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-}
 
-public class OtherComputer extends Computer {
+    static{
+        TimeoutRunnable timeoutRunnable = new TimeoutRunnable();
+        ThreadManager.getScheduledExecutorService().scheduleWithFixedDelay(timeoutRunnable,1,1, TimeUnit.SECONDS);
+    }
+
     private static String key = getKey();
     private String server = PropertiesConst.server;
     private int port = PropertiesConst.port;
 
-    private Socket messageSocket;
+    private static Socket messageSocket;
     private BufferedReader messageReader;
     private PrintWriter messageWriter;
-    private static volatile long startTime = new Date().getTime();
+    private static volatile long startTime = System.currentTimeMillis();
     private static volatile long timeOut = PropertiesConst.timeOut;
 
+    private static volatile long heartTime = System.currentTimeMillis();
+    private static volatile long heartTimeOut = PropertiesConst.heartTimeOut;
+
     private Set<OtherExecutor> otherExecutors = Collections.newSetFromMap(new ConcurrentHashMap<OtherExecutor, Boolean>());
-
-    public OtherComputer() {
-        TimeoutRunnable timeoutRunnable = new TimeoutRunnable(this);
-        ThreadManager.getExecutorService().execute(timeoutRunnable);
-    }
-
     /**
      * 重置计时
      */
     public static void resetStartTime(){
-        startTime = new Date().getTime();
+        startTime = System.currentTimeMillis();
+    }
+
+    public static void resetHeartTime(){
+        heartTime = System.currentTimeMillis();
     }
 
 
@@ -97,15 +103,15 @@ public class OtherComputer extends Computer {
         System.out.println("连接成功");
     }
 
+
     public void message() {
         while (true) {
             String command = null;
             boolean success = true;
             try {
-                System.out.println("command before");
+                resetHeartTime();
                 resetStartTime();
                 command = messageReader.readLine();
-                System.out.print("command after");
             } catch (IOException e) {
                 success = false;
                 e.printStackTrace();
@@ -119,7 +125,9 @@ public class OtherComputer extends Computer {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                } else {
+                } else if(command.equals(Handler.HEART+Handler.separator)){
+                    System.out.println("接收到心跳");
+                } else{
                     OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter, messageReader);
                     otherExecutors.add(otherExecutor);
                     otherExecutor.setOtherKey(key);
@@ -158,7 +166,7 @@ public class OtherComputer extends Computer {
         }
     }
 
-    public Socket getMessageSocket() {
+    public static Socket getMessageSocket() {
         return messageSocket;
     }
 
@@ -198,7 +206,7 @@ public class OtherComputer extends Computer {
         this.port = port;
     }
 
-    public long getStartTime() {
+    public static long getStartTime() {
         return startTime;
     }
 
@@ -206,11 +214,29 @@ public class OtherComputer extends Computer {
         this.startTime = startTime;
     }
 
-    public long getTimeOut() {
+    public static long getTimeOut() {
         return timeOut;
     }
 
     public static void setTimeOut(long timeOut) {
         OtherComputer.timeOut = timeOut;
     }
+
+    public static long getHeartTime() {
+        return heartTime;
+    }
+
+    public static void setHeartTime(long heartTime) {
+        OtherComputer.heartTime = heartTime;
+    }
+
+    public static long getHeartTimeOut() {
+        return heartTimeOut;
+    }
+
+    public static void setHeartTimeOut(long heartTimeOut) {
+        OtherComputer.heartTimeOut = heartTimeOut;
+    }
 }
+
+

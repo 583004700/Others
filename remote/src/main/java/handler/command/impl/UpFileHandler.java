@@ -73,7 +73,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         }
 
         if(success){
-            System.out.println("上传检验成功"+new Date().getTime());
+            System.out.println("上传检验成功"+System.currentTimeMillis());
             //告诉服务器上传较验成功
             pw.println(Handler.UPFILESUCCESS);
             pw.flush();
@@ -119,9 +119,9 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
     public void run() {
         synchronized (filePath) {
             connection();
-            long startTime = new Date().getTime();
+            long startTime = System.currentTimeMillis();
             while (!finish) {
-                if (new Date().getTime() - startTime > timeOut) {
+                if (System.currentTimeMillis() - startTime > timeOut) {
                     closeInputStream();
                     System.out.println("上传文件等待超时");
                     return;
@@ -140,7 +140,6 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            OtherComputer.resetStartTime();
             System.out.println(filePath + "文件上传结束UpFileHandler");
         }
     }

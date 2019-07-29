@@ -28,5 +28,8 @@ public interface Handler{
     String JAVA = "java";
     //查看列表
     String LIST = "list";
+    //心跳检测
+    String HEART = "heart";
+
     Object handler();
 }

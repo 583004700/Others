@@ -1,6 +1,7 @@
 package command;
 
 import executor.ServerExecutor;
+import handler.Handler;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -8,20 +9,49 @@ import thread.ThreadManager;
 import util.IOUtil;
 
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class SocketServer {
-    private static ConcurrentHashMap<String, Socket> registerSockets = new ConcurrentHashMap<String, Socket>();
+    static class HeartThread implements Runnable{
+        @Override
+        public void run() {
+            System.out.println("发送心跳run...");
+            Set<Map.Entry<String,Socket>> set = registerSockets.entrySet();
+            for(Map.Entry<String,Socket> r : set){
+                Socket socket = r.getValue();
+                PrintWriter printWriter = null;
+                try {
+                    printWriter = IOUtil.wrapPrintWriter(socket.getOutputStream(),PropertiesConst.appEncoding);
+                    printWriter.println(Handler.HEART+Handler.separator);
+                    printWriter.flush();
+                    System.out.println("发送心跳...");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    static {
+        HeartThread heartThread = new HeartThread();
+        ThreadManager.getScheduledExecutorService().scheduleWithFixedDelay(heartThread,1,1, TimeUnit.SECONDS);
+    }
+
+    public static ConcurrentHashMap<String, Socket> registerSockets = new ConcurrentHashMap<String, Socket>();
     private static Hashtable<String, Socket> filesSockets = new Hashtable<String, Socket>();
     private static ConcurrentHashMap<String, Socket> registerOperators = new ConcurrentHashMap<String, Socket>();
     private Socket socket;
 
     public static void main(String[] args) throws Exception{
+
         ServerSocket serverSocket = new ServerSocket(PropertiesConst.serverLocalPort);
         while (true) {
             try {

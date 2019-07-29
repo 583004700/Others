@@ -1,6 +1,7 @@
 package handler.command.impl;
 
 import command.PropertiesConst;
+import command.entity.OtherComputer;
 import handler.Handler;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
@@ -35,15 +36,20 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
 
             String readStr = "";
             while ((readStr = bufferedReader.readLine()) != null){
-                System.out.println("进入CmdReceiveIngHandler while");
-                if(Handler.CMDEND.equals(readStr)){
-                    printWriter.close();
-                    outputStream.close();
-                    break;
+                if(readStr.equals(Handler.HEART+Handler.separator)){
+                    System.out.println("接收到心跳");
+                    OtherComputer.resetHeartTime();
+                }else {
+                    System.out.println("进入CmdReceiveIngHandler while");
+                    if (Handler.CMDEND.equals(readStr)) {
+                        printWriter.close();
+                        outputStream.close();
+                        break;
+                    }
+                    System.out.println("向cmd中输入命令" + readStr);
+                    printWriter.println(readStr);
+                    printWriter.flush();
                 }
-                System.out.println("向cmd中输入命令"+readStr);
-                printWriter.println(readStr);
-                printWriter.flush();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,7 +77,7 @@ class ResultReceiveIngThread implements Runnable{
             String readStr = "";
             while((readStr = bufferedReader.readLine()) != null){
                 System.out.println("从命令行中读取数据"+readStr);
-                if(readStr != null && readStr.endsWith(Handler.CMDEND)){
+                if(readStr != null && readStr.equals(Handler.CMDEND)){
                     break;
                 }
                 printWriter.println(readStr);

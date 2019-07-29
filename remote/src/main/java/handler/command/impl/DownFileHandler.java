@@ -110,7 +110,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             //告诉服务器下载较验成功
             pw.println(Handler.DOWNFILESUCCESS+":"+length);
             pw.flush();
-            System.out.println("DownFileHandler:发送length给服务器"+new Date().getTime()+":"+Handler.DOWNFILESUCCESS+":"+length);
+            System.out.println("DownFileHandler:发送length给服务器"+System.currentTimeMillis()+":"+Handler.DOWNFILESUCCESS+":"+length);
         }else{
             System.out.println("本机较验：文件下载失败，可能是不能创建目录");
             pw.println("downFail:"+length);
@@ -153,9 +153,9 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
         synchronized (fullDownPath) {
             System.out.println("线程：" + Thread.currentThread().getName());
             connection();
-            long startTime = new Date().getTime();
+            long startTime = System.currentTimeMillis();
             while(!finish){
-                if (new Date().getTime() - startTime > timeOut) {
+                if (System.currentTimeMillis() - startTime > timeOut) {
                     closeFileOutputStream();
                     deleteFile();
                     System.out.println("下载文件等待超时");
@@ -168,7 +168,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
                 System.out.println("文件传输取消，线程结束");
                 return null;
             }
-            long downStartTime = new Date().getTime();
+            long downStartTime = System.currentTimeMillis();
             System.out.println(fileName + "文件下载开始DownFileHandler");
             try {
                 InputStream inputStream = fileSocket.getInputStream();
@@ -176,8 +176,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            OtherComputer.resetStartTime();
-            System.out.println(fileName + "文件下载结束DownFileHandler,所用时间为："+(new Date().getTime() - downStartTime));
+            System.out.println(fileName + "文件下载结束DownFileHandler,所用时间为："+(System.currentTimeMillis() - downStartTime));
         }
         return null;
     }
