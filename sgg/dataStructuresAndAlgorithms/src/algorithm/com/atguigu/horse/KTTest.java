@@ -19,9 +19,7 @@ public class KTTest {
 	
 	@Test
 	public void test3() {
-		KnightTourByBackTracking kt = new KnightTourByBackTracking(64, 36, 2);
-		long start = System.currentTimeMillis();
+		KnightTourByBackTracking kt = new KnightTourByBackTracking(8, 4, 2);
 		kt.soveKT();
-		System.out.println("耗时：" + (System.currentTimeMillis() - start) + "毫秒");
 	}
 }
