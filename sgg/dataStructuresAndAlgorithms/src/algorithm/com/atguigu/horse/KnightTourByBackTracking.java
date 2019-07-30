@@ -139,16 +139,14 @@ public class KnightTourByBackTracking {
 	private void soveKT(int x, int y, int step) {
 		chessboard[x][y] = step;
 		if (step == N * N - 1) {
-			System.out.println("已经找到"+(++count)+"种解！");
+			//System.out.println("已经找到"+(++count)+"种解！");
 			print();
 		}else {
 			MyList myQueue = mmm[x][y];
 			for (int m = 0;m<myQueue.size;m++) {
 				int[] arr = myQueue.get(m);
-				int row = arr[0];
-				int col = arr[1];
-				if(chessboard[row][col] == -1) {
-					soveKT(row, col, step + 1);
+				if(chessboard[arr[0]][arr[1]] == -1) {
+					soveKT(arr[0], arr[1], step + 1);
 				}
 			}
 		}

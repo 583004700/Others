@@ -4,9 +4,8 @@ import org.junit.Test;
 
 public class KTTest {
 	// 我们运气好，直接在 210 毫秒内就找到一种解！
-	@Test
-	public void test() {
-		KnightTourByBackTracking kt = new KnightTourByBackTracking(8, 0, 0);
+	public static void main(String[] args) {
+		KnightTourByBackTracking kt = new KnightTourByBackTracking(8, 3, 4);
 		kt.soveKT();
 	}
 	
