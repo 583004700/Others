@@ -1,16 +1,17 @@
-package ssh.fileliisener;
+package com.demo.ssh.fileliisener;
 
-import ssh.SSHOperator;
+import com.demo.ssh.fileliisener.FileChangeHandler;
+import com.demo.ssh.SSHOperator;
 
 /**
  * 文件改变时上传到服务器
  */
-public class FileChangeUp extends FileChangeHandler{
+public class FileChangeUp extends FileChangeHandler {
     private String toDir;
     private SSHOperator sshOperator;
 
     public FileChangeUp(String filePath,SSHOperator sshOperator,String toDir) {
-        super(new FileListener(filePath));
+        super(new ssh.fileliisener.FileListener(filePath));
         this.sshOperator = sshOperator;
         this.toDir = toDir;
     }

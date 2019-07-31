@@ -1,4 +1,4 @@
-package ssh.fileliisener;
+package com.demo.ssh.fileliisener;
 
 import java.util.ArrayList;
 import java.util.List;

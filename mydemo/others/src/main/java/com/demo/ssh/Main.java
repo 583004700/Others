@@ -1,8 +1,8 @@
-package ssh;
+package com.demo.ssh;
 
-import ssh.fileliisener.FileChangeUp;
-import ssh.fileliisener.FilesChangeListener;
-import thread.ThreadManager;
+import com.demo.ssh.fileliisener.FileChangeUp;
+import com.demo.ssh.fileliisener.FilesChangeListener;
+import com.demo.ssh.thread.ThreadManager;
 
 public class Main {
     //ssh操作的会话

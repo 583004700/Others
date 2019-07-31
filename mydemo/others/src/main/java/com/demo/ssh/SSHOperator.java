@@ -1,9 +1,9 @@
-package ssh;
+package com.demo.ssh;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.Session;
-import util.SSHUtil;
+import com.demo.ssh.util.SSHUtil;
 
 public class SSHOperator {
     private String userName;

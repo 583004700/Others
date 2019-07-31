@@ -1,4 +1,4 @@
-package util;
+package com.demo.ssh.util;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
