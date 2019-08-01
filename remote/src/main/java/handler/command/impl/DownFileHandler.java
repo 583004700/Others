@@ -176,6 +176,9 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            //文件接收成功，告诉对方文件接收成功了
+            getPrintWriter().println(Handler.receiveSuccess);
+            getPrintWriter().flush();
             System.out.println(fileName + "文件下载结束DownFileHandler,所用时间为："+(System.currentTimeMillis() - downStartTime));
         }
         return null;

@@ -80,10 +80,12 @@ public class OperatorComputer extends Computer implements Runnable{
             try {
                 result = br.readLine();
                 System.out.println(result);
-                //如果是screenPrintUp方法，还需要上传图片到本机，如果业务多的话要
-                if(result!=null && result.contains("screenPrintUp")){
+                if(result!=null && result.contains(Handler.screenPrintUp)){
+                    //如果是screenPrintUp方法，还需要上传图片到本机
                     ScreenPrintUpHandler printUpHandler = new ScreenPrintUpHandler(result).setPw(pw);
                     ThreadManager.getExecutorService().execute(printUpHandler);
+                }else if(result!=null && result.contains(Handler.receiveSuccess)){
+                    //如果成功接收到文件
                 }
             }catch (SocketTimeoutException s){
                 result = "";
