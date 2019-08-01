@@ -1,5 +1,6 @@
 package executor;
 
+import command.entity.OtherComputer;
 import handler.Handler;
 import handler.command.impl.*;
 
@@ -11,11 +12,13 @@ public class OtherExecutor extends BaseExecutor implements Runnable{
     private String otherKey;
     private BufferedReader bufferedReader;
     public Handler handler;
+    private OtherComputer otherComputer;
 
-    public OtherExecutor(String completeCommand, PrintWriter printWriter,BufferedReader bufferedReader) {
+    public OtherExecutor(OtherComputer otherComputer, String completeCommand) {
         super(completeCommand);
-        this.printWriter = printWriter;
-        this.bufferedReader = bufferedReader;
+        this.otherComputer = otherComputer;
+        this.printWriter = otherComputer.getMessageWriter();
+        this.bufferedReader = otherComputer.getMessageReader();
     }
 
     public Handler getHandler(){
@@ -27,7 +30,7 @@ public class OtherExecutor extends BaseExecutor implements Runnable{
         }else if(Handler.UPFILE.equals(prefix)){
             handler = new DownFileHandler(otherKey,getCompleteCommand(),printWriter);
         }else if(Handler.CMDBEGIN.equals(prefix)){
-            handler = new CmdReceiveIngHandler(getCompleteCommand(),bufferedReader,printWriter);
+            handler = new CmdReceiveIngHandler(this,getCompleteCommand(),bufferedReader,printWriter);
         }else if(Handler.JAVA.equals(prefix)){
             handler = new JavaMethodHandler(getCompleteCommand(),printWriter);
         }
@@ -58,5 +61,13 @@ public class OtherExecutor extends BaseExecutor implements Runnable{
 
     public void setOtherKey(String otherKey) {
         this.otherKey = otherKey;
+    }
+
+    public OtherComputer getOtherComputer() {
+        return otherComputer;
+    }
+
+    public void setOtherComputer(OtherComputer otherComputer) {
+        this.otherComputer = otherComputer;
     }
 }

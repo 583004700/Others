@@ -8,11 +8,10 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class CmdSendIngHandler extends OperatorCommandHandler {
-    private BufferedReader bufferedReader;
 
     public CmdSendIngHandler(String otherKey, String completeCommand, PrintWriter printWriter,BufferedReader bufferedReader) {
         super(otherKey, completeCommand, printWriter);
-        this.bufferedReader = bufferedReader;
+
     }
 
     @Override

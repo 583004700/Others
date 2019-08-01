@@ -1,5 +1,6 @@
 package executor;
 
+import command.entity.OperatorComputer;
 import handler.Handler;
 import handler.command.impl.CmdSendIngHandler;
 import handler.command.impl.DownFileHandler;
@@ -11,15 +12,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class OperatorExecutor extends BaseExecutor implements Runnable{
+    private OperatorComputer operatorComputer;
+    private BufferedReader bufferedReader;
     private PrintWriter printWriter;
     private static String otherKey;
-    private BufferedReader bufferedReader;
     private static Set<String> ignoreKeys;
 
-    public OperatorExecutor(String completeCommand, PrintWriter printWriter, BufferedReader bufferedReader) {
+    public OperatorExecutor(OperatorComputer operatorComputer,String completeCommand) {
         super(completeCommand);
-        this.printWriter = printWriter;
-        this.bufferedReader = bufferedReader;
+        this.operatorComputer = operatorComputer;
+        this.bufferedReader = operatorComputer.getBufferedReader();
+        this.printWriter = operatorComputer.getPw();
         ignoreKeys = new HashSet<String>();
         ignoreKeys.add(Handler.LIST);
         ignoreKeys.add(Handler.OPERATE);
@@ -60,6 +63,22 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         }
     }
 
+    public OperatorComputer getOperatorComputer() {
+        return operatorComputer;
+    }
+
+    public void setOperatorComputer(OperatorComputer operatorComputer) {
+        this.operatorComputer = operatorComputer;
+    }
+
+    public BufferedReader getBufferedReader() {
+        return bufferedReader;
+    }
+
+    public void setBufferedReader(BufferedReader bufferedReader) {
+        this.bufferedReader = bufferedReader;
+    }
+
     public PrintWriter getPrintWriter() {
         return printWriter;
     }
@@ -72,7 +91,15 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         return otherKey;
     }
 
-    public void setOtherKey(String otherKey) {
-        this.otherKey = otherKey;
+    public static void setOtherKey(String otherKey) {
+        OperatorExecutor.otherKey = otherKey;
+    }
+
+    public static Set<String> getIgnoreKeys() {
+        return ignoreKeys;
+    }
+
+    public static void setIgnoreKeys(Set<String> ignoreKeys) {
+        OperatorExecutor.ignoreKeys = ignoreKeys;
     }
 }

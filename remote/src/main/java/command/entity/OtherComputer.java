@@ -21,14 +21,15 @@ public class OtherComputer extends Computer {
     /**
      * 检测心跳和长时间没操作的线程
      */
-    static class TimeoutRunnable implements Runnable {
+    class TimeoutRunnable implements Runnable {
+        OtherComputer otherComputer = OtherComputer.this;
         @Override
         public void run() {
             try {
                 long currentTime = System.currentTimeMillis();
-                if (currentTime - OtherComputer.getStartTime() >= OtherComputer.getTimeOut()
-                        || currentTime - OtherComputer.getHeartTime() >= OtherComputer.getHeartTimeOut() + 5) {
-                    OtherComputer.getMessageSocket().getInputStream().close();
+                if (currentTime - otherComputer.getStartTime() >= otherComputer.getTimeOut()
+                        || currentTime - otherComputer.getHeartTime() >= otherComputer.getHeartTimeOut() + 5) {
+                    otherComputer.getMessageSocket().getInputStream().close();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -36,33 +37,33 @@ public class OtherComputer extends Computer {
         }
     }
 
-    static{
+    {
         TimeoutRunnable timeoutRunnable = new TimeoutRunnable();
         ThreadManager.getScheduledExecutorService().scheduleWithFixedDelay(timeoutRunnable,30,30, TimeUnit.SECONDS);
     }
 
-    private static String key = getKey();
+    private String key = getKey();
     private String server = PropertiesConst.server;
     private int port = PropertiesConst.port;
 
-    private static Socket messageSocket;
+    private Socket messageSocket;
     private BufferedReader messageReader;
     private PrintWriter messageWriter;
-    private static volatile long startTime = System.currentTimeMillis();
-    private static volatile long timeOut = PropertiesConst.timeOut;
+    private volatile long startTime = System.currentTimeMillis();
+    private volatile long timeOut = PropertiesConst.timeOut;
 
-    private static volatile long heartTime = System.currentTimeMillis();
-    private static volatile long heartTimeOut = PropertiesConst.heartTimeOut;
+    private volatile long heartTime = System.currentTimeMillis();
+    private volatile long heartTimeOut = PropertiesConst.heartTimeOut;
 
     private Set<OtherExecutor> otherExecutors = Collections.newSetFromMap(new ConcurrentHashMap<OtherExecutor, Boolean>());
     /**
      * 重置计时
      */
-    public static void resetStartTime(){
+    public void resetStartTime(){
         startTime = System.currentTimeMillis();
     }
 
-    public static void resetHeartTime(){
+    public void resetHeartTime(){
         heartTime = System.currentTimeMillis();
     }
 
@@ -123,7 +124,7 @@ public class OtherComputer extends Computer {
                 } else if(command.equals(Handler.HEART+Handler.separator)){
 
                 } else{
-                    OtherExecutor otherExecutor = new OtherExecutor(command, messageWriter, messageReader);
+                    OtherExecutor otherExecutor = new OtherExecutor(this,command);
                     otherExecutors.add(otherExecutor);
                     otherExecutor.setOtherKey(key);
                     if((Handler.CMDBEGIN+Handler.separator).equals(command)) {
@@ -161,7 +162,7 @@ public class OtherComputer extends Computer {
         }
     }
 
-    public static Socket getMessageSocket() {
+    public Socket getMessageSocket() {
         return messageSocket;
     }
 
@@ -201,7 +202,7 @@ public class OtherComputer extends Computer {
         this.port = port;
     }
 
-    public static long getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
@@ -209,28 +210,28 @@ public class OtherComputer extends Computer {
         this.startTime = startTime;
     }
 
-    public static long getTimeOut() {
+    public long getTimeOut() {
         return timeOut;
     }
 
-    public static void setTimeOut(long timeOut) {
-        OtherComputer.timeOut = timeOut;
+    public void setTimeOut(long timeOut) {
+        this.timeOut = timeOut;
     }
 
-    public static long getHeartTime() {
+    public long getHeartTime() {
         return heartTime;
     }
 
-    public static void setHeartTime(long heartTime) {
-        OtherComputer.heartTime = heartTime;
+    public void setHeartTime(long heartTime) {
+        this.heartTime = heartTime;
     }
 
-    public static long getHeartTimeOut() {
+    public long getHeartTimeOut() {
         return heartTimeOut;
     }
 
-    public static void setHeartTimeOut(long heartTimeOut) {
-        OtherComputer.heartTimeOut = heartTimeOut;
+    public void setHeartTimeOut(long heartTimeOut) {
+        this.heartTimeOut = heartTimeOut;
     }
 }
 

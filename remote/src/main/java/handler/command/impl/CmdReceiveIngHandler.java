@@ -1,7 +1,7 @@
 package handler.command.impl;
 
 import command.PropertiesConst;
-import command.entity.OtherComputer;
+import executor.OtherExecutor;
 import handler.Handler;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
@@ -11,11 +11,13 @@ import util.IOUtil;
 import java.io.*;
 
 public class CmdReceiveIngHandler extends OtherCommandHandler{
+    private OtherExecutor otherExecutor;
     private BufferedReader bufferedReader;
 
-    public CmdReceiveIngHandler(String completeCommand, BufferedReader bufferedReader, PrintWriter printWriter) {
+    public CmdReceiveIngHandler(OtherExecutor otherExecutor,String completeCommand, BufferedReader bufferedReader, PrintWriter printWriter) {
         super(completeCommand, printWriter);
         this.bufferedReader = bufferedReader;
+        this.otherExecutor = otherExecutor;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
             String readStr = "";
             while ((readStr = bufferedReader.readLine()) != null){
                 if(readStr.equals(Handler.HEART+Handler.separator)){
-                    OtherComputer.resetHeartTime();
+                    otherExecutor.getOtherComputer().resetHeartTime();
                 }else {
                     System.out.println("进入CmdReceiveIngHandler while");
                     if (Handler.CMDEND.equals(readStr)) {
