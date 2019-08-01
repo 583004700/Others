@@ -15,7 +15,7 @@ public class MyJframe2 extends JFrame {
         jp.setLayout(gl);
 
         //网格布局超过数量，则增加列
-        for(int i=0;i<12;i++){
+        for(int i=0;i<14;i++){
             JButton bt = new JButton("按钮"+i);
             jp.add(bt);
         }
