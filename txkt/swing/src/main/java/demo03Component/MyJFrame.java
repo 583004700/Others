@@ -34,6 +34,9 @@ public class MyJFrame extends JFrame {
         //设置背景颜色
         jLabel.setBackground(Color.RED);
         jLabel.setIcon(icon);
+
+
+
         jp.add(jLabel);
 
         add(jp);
