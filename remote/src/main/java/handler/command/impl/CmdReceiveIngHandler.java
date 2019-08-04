@@ -42,7 +42,7 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
                     otherExecutor.getOtherComputer().resetHeartTime();
                 }else {
                     System.out.println("进入CmdReceiveIngHandler while");
-                    if (Handler.CMDEND.equals(readStr)) {
+                    if ((Handler.CMDEND+Handler.separator).equals(readStr)) {
                         printWriter.close();
                         outputStream.close();
                         break;
@@ -78,7 +78,7 @@ class ResultReceiveIngThread implements Runnable{
             String readStr = "";
             while((readStr = bufferedReader.readLine()) != null){
                 System.out.println("从命令行中读取数据"+readStr);
-                if(readStr != null && readStr.equals(Handler.CMDEND)){
+                if(readStr != null && readStr.equals(Handler.CMDEND+Handler.separator)){
                     break;
                 }
                 printWriter.println(readStr);

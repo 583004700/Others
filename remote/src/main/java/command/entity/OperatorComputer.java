@@ -1,18 +1,12 @@
 package command.entity;
 
 import command.PropertiesConst;
-import executor.OperatorExecutor;
 import handler.Handler;
 import handler.resultHandler.ScreenPrintUpHandler;
 import thread.ThreadManager;
 import util.IOUtil;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Scanner;
 
@@ -29,25 +23,13 @@ import java.util.Scanner;
 //C:\Users\pan\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
 
-public class OperatorComputer extends Computer implements Runnable{
-    private Socket socket;
-    private InputStream inputStream;
-    private OutputStream outputStream;
-    private PrintWriter pw;
-    private BufferedReader bufferedReader;
+public class OperatorComputer extends Operator implements Runnable{
 
-    public OperatorComputer(){
+    @Override
+    public void connect() {
+        super.connect();
         String key = null;
         try {
-            socket = new Socket();
-            //socket.bind(new InetSocketAddress(PropertiesConst.otherPort));//绑定本地端口
-            socket.connect(new InetSocketAddress(PropertiesConst.server,PropertiesConst.port));//绑定服务器端口
-            System.out.println("连接服务器成功!!!\nlist:连接列表\noperate:key 选择连接");
-            inputStream = socket.getInputStream();
-            outputStream = socket.getOutputStream();
-            bufferedReader = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
-            pw = IOUtil.wrapPrintWriter(outputStream,PropertiesConst.appEncoding);
-
             ThreadManager.getExecutorService().execute(this);
             Thread.sleep(100);
 
@@ -64,22 +46,34 @@ public class OperatorComputer extends Computer implements Runnable{
         }
     }
 
+    public void waitReading(){
+        String readStr = "";
+        while(true){
+            Scanner scanner = new Scanner(System.in);
+            scanner.useDelimiter("\n");
+            readStr = scanner.next();
+            getPrintWriter().println(readStr);
+            getPrintWriter().flush();
+            //先告诉对方关闭cmd控制台再退出
+            if((Handler.CMDEND+Handler.separator).equals(readStr)){
+                break;
+            }
+        }
+        System.out.println("cmd命令已退出");
+    }
+
+    @Override
+    public void printMessage(String message) {
+        System.out.println(message);
+    }
+
     public static void main(String[] args) {
         OperatorComputer operatorComputer = new OperatorComputer();
     }
 
-    public void submitCommand(String completeCommand){
-        OperatorExecutor operatorExecutor = new OperatorExecutor(this,completeCommand);
-        if((Handler.CMDBEGIN+Handler.separator).equals(completeCommand)){
-            operatorExecutor.execute();
-        }else {
-            ThreadManager.getExecutorService().execute(operatorExecutor);
-        }
-    }
-
     public void run() {
         BufferedReader br = null;
-        br = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
+        br = IOUtil.wrapBufferedReader(getInputStream(),PropertiesConst.appEncoding);
         while(true){
             String result = null;
             try {
@@ -102,48 +96,5 @@ public class OperatorComputer extends Computer implements Runnable{
                 break;
             }
         }
-    }
-
-
-
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
-    public InputStream getInputStream() {
-        return inputStream;
-    }
-
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
-
-    public OutputStream getOutputStream() {
-        return outputStream;
-    }
-
-    public void setOutputStream(OutputStream outputStream) {
-        this.outputStream = outputStream;
-    }
-
-    public PrintWriter getPw() {
-        return pw;
-    }
-
-    public void setPw(PrintWriter pw) {
-        this.pw = pw;
-    }
-
-    public BufferedReader getBufferedReader() {
-        return bufferedReader;
-    }
-
-    public void setBufferedReader(BufferedReader bufferedReader) {
-        this.bufferedReader = bufferedReader;
     }
 }

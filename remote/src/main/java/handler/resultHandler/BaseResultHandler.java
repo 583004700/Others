@@ -1,22 +1,22 @@
 package handler.resultHandler;
 
-import command.entity.OperatorComputer;
+import command.entity.Operator;
 
 public class BaseResultHandler {
-    private OperatorComputer operatorComputer;
+    private Operator operator;
     private String result;
 
-    public BaseResultHandler(OperatorComputer operatorComputer, String result) {
-        this.operatorComputer = operatorComputer;
+    public BaseResultHandler(Operator operator, String result) {
+        this.operator = operator;
         this.result = result;
     }
 
-    public OperatorComputer getOperatorComputer() {
-        return operatorComputer;
+    public Operator getOperator() {
+        return operator;
     }
 
-    public void setOperatorComputer(OperatorComputer operatorComputer) {
-        this.operatorComputer = operatorComputer;
+    public void setOperator(Operator operator) {
+        this.operator = operator;
     }
 
     public String getResult() {

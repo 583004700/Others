@@ -1,7 +1,6 @@
 package handler.command.impl;
 
 import command.PropertiesConst;
-import command.entity.OtherComputer;
 import handler.Handler;
 import handler.command.OperatorCommandHandler;
 import thread.ThreadManager;
@@ -9,9 +8,12 @@ import util.FileUtil;
 import util.IOUtil;
 import util.OSUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 

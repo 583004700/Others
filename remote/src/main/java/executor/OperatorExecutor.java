@@ -1,10 +1,11 @@
 package executor;
 
-import command.entity.OperatorComputer;
+import command.entity.Operator;
 import handler.Handler;
 import handler.command.impl.CmdSendIngHandler;
 import handler.command.impl.DownFileHandler;
 import handler.command.impl.UpFileHandler;
+import views.OperatorView;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -12,17 +13,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class OperatorExecutor extends BaseExecutor implements Runnable{
-    private OperatorComputer operatorComputer;
+    private Operator operator;
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;
     private static String otherKey;
     private static Set<String> ignoreKeys;
 
-    public OperatorExecutor(OperatorComputer operatorComputer,String completeCommand) {
+    public OperatorExecutor(Operator operator, String completeCommand) {
         super(completeCommand);
-        this.operatorComputer = operatorComputer;
-        this.bufferedReader = operatorComputer.getBufferedReader();
-        this.printWriter = operatorComputer.getPw();
+        this.operator = operator;
+        this.bufferedReader = operator.getBufferedReader();
+        this.printWriter = operator.getPrintWriter();
         ignoreKeys = new HashSet<String>();
         ignoreKeys.add(Handler.LIST);
         ignoreKeys.add(Handler.OPERATE);
@@ -32,12 +33,15 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         Handler handler = null;
         String prefix = getPrefix();
         if(!ignoreKeys.contains(getPrefix()) && getOtherKey() == null){
-            System.out.println("请先选择连接");
+            getOperator().printMessage("请先选择连接\n");
             return null;
         }
         if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix) || Handler.OPERATE.equals(prefix) || Handler.LIST.equals(prefix)){
             if(Handler.OPERATE.equals(getPrefix())){
                 this.setOtherKey(getCommand());
+                if(getOperator() instanceof OperatorView){
+                    ((OperatorView)getOperator()).getCmdFrame().setTitle("已连接："+getOtherKey());
+                }
             }
             printWriter.println(getCompleteCommand());
             printWriter.flush();
@@ -46,7 +50,7 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         }else if(Handler.UPFILE.equals(prefix)){
             handler = new UpFileHandler(getCompleteCommand(),printWriter,getOtherKey());
         }else if(Handler.CMDBEGIN.equals(prefix)){
-            handler = new CmdSendIngHandler(getOtherKey(),getCompleteCommand(),printWriter,bufferedReader);
+            handler = new CmdSendIngHandler(this,getOtherKey(),getCompleteCommand(),printWriter,bufferedReader);
         }
         return handler;
     }
@@ -63,12 +67,12 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         }
     }
 
-    public OperatorComputer getOperatorComputer() {
-        return operatorComputer;
+    public Operator getOperator() {
+        return operator;
     }
 
-    public void setOperatorComputer(OperatorComputer operatorComputer) {
-        this.operatorComputer = operatorComputer;
+    public void setOperator(Operator operator) {
+        this.operator = operator;
     }
 
     public BufferedReader getBufferedReader() {
