@@ -1,5 +1,6 @@
 package handler.command.impl;
 
+import executor.BaseExecutor;
 import util.CmdUtil;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
@@ -11,8 +12,8 @@ import java.io.PrintWriter;
  */
 public class OtherCmdHandler extends OtherCommandHandler implements Runnable{
 
-    public OtherCmdHandler(String completeCommand, PrintWriter printWriter){
-        super(completeCommand,printWriter);
+    public OtherCmdHandler(String completeCommand, BaseExecutor executor){
+        super(completeCommand,executor);
     }
 
     @Override

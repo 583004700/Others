@@ -20,7 +20,7 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
     private static Set<String> ignoreKeys;
 
     public OperatorExecutor(Operator operator, String completeCommand) {
-        super(completeCommand);
+        super(completeCommand,operator);
         this.operator = operator;
         this.bufferedReader = operator.getBufferedReader();
         this.printWriter = operator.getPrintWriter();
@@ -33,7 +33,7 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         Handler handler = null;
         String prefix = getPrefix();
         if(!ignoreKeys.contains(getPrefix()) && getOtherKey() == null){
-            getOperator().printMessage("请先选择连接\n");
+            getOperator().printMessage("请先选择连接");
             return null;
         }
         if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix) || Handler.OPERATE.equals(prefix) || Handler.LIST.equals(prefix)){
@@ -46,11 +46,11 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
             printWriter.println(getCompleteCommand());
             printWriter.flush();
         }else if(Handler.DOWNFILE.equals(prefix)){
-            handler = new DownFileHandler(otherKey,getCompleteCommand(),printWriter);
+            handler = new DownFileHandler(otherKey,getCompleteCommand(),this);
         }else if(Handler.UPFILE.equals(prefix)){
-            handler = new UpFileHandler(getCompleteCommand(),printWriter,getOtherKey());
+            handler = new UpFileHandler(getCompleteCommand(),this,getOtherKey());
         }else if(Handler.CMDBEGIN.equals(prefix)){
-            handler = new CmdSendIngHandler(this,getOtherKey(),getCompleteCommand(),printWriter,bufferedReader);
+            handler = new CmdSendIngHandler(this,getOtherKey(),getCompleteCommand());
         }
         return handler;
     }

@@ -66,8 +66,6 @@ public class Operator extends Computer{
 
     public void waitReading(){}
 
-    public void printMessage(String message){}
-
     public void submitCommand(String completeCommand){
         OperatorExecutor operatorExecutor = new OperatorExecutor(this,completeCommand);
         if((Handler.CMDBEGIN+Handler.separator).equals(completeCommand)){

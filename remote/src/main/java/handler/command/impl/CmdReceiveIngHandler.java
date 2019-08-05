@@ -14,9 +14,9 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
     private OtherExecutor otherExecutor;
     private BufferedReader bufferedReader;
 
-    public CmdReceiveIngHandler(OtherExecutor otherExecutor,String completeCommand, BufferedReader bufferedReader, PrintWriter printWriter) {
-        super(completeCommand, printWriter);
-        this.bufferedReader = bufferedReader;
+    public CmdReceiveIngHandler(OtherExecutor otherExecutor,String completeCommand) {
+        super(completeCommand, otherExecutor);
+        this.bufferedReader = getExecutor().getComputer().getBufferedReader();
         this.otherExecutor = otherExecutor;
     }
 

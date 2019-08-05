@@ -1,5 +1,6 @@
 package handler.command.impl;
 
+import executor.BaseExecutor;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
 
@@ -7,8 +8,8 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
 public class JavaMethodHandler extends OtherCommandHandler implements Runnable{
-    public JavaMethodHandler(String completeCommand, PrintWriter printWriter) {
-        super(completeCommand, printWriter);
+    public JavaMethodHandler(String completeCommand, BaseExecutor executor) {
+        super(completeCommand, executor);
     }
 
     @Override

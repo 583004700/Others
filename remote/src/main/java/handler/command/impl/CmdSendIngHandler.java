@@ -1,5 +1,6 @@
 package handler.command.impl;
 
+import executor.BaseExecutor;
 import executor.OperatorExecutor;
 import handler.command.OperatorCommandHandler;
 
@@ -9,8 +10,8 @@ import java.io.PrintWriter;
 public class CmdSendIngHandler extends OperatorCommandHandler {
     private OperatorExecutor operatorExecutor;
 
-    public CmdSendIngHandler(OperatorExecutor operatorExecutor,String otherKey, String completeCommand, PrintWriter printWriter,BufferedReader bufferedReader) {
-        super(otherKey, completeCommand, printWriter);
+    public CmdSendIngHandler(OperatorExecutor operatorExecutor, String otherKey, String completeCommand) {
+        super(otherKey, completeCommand, operatorExecutor);
         this.operatorExecutor = operatorExecutor;
     }
 

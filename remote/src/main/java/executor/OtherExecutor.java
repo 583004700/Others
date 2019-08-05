@@ -15,7 +15,7 @@ public class OtherExecutor extends BaseExecutor implements Runnable{
     private OtherComputer otherComputer;
 
     public OtherExecutor(OtherComputer otherComputer, String completeCommand) {
-        super(completeCommand);
+        super(completeCommand,otherComputer);
         this.otherComputer = otherComputer;
         this.printWriter = otherComputer.getMessageWriter();
         this.bufferedReader = otherComputer.getMessageReader();
@@ -24,15 +24,15 @@ public class OtherExecutor extends BaseExecutor implements Runnable{
     public Handler getHandler(){
         String prefix = getPrefix();
         if(Handler.CMD.equals(prefix)){
-            handler = new OtherCmdHandler(getCompleteCommand(),printWriter);
+            handler = new OtherCmdHandler(getCompleteCommand(),this);
         }else if(Handler.DOWNFILE.equals(prefix)){
-            handler = new UpFileHandler(getCompleteCommand(),printWriter, otherKey);
+            handler = new UpFileHandler(getCompleteCommand(),this, otherKey);
         }else if(Handler.UPFILE.equals(prefix)){
-            handler = new DownFileHandler(otherKey,getCompleteCommand(),printWriter);
+            handler = new DownFileHandler(otherKey,getCompleteCommand(),this);
         }else if(Handler.CMDBEGIN.equals(prefix)){
-            handler = new CmdReceiveIngHandler(this,getCompleteCommand(),bufferedReader,printWriter);
+            handler = new CmdReceiveIngHandler(this,getCompleteCommand());
         }else if(Handler.JAVA.equals(prefix)){
-            handler = new JavaMethodHandler(getCompleteCommand(),printWriter);
+            handler = new JavaMethodHandler(getCompleteCommand(),this);
         }
         return handler;
     }

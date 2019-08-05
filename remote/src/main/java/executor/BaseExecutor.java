@@ -1,11 +1,15 @@
 package executor;
 
+import command.entity.Computer;
+
 public class BaseExecutor {
     private String completeCommand;
     private String separator = ":";
+    private Computer computer;
 
-    public BaseExecutor(String completeCommand) {
+    public BaseExecutor(String completeCommand,Computer computer) {
         this.completeCommand = completeCommand;
+        this.computer = computer;
     }
 
     public String getPrefix(){
@@ -38,5 +42,13 @@ public class BaseExecutor {
 
     public void setSeparator(String separator) {
         this.separator = separator;
+    }
+
+    public Computer getComputer() {
+        return computer;
+    }
+
+    public void setComputer(Computer computer) {
+        this.computer = computer;
     }
 }

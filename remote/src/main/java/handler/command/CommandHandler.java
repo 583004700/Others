@@ -1,15 +1,18 @@
 package handler.command;
 
+import executor.BaseExecutor;
 import handler.BaseHandler;
 
 import java.io.PrintWriter;
 
 public abstract class CommandHandler extends BaseHandler {
+    private BaseExecutor executor;
     private PrintWriter printWriter;
 
-    public CommandHandler(String completeCommand, PrintWriter printWriter) {
+    public CommandHandler(String completeCommand, BaseExecutor executor) {
         super(completeCommand);
-        this.printWriter = printWriter;
+        this.executor = executor;
+        this.printWriter = getExecutor().getComputer().getPrintWriter();
     }
 
     public PrintWriter getPrintWriter() {
@@ -18,5 +21,13 @@ public abstract class CommandHandler extends BaseHandler {
 
     public void setPrintWriter(PrintWriter printWriter) {
         this.printWriter = printWriter;
+    }
+
+    public BaseExecutor getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(BaseExecutor executor) {
+        this.executor = executor;
     }
 }

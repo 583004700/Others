@@ -6,9 +6,7 @@ import handler.Handler;
 import thread.ThreadManager;
 import util.IOUtil;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -47,6 +45,8 @@ public class OtherComputer extends Computer {
     private int port = PropertiesConst.port;
 
     private Socket messageSocket;
+    private InputStream inputStream;
+    private OutputStream outputStream;
     private BufferedReader messageReader;
     private PrintWriter messageWriter;
     private volatile long startTime = System.currentTimeMillis();
@@ -93,8 +93,10 @@ public class OtherComputer extends Computer {
         messageSocket = new Socket();
         //messageSocket.bind(new InetSocketAddress(PropertiesConst.operatorPort));//绑定本地端口
         messageSocket.connect(new InetSocketAddress(getServer(), getPort()));//绑定服务器端口
-        messageReader = IOUtil.wrapBufferedReader(messageSocket.getInputStream(),PropertiesConst.appEncoding);
-        messageWriter = IOUtil.wrapPrintWriter(messageSocket.getOutputStream(),PropertiesConst.appEncoding);
+        inputStream = messageSocket.getInputStream();
+        messageReader = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
+        outputStream = messageSocket.getOutputStream();
+        messageWriter = IOUtil.wrapPrintWriter(outputStream,PropertiesConst.appEncoding);
         sendMessage(Handler.REGISTER +":"+key);
         System.out.println("连接成功");
     }
@@ -232,6 +234,38 @@ public class OtherComputer extends Computer {
 
     public void setHeartTimeOut(long heartTimeOut) {
         this.heartTimeOut = heartTimeOut;
+    }
+
+
+    public Socket getSocket() {
+        return getMessageSocket();
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+    @Override
+    public OutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public PrintWriter getPrintWriter() {
+        return getMessageWriter();
+    }
+
+
+    public BufferedReader getBufferedReader() {
+        return getMessageReader();
     }
 }
 

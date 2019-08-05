@@ -2,6 +2,7 @@ package handler.command.impl;
 
 import command.PropertiesConst;
 import command.entity.OtherComputer;
+import executor.BaseExecutor;
 import handler.Handler;
 import handler.command.OtherCommandHandler;
 import thread.ThreadManager;
@@ -17,8 +18,8 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
     private long timeOut = 18000000;
 
     private String key;
-    public UpFileHandler(String completeCommand, PrintWriter printWriter, String key) {
-        super(completeCommand, printWriter);
+    public UpFileHandler(String completeCommand, BaseExecutor executor, String key) {
+        super(completeCommand, executor);
         this.key = key;
         filePath = getCommand();
         if(filePath.split(">").length > 1){

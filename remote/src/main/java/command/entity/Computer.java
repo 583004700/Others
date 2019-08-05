@@ -1,10 +1,19 @@
 package command.entity;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.util.Map;
 
 public class Computer {
+
+    public void printMessage(String message){}
+
+
     public static String getKey() {
         Map<String, String> map = System.getenv();
         String userName = map.get("USERNAME");// 获取用户名
@@ -45,4 +54,30 @@ public class Computer {
         //把字符串所有小写字母改为大写成为正规的mac地址并返回
         return sb.toString().toUpperCase();
     }
+
+    public Socket getSocket() {
+        return null;
+    }
+
+
+    public InputStream getInputStream() {
+        return null;
+    }
+
+
+    public OutputStream getOutputStream() {
+        return null;
+    }
+
+
+    public PrintWriter getPrintWriter() {
+        return null;
+    }
+
+
+    public BufferedReader getBufferedReader() {
+        return null;
+    }
+
+
 }

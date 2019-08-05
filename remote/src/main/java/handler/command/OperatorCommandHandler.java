@@ -1,12 +1,14 @@
 package handler.command;
 
+import executor.BaseExecutor;
+
 import java.io.PrintWriter;
 
 public abstract class OperatorCommandHandler extends CommandHandler {
     private String otherKey;
 
-    public OperatorCommandHandler(String otherKey, String completeCommand, PrintWriter printWriter) {
-        super(completeCommand,printWriter);
+    public OperatorCommandHandler(String otherKey, String completeCommand, BaseExecutor executor) {
+        super(completeCommand,executor);
         this.otherKey = otherKey;
     }
 

@@ -17,7 +17,7 @@ public class ServerExecutor extends BaseExecutor implements Runnable{
     private String fileKey;
 
     public ServerExecutor(String completeCommand, SocketServer socketServer) {
-        super(completeCommand);
+        super(completeCommand,null);
         this.socketServer = socketServer;
         try {
             this.operatorPrintWriter = IOUtil.wrapPrintWriter(socketServer.getSocket().getOutputStream(), PropertiesConst.appEncoding);

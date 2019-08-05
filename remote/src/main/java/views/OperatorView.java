@@ -62,6 +62,7 @@ public class OperatorView extends Operator implements Runnable{
                         cmdIng = true;
                     }else if(readStr.equals(Handler.CMDEND+Handler.separator)){
                         cmdIng = false;
+                        cmdFrame.appendContentLn("cmd已退出");
                     }
                 }
                 if(e.isControlDown() && e.getKeyCode()==KeyEvent.VK_ALT){
@@ -92,7 +93,7 @@ public class OperatorView extends Operator implements Runnable{
 
     @Override
     public void printMessage(String message) {
-        cmdFrame.appendContent(message);
+        cmdFrame.appendContentLn(message);
     }
 
     public static void main(String[] args) {

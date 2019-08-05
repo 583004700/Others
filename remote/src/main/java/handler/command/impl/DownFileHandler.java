@@ -1,6 +1,7 @@
 package handler.command.impl;
 
 import command.PropertiesConst;
+import executor.BaseExecutor;
 import handler.Handler;
 import handler.command.OperatorCommandHandler;
 import thread.ThreadManager;
@@ -28,8 +29,8 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
         return future.cancel(true);
     }
 
-    public DownFileHandler(String otherKey, String completeCommand, PrintWriter printWriter) {
-        super(otherKey, completeCommand, printWriter);
+    public DownFileHandler(String otherKey, String completeCommand, BaseExecutor executor) {
+        super(otherKey, completeCommand, executor);
         if(OSUtil.isLinux()){
             defaultDownPath = "/remotefile/";
         }
