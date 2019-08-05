@@ -5,8 +5,8 @@ import handler.Handler;
 import handler.command.impl.CmdSendIngHandler;
 import handler.command.impl.DownFileHandler;
 import handler.command.impl.UpFileHandler;
-import views.OperatorView;
 
+import javax.swing.JPanel;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -39,8 +39,9 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix) || Handler.OPERATE.equals(prefix) || Handler.LIST.equals(prefix)){
             if(Handler.OPERATE.equals(getPrefix())){
                 this.setOtherKey(getCommand());
-                if(getOperator() instanceof OperatorView){
-                    ((OperatorView)getOperator()).getCmdFrame().setTitle("已连接："+getOtherKey());
+                if(getOperator() instanceof JPanel){
+                    ((JPanel)getOperator()).setName("已连接:"+getOtherKey());
+                    getOperator().changeCurrentTabTitle("已连接:"+getOtherKey());
                 }
             }
             printWriter.println(getCompleteCommand());

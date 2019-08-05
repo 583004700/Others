@@ -1,5 +1,6 @@
 package command.entity;
 
+import javax.swing.JPanel;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,7 +10,7 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.util.Map;
 
-public class Computer {
+public class Computer extends JPanel {
 
     public void printMessage(String message){}
 
