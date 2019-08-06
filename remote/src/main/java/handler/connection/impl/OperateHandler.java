@@ -39,9 +39,11 @@ public class OperateHandler extends ConnectionHandler implements Runnable {
     public void run() {
         SocketServer socketServer = getSocketServer();
         String otherKey = serverExecutor.getOtherKey();
+        System.out.println("寻找OperateHandler"+otherKey);
         Socket otherSocket = socketServer.getRegisterSocket(otherKey);
         if(otherSocket != null){
-            operatorPrintWriter.println("选择连接成功");
+            setOtherKey(getCommand());
+            operatorPrintWriter.println("已连接:"+getOtherKey());
             operatorPrintWriter.flush();
             MessageHandler messageHandler = (MessageHandler) new MessageHandler(socketServer,getCompleteCommand()).setOperatorSocket(socketServer.getSocket()).setOtherSocket(otherSocket);
             messageHandler.setOtherKey(otherKey);

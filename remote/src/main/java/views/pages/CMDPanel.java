@@ -7,8 +7,7 @@ import handler.resultHandler.ScreenPrintUpHandler;
 import thread.ThreadManager;
 import util.IOUtil;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -186,6 +185,9 @@ public class CMDPanel extends Operator implements Runnable{
                     ThreadManager.getExecutorService().execute(printUpHandler);
                 }else if(result!=null && result.contains(Handler.receiveSuccess)){
                     //如果成功接收到文件
+                }else if(result!=null && result.contains("已连接:")){
+                    this.setName(result);
+                    changeCurrentTabTitle(result);
                 }
             }catch (SocketTimeoutException s){
                 result = "";

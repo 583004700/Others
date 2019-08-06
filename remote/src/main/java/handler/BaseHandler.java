@@ -17,10 +17,7 @@ public abstract class BaseHandler implements Handler{
     }
 
     public String getCommand(){
-        if(!completeCommand.contains(separator)){
-            return "";
-        }
-        String command = completeCommand.substring(completeCommand.indexOf(separator)+1,completeCommand.length());
+        String command = completeCommand.substring(completeCommand.indexOf(separator) + 1, completeCommand.length());
         return command;
     }
 

@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.UUID;
 
 public class Operator extends Computer{
     private Socket socket;
@@ -19,6 +20,8 @@ public class Operator extends Computer{
     private OutputStream outputStream;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
+
+    private String operatorKey = UUID.randomUUID().toString();
 
     public Operator(){
         init();

@@ -39,10 +39,6 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix) || Handler.OPERATE.equals(prefix) || Handler.LIST.equals(prefix)){
             if(Handler.OPERATE.equals(getPrefix())){
                 this.setOtherKey(getCommand());
-                if(getOperator() instanceof JPanel){
-                    ((JPanel)getOperator()).setName("已连接:"+getOtherKey());
-                    getOperator().changeCurrentTabTitle("已连接:"+getOtherKey());
-                }
             }
             printWriter.println(getCompleteCommand());
             printWriter.flush();
