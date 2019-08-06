@@ -17,6 +17,8 @@ import java.io.BufferedReader;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CMDPanel extends Operator implements Runnable{
     //内容输入区
@@ -25,6 +27,10 @@ public class CMDPanel extends Operator implements Runnable{
     private List<String> inputs;
 
     private CMDFrame cmdFrame;
+
+    private String currentConnectKey = "";
+
+    public static Map<String,String> ylj = new ConcurrentHashMap<String, String>();
 
     public CMDPanel(CMDFrame cmdFrame){
         this.cmdFrame = cmdFrame;
@@ -93,7 +99,7 @@ public class CMDPanel extends Operator implements Runnable{
             ThreadManager.getExecutorService().execute(this);
             Thread.sleep(100);
 
-            submitCommand(Handler.LIST+Handler.separator);
+            //submitCommand(Handler.LIST+Handler.separator);
 
         }catch (Exception e) {
             e.printStackTrace();
@@ -186,8 +192,12 @@ public class CMDPanel extends Operator implements Runnable{
                 }else if(result!=null && result.contains(Handler.receiveSuccess)){
                     //如果成功接收到文件
                 }else if(result!=null && result.contains("已连接:")){
+                    currentConnectKey = result.replaceAll("已连接:","");
+                    ylj.put(currentConnectKey,currentConnectKey);
                     this.setName(result);
                     changeCurrentTabTitle(result);
+                }else if(result.startsWith(Handler.returnList)){
+                    OpenSessionFrame openSessionFrame = new OpenSessionFrame(this,result.replaceAll(Handler.returnList,""));
                 }
             }catch (SocketTimeoutException s){
                 result = "";
@@ -198,6 +208,8 @@ public class CMDPanel extends Operator implements Runnable{
                 this.setName("未连接");
                 changeCurrentTabTitle("未连接");
                 this.appendContentLn("连接已断开，请重新连接");
+                ylj.remove(currentConnectKey);
+                currentConnectKey = "";
                 break;
             }
         }
@@ -209,5 +221,13 @@ public class CMDPanel extends Operator implements Runnable{
      */
     public void changeCurrentTabTitle(String title){
         cmdFrame.getjTabbedPane().setTitleAt(cmdFrame.getjTabbedPane().getSelectedIndex(),title);
+    }
+
+    public String getCurrentConnectKey() {
+        return currentConnectKey;
+    }
+
+    public void setCurrentConnectKey(String currentConnectKey) {
+        this.currentConnectKey = currentConnectKey;
     }
 }

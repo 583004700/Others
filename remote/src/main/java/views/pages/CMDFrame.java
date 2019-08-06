@@ -1,12 +1,12 @@
 package views.pages;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JTabbedPane;
+import handler.Handler;
+
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class CMDFrame extends JFrame {
     private JTabbedPane jTabbedPane = new JTabbedPane();
@@ -18,7 +18,29 @@ public class CMDFrame extends JFrame {
         JMenu fileMenu = new JMenu("   文件   ");
         fileMenu.setSize(100,30);
         JMenuItem openMenuItem = new JMenuItem(" 打开 ");
+        JMenuItem fileCsMenuItem = new JMenuItem(" 文件传输 ");
+        openMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(jTabbedPane.getTabCount() == 0){
+                    addPanel("未连接",new CMDPanel(CMDFrame.this));
+                }
+                getCurrentSelectTab().submitCommand(Handler.LIST+Handler.separator);
+            }
+        });
+        fileCsMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(getCurrentSelectTab() == null || "".equals(getCurrentSelectTab().getCurrentConnectKey())) {
+                    JOptionPane.showMessageDialog(CMDFrame.this, "请先选中连接!");
+                }else{
+                    getCurrentSelectTab().reConnect();
+                    JOptionPane.showMessageDialog(CMDFrame.this, "打开文件传输!"+getCurrentSelectTab().getCurrentConnectKey());
+                }
+            }
+        });
         fileMenu.add(openMenuItem);
+        fileMenu.add(fileCsMenuItem);
         jMenuBar.add(fileMenu);
 
         Container container = this.getContentPane();

@@ -39,4 +39,6 @@ public interface Handler{
     String screenPrintUp = "screenPrintUp>";
     //文件上传成功，对方接收到之后，作相应的处理
     String receiveSuccess = "receiveSuccess>";
+    //返回列表
+    String returnList = "returnList:";
 }

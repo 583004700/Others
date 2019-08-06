@@ -106,7 +106,13 @@ public class SocketServer {
 
     //获取列表
     public String getRegisterSocketList(){
-        return registerSockets.toString();
+        StringBuilder sb = new StringBuilder();
+        Set<Map.Entry<String,Socket>> entries = registerSockets.entrySet();
+        for(Map.Entry<String,Socket> m:entries){
+            sb.append(m.getKey());
+            sb.append(",");
+        }
+        return sb.toString();
     }
 
     public Socket getRegisterOperatorSocket(String key){

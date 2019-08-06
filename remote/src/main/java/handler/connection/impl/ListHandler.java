@@ -3,6 +3,7 @@ package handler.connection.impl;
 import command.PropertiesConst;
 import command.SocketServer;
 import executor.ServerExecutor;
+import handler.Handler;
 import handler.connection.ConnectionHandler;
 import thread.ThreadManager;
 import util.IOUtil;
@@ -38,11 +39,12 @@ public class ListHandler extends ConnectionHandler implements Runnable {
     public void run() {
         String list = getSocketServer().getRegisterSocketList();
         try {
-            operatorPrintWriter.println(list);
+            operatorPrintWriter.println(Handler.returnList + list);
             operatorPrintWriter.flush();
             String str = IOUtil.readLinStr(getSocketServer().getSocket().getInputStream(), PropertiesConst.appEncoding);
             serverExecutor.setCompleteCommand(str);
             serverExecutor.execute();
+            System.out.println("ListHandler结束");
         }catch (Exception e){
             e.printStackTrace();
         }

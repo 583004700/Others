@@ -21,11 +21,6 @@ public class OperatorView extends Operator{
 
     public static void main(String[] args) {
         CMDFrame cmdFrame = new CMDFrame();
-        CMDPanel cmdPanel = new CMDPanel(cmdFrame);
-//        CMDPanel cmdPanel2 = new CMDPanel(cmdFrame);
-        cmdFrame.addPanel("选项卡1",cmdPanel);
-//        cmdFrame.addPanel("选项卡2",cmdPanel2);
-
     }
 
 }

@@ -2,11 +2,12 @@ package handler.connection.impl;
 
 import command.PropertiesConst;
 import command.SocketServer;
+import handler.Handler;
 import handler.connection.ConnectionHandler;
 import thread.ThreadManager;
 import util.IOUtil;
 
-import java.io.IOException;
+import java.io.*;
 
 class OtherMessageHandler extends ConnectionHandler implements Runnable{
 
@@ -22,7 +23,20 @@ class OtherMessageHandler extends ConnectionHandler implements Runnable{
 
     @Override
     public Object handler() {
-        new MessageHandler(getSocketServer(),getCompleteCommand()).setOperatorSocket(getOperatorSocket()).setOtherSocket(getOtherSocket()).handler();
+          try {
+            OutputStream outputStream = getOperatorSocket().getOutputStream();
+            InputStream inputStream = getOtherSocket().getInputStream();
+            PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream, PropertiesConst.appEncoding);
+            BufferedReader br = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
+            String line = null;
+            while((line = br.readLine()) != null){
+                printWriter.println(line);
+                printWriter.flush();
+                System.out.println(outputStream.toString()+inputStream+":"+line);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 }
@@ -33,7 +47,7 @@ public class MessageHandler extends ConnectionHandler implements Runnable{
     }
 
     public void run() {
-        OtherMessageHandler otherMessageHandler = (OtherMessageHandler)new OtherMessageHandler(getSocketServer(),getCompleteCommand()).setOperatorSocket(getOtherSocket()).setOtherSocket(getOperatorSocket());
+        OtherMessageHandler otherMessageHandler = (OtherMessageHandler)new OtherMessageHandler(getSocketServer(),getCompleteCommand()).setOperatorSocket(getOperatorSocket()).setOtherSocket(getOtherSocket());
         ThreadManager.getExecutorService().execute(otherMessageHandler);
         handler();
         System.out.println(getOtherKey()+":MessageHandler线程结束");
@@ -43,7 +57,24 @@ public class MessageHandler extends ConnectionHandler implements Runnable{
     public Object handler() {
         System.out.println(getOtherKey()+"MessageHandler");
         try {
-            IOUtil.readStrToOutputStream(getOperatorSocket().getInputStream(), PropertiesConst.appEncoding,getOtherSocket().getOutputStream());
+            OutputStream outputStream = getOtherSocket().getOutputStream();
+            InputStream inputStream = getOperatorSocket().getInputStream();
+            BufferedReader br = IOUtil.wrapBufferedReader(inputStream,PropertiesConst.appEncoding);
+            PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream, PropertiesConst.appEncoding);
+
+            PrintWriter operatorPrintWriter = IOUtil.wrapPrintWriter(getOperatorSocket().getOutputStream(),PropertiesConst.appEncoding);
+
+            String line = null;
+            while((line = br.readLine()) != null){
+                if(line.equals(Handler.LIST+Handler.separator)){
+                    operatorPrintWriter.println(Handler.returnList+getSocketServer().getRegisterSocketList());
+                    operatorPrintWriter.flush();
+                    continue;
+                }
+                printWriter.println(line);
+                printWriter.flush();
+                System.out.println(outputStream.toString()+inputStream+":"+line);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
