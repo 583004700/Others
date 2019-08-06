@@ -38,17 +38,20 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
 
             String readStr = "";
             while ((readStr = bufferedReader.readLine()) != null){
-                if(readStr.equals(Handler.HEART+Handler.separator)){
+                setCompleteCommand(readStr);
+                String preFix = getPrefix();
+                String command = getCommand();
+                if(preFix.equals(Handler.HEART+Handler.separator)){
                     otherExecutor.getOtherComputer().resetHeartTime();
                 }else {
                     System.out.println("进入CmdReceiveIngHandler while");
-                    if ((Handler.CMDEND+Handler.separator).equals(readStr)) {
+                    if ((Handler.CMDEND+Handler.separator).equals(preFix)) {
                         printWriter.close();
                         outputStream.close();
                         break;
                     }
-                    System.out.println("向cmd中输入命令" + readStr);
-                    printWriter.println(readStr);
+                    System.out.println("向cmd中输入命令" + command);
+                    printWriter.println(command);
                     printWriter.flush();
                 }
             }
