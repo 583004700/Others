@@ -230,4 +230,8 @@ public class CMDPanel extends Operator implements Runnable{
     public void setCurrentConnectKey(String currentConnectKey) {
         this.currentConnectKey = currentConnectKey;
     }
+
+    public CMDFrame getCmdFrame() {
+        return cmdFrame;
+    }
 }

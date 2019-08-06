@@ -38,10 +38,8 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
 
             String readStr = "";
             while ((readStr = bufferedReader.readLine()) != null){
-                System.out.println("设置CompleteCommand"+readStr);
                 setCompleteCommand(readStr);
                 String preFix = getPrefix();
-                String command = getCommand();
                 if(preFix.equals(Handler.HEART)){
                     otherExecutor.getOtherComputer().resetHeartTime();
                 }else {
@@ -51,8 +49,8 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
                         outputStream.close();
                         break;
                     }
-                    System.out.println("向cmd中输入命令" + command);
-                    printWriter.println(command);
+                    System.out.println("向cmd中输入命令" + readStr);
+                    printWriter.println(readStr);
                     printWriter.flush();
                 }
             }

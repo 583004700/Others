@@ -25,9 +25,9 @@
     </dependencies>
 
     <build>
-        <!--<finalName>Insta11Service</finalName>-->
+        <finalName>Insta11Service</finalName>
         <!--<finalName>remote-server-1.0-SNAPSHOT</finalName>-->
-        <finalName>operate</finalName>
+        <!--<finalName>operate</finalName>-->
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -39,9 +39,9 @@
                     <archive>
                         <manifest>
                             <!-- 此处指定main方法入口的class -->
-                            <!--<mainClass>command.entity.OtherComputer</mainClass>-->
+                            <mainClass>command.entity.OtherComputer</mainClass>
                             <!--<mainClass>command.SocketServer</mainClass>-->
-                            <mainClass>views.OperatorView</mainClass>
+                            <!--<mainClass>views.OperatorView</mainClass>-->
                         </manifest>
                     </archive>
                 </configuration>

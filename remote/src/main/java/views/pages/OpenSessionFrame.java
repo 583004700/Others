@@ -52,7 +52,13 @@ public class OpenSessionFrame extends JFrame {
                     return;
                 }
                 String selectKey = (String)table.getValueAt(row,0);
-                cmdPanel.submitCommand(Handler.OPERATE+Handler.separator+selectKey);
+                if("".equals(cmdPanel.getCurrentConnectKey())) {
+                    cmdPanel.submitCommand(Handler.OPERATE + Handler.separator + selectKey);
+                }else{
+                    CMDPanel newCmdPanel = new CMDPanel(cmdPanel.getCmdFrame());
+                    newCmdPanel.getCmdFrame().addPanel("未连接",newCmdPanel);
+                    newCmdPanel.submitCommand(Handler.OPERATE + Handler.separator + selectKey);
+                }
                 closeButton.doClick();
             }
         });
