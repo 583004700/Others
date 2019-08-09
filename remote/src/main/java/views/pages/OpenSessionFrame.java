@@ -1,6 +1,8 @@
 package views.pages;
 
 import handler.Handler;
+import views.pages.common.CommonButton;
+import views.pages.common.CommonTable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,8 +15,8 @@ import java.awt.event.ActionListener;
  */
 public class OpenSessionFrame extends JFrame {
     private CMDPanel cmdPanel;
-    private JButton connectButton = new JButton("连接");
-    private JButton closeButton = new JButton("关闭");
+    private JButton connectButton = new CommonButton("连接");
+    private JButton closeButton = new CommonButton("关闭");
 
     public OpenSessionFrame(CMDPanel panel,String tableData){
         this.cmdPanel = panel;
@@ -28,7 +30,7 @@ public class OpenSessionFrame extends JFrame {
         DefaultTableModel tableModel = new DefaultTableModel(new Object[][]{},columnNames);
 
         // 创建一个表格，指定 所有行数据 和 表头
-        final JTable table = new JTable(tableModel){
+        final JTable table = new CommonTable(tableModel){
             public boolean isCellEditable(int row ,int column){
                 return false;
             }
@@ -73,9 +75,8 @@ public class OpenSessionFrame extends JFrame {
         jspData.setSize(642, 320);
         jspData.setLocation(0, 0);
 
-        connectButton.setSize(96,28);
         connectButton.setLocation(414,334);
-        closeButton.setSize(96,28);
+
         closeButton.setLocation(520,334);
         closeButton.addActionListener(new ActionListener() {
             @Override
