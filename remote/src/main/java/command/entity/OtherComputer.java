@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class OtherComputer extends Computer {
+public class OtherComputer extends Computer implements Runnable{
     /**
      * 检测心跳和长时间没操作的线程
      */
@@ -71,6 +71,7 @@ public class OtherComputer extends Computer {
     public static void main(String[] args) {
         OtherComputer otherComputer = new OtherComputer();
         try {
+            ThreadManager.getExecutorService().submit(otherComputer);
             otherComputer.start();
         }catch (Exception e){
             e.printStackTrace();
@@ -146,6 +147,14 @@ public class OtherComputer extends Computer {
             otherExecutors.remove(o);
             System.out.println("取消："+o.getCompleteCommand());
         }
+    }
+
+    @Override
+    public void run() {
+        //文件传输
+        OtherComputer ft = new OtherComputer();
+        ft.setKey(ft.key+"FT:");
+        ft.start();
     }
 
     public void start() {
@@ -266,6 +275,10 @@ public class OtherComputer extends Computer {
 
     public BufferedReader getBufferedReader() {
         return getMessageReader();
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
 

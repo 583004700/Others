@@ -23,7 +23,7 @@ class OtherMessageHandler extends ConnectionHandler implements Runnable{
 
     @Override
     public Object handler() {
-          try {
+        try {
             OutputStream outputStream = getOperatorSocket().getOutputStream();
             InputStream inputStream = getOtherSocket().getInputStream();
             PrintWriter printWriter = IOUtil.wrapPrintWriter(outputStream, PropertiesConst.appEncoding);
@@ -36,6 +36,12 @@ class OtherMessageHandler extends ConnectionHandler implements Runnable{
             }
         }catch (Exception e){
             e.printStackTrace();
+        } finally {
+            try {
+                getOperatorSocket().close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         return null;
     }

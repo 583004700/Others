@@ -1,9 +1,11 @@
 package views.pages.common;
 
-import javax.swing.*;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import java.awt.*;
+import java.awt.Font;
 import java.util.Enumeration;
 
 /**
@@ -33,5 +35,33 @@ public class CommonTable extends JTable {
      */
     public Enumeration<TableColumn> getColumns(){
         return getColumnModel().getColumns();
+    }
+
+    /**
+     * 移除某列
+     * @param index
+     */
+    public void removeColumn(int index){
+        getColumnModel().removeColumn(getColumnModel().getColumn(index));
+    }
+
+    /**
+     * 隐藏列
+     * @param index
+     */
+    public void hideColumn(int index){
+        TableColumn tc= getColumnModel().getColumn(index);
+        tc.setMaxWidth(0);
+        tc.setPreferredWidth(0);
+        tc.setMinWidth(0);
+        tc.setWidth(0);
+        getTableHeader().getColumnModel().getColumn(index).setMaxWidth(0);
+        getTableHeader().getColumnModel().getColumn(index).setMinWidth(0);
+    }
+
+    public void clearData(){
+        ((DefaultTableModel) getModel()).getDataVector().clear();   //清除表格数据
+        ((DefaultTableModel) getModel()).fireTableDataChanged();//通知模型更新
+        updateUI();
     }
 }
