@@ -2,8 +2,6 @@ package handler.command;
 
 import executor.BaseExecutor;
 
-import java.io.PrintWriter;
-
 public abstract class OtherCommandHandler extends CommandHandler {
     private Object[] param;
 

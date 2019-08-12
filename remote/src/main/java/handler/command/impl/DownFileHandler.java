@@ -1,6 +1,7 @@
 package handler.command.impl;
 
 import command.PropertiesConst;
+import command.entity.Computer;
 import executor.BaseExecutor;
 import handler.Handler;
 import handler.command.OperatorCommandHandler;
@@ -23,14 +24,16 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
     private volatile boolean finish = false;
     private volatile Future future;
     private long timeOut = 18000000;
+    private Computer computer;
 
     public boolean cancel(){
-        System.out.println(this+"===========cancelFuture"+future);
+        computer.printMessage(this+"===========cancelFuture"+future);
         return future.cancel(true);
     }
 
     public DownFileHandler(String otherKey, String completeCommand, BaseExecutor executor) {
         super(otherKey, completeCommand, executor);
+        computer = this.getExecutor().getComputer();
         if(OSUtil.isLinux()){
             defaultDownPath = "/remotefile/";
         }
@@ -75,7 +78,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             fileOutputStream = new FileOutputStream(downPathFile,true);
         }catch (Exception e){
             e.printStackTrace();
-            System.out.println("目录为:"+downPathFile);
+            computer.printMessage("目录为:"+downPathFile);
             b = false;
         }
         return b;
@@ -113,9 +116,9 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             //告诉服务器下载较验成功
             pw.println(Handler.DOWNFILESUCCESS+":"+length);
             pw.flush();
-            System.out.println("DownFileHandler:发送length给服务器"+System.currentTimeMillis()+":"+Handler.DOWNFILESUCCESS+":"+length);
+            computer.printMessage("DownFileHandler:发送length给服务器"+System.currentTimeMillis()+":"+Handler.DOWNFILESUCCESS+":"+length);
         }else{
-            System.out.println("本机较验：文件下载失败，可能是不能创建目录");
+            computer.printMessage("文件下载失败，可能是不能创建目录");
             pw.println("downFail:"+length);
             pw.flush();
         }
@@ -128,7 +131,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
                 String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),PropertiesConst.appEncoding);
                 if(!Handler.UPFILESUCCESS.equals(otherStr)){
                     success = false;
-                    System.out.println("对方较验：文件上传失败，可能是找不到文件");
+                    computer.printMessage("下载较验：文件上传失败，可能是找不到文件");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -146,33 +149,33 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
     @Override
     public Object handler() {
         future = ThreadManager.getExecutorService().submit(this);
-        System.out.println(this+"==============future:"+future);
+        computer.printMessage(this+"==============future:"+future);
         return null;
     }
 
     @Override
     public Object call() {
-        System.out.println("fullDownPath为"+fullDownPath);
+        computer.printMessage("fullDownPath为"+fullDownPath);
         synchronized (fullDownPath) {
-            System.out.println("线程：" + Thread.currentThread().getName());
+            computer.printMessage("线程：" + Thread.currentThread().getName());
             connection();
             long startTime = System.currentTimeMillis();
             while(!finish){
                 if (System.currentTimeMillis() - startTime > timeOut) {
                     closeFileOutputStream();
                     deleteFile();
-                    System.out.println("下载文件等待超时");
+                    computer.printMessage("下载文件等待超时");
                     return null;
                 }
             }
             if (!success) {
                 closeFileOutputStream();
                 deleteFile();
-                System.out.println("文件传输取消，线程结束");
+                computer.printMessage("文件传输取消，线程结束");
                 return null;
             }
             long downStartTime = System.currentTimeMillis();
-            System.out.println(fileName + "文件下载开始DownFileHandler");
+            computer.printMessage(fileName + "文件下载开始DownFileHandler");
             try {
                 InputStream inputStream = fileSocket.getInputStream();
                 IOUtil.inputToOutput(inputStream, fileOutputStream);
@@ -182,7 +185,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             //文件接收成功，告诉对方文件接收成功了
             getPrintWriter().println(Handler.receiveSuccess);
             getPrintWriter().flush();
-            System.out.println(fileName + "文件下载结束DownFileHandler,所用时间为："+(System.currentTimeMillis() - downStartTime));
+            computer.printMessage(fileName + "文件下载结束DownFileHandler,所用时间为："+(System.currentTimeMillis() - downStartTime));
         }
         return null;
     }

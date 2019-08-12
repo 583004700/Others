@@ -3,26 +3,17 @@ package views.pages;
 import util.FileUtil;
 import views.pages.common.CommonTable;
 
-import javax.swing.Icon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
-public class FileListPanel extends JPanel {
+public class OperatorFileListPanel extends JPanel {
     class CellRenderer extends DefaultTableCellRenderer{
         JLabel jLabel = new JLabel();
         @Override
@@ -33,8 +24,12 @@ public class FileListPanel extends JPanel {
             }else{
                 JLabel jLabel = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 String realPath = (String)table.getValueAt(row,4);
-                Icon icon = FileUtil.getFileSmallIcon(new File(realPath));
-                jLabel.setIcon(icon);
+                try {
+                    Icon icon = FileUtil.getFileSmallIcon(new File(realPath));
+                    jLabel.setIcon(icon);
+                }catch (Exception e){
+
+                }
                 return jLabel;
             }
         }
@@ -47,8 +42,12 @@ public class FileListPanel extends JPanel {
     private final CommonTable fileListTable;
     private DefaultTableModel tableModel;
     private JTextField currentPathText = new JTextField();
+    //右键菜单
+    private JPopupMenu jPopupMenu = new JPopupMenu();
+    private JMenuItem cs = new JMenuItem("传输");
+    private JMenuItem sx = new JMenuItem("刷新");
 
-    public FileListPanel(String currentPath){
+    public OperatorFileListPanel(final String currentPath){
         this.setLayout(null);
 
         // 创建内容面板，使用边界布局
@@ -71,8 +70,24 @@ public class FileListPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2){
                     int row = fileListTable.getSelectedRow();
-                    String realPath = (String)fileListTable.getValueAt(row,4);
-                    open(realPath);
+                    if(row != -1) {
+                        String realPath = (String) fileListTable.getValueAt(row, 4);
+                        open(realPath);
+                    }
+                }
+                if (e.getButton()==MouseEvent.BUTTON3) {
+                    int row = fileListTable.getSelectedRow();
+                    if(row != -1) {
+                        String fileType = (String) fileListTable.getValueAt(row, 2);
+                        if("文件".equals(fileType)) {
+                            jPopupMenu.add(cs);
+                        }else{
+                            jPopupMenu.remove(cs);
+                        }
+                    }else{
+                        jPopupMenu.remove(cs);
+                    }
+                    jPopupMenu.show(OperatorFileListPanel.this, e.getX()+5, e.getY()+60);
                 }
             }
         });
@@ -81,12 +96,12 @@ public class FileListPanel extends JPanel {
         tablePanel.add(fileListTable.getTableHeader(), BorderLayout.NORTH);
         // 把 表格内容 添加到容器中心
         tablePanel.add(fileListTable, BorderLayout.CENTER);
-        tablePanel.setSize(screenSize.width/2,screenSize.height);
+        tablePanel.setSize(screenSize.width/2,screenSize.height - 212);
 
         open(currentPath);
 
         JScrollPane jspData = new JScrollPane(fileListTable);
-        jspData.setSize(screenSize.width/2, screenSize.height);
+        jspData.setSize(screenSize.width/2-10, screenSize.height - 212);
         jspData.setLocation(0, 30);
 
         Icon icon = FileUtil.getFileSmallIcon(currentPathFile);
@@ -98,17 +113,30 @@ public class FileListPanel extends JPanel {
         currentPathText.setLocation(0,0);
         this.add(currentPathText);
         this.add(jspData);
+
+        sx.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                open(currentPath);
+            }
+        });
+
+        jPopupMenu.add(sx);
+        this.add(jPopupMenu);
     }
 
     public void loadList(){
         fileListTable.clearData();
         String parentPath = new File(currentPath).getParent();
-        if(parentPath != null){
+        if(!currentPath.contains("根目录")){
             tableModel.addRow(new String[]{"..","","","",parentPath});
         }
-        File[] files = currentPathFile.listFiles();
+        File[] files = FileUtil.getFileList(currentPathFile);
         for(File f : files){
             String fileName = FileUtil.getName(f.getAbsolutePath());
+            if(fileName == null || fileName.equals("")){
+                fileName = f.getAbsolutePath();
+            }
             String fileSize = FileUtil.getFileLengthStr(f);
             String fileType = FileUtil.getType(f);
             String lastM = FileUtil.getlastModified(f);
@@ -118,9 +146,11 @@ public class FileListPanel extends JPanel {
 
     public void open(String path){
         System.out.println("open"+path);
-        File file = new File(path);
-        if(!file.isDirectory()){
-            return;
+        if(path != null) {
+            File file = new File(path);
+            if (!file.isDirectory()) {
+                return;
+            }
         }
         setCurrentPath(path);
         loadList();
@@ -131,7 +161,7 @@ public class FileListPanel extends JPanel {
     }
 
     public static void setScreenSize(Dimension screenSize) {
-        FileListPanel.screenSize = screenSize;
+        OperatorFileListPanel.screenSize = screenSize;
     }
 
     public String getCurrentPath() {
@@ -143,6 +173,9 @@ public class FileListPanel extends JPanel {
      * @param currentPath
      */
     public void setCurrentPath(String currentPath) {
+        if(currentPath == null){
+            currentPath = "根目录";
+        }
         this.currentPath = currentPath;
         this.currentPathFile = new File(currentPath);
         this.currentPathText.setText("          "+currentPath);
@@ -166,37 +199,5 @@ public class FileListPanel extends JPanel {
 
     public void setCurrentPathText(JTextField currentPathText) {
         this.currentPathText = currentPathText;
-    }
-
-    public static void main(String[] args) {
-
-        String filePath = "D:\\软件备份\\开发工具\\软件\\oracle11g安装与卸载\\";
-
-
-        FileListPanel fileListPanel = new FileListPanel(filePath);
-        fileListPanel.setSize(screenSize.width/2,screenSize.height);
-
-        JSplitPane splitPane = new JSplitPane();
-        // 分隔条上显示快速 折叠/展开 两边组件的小按钮
-        splitPane.setOneTouchExpandable(true);
-        // 拖动分隔条时连续重绘组件
-        splitPane.setContinuousLayout(true);
-        // 设置分隔条的初始位置
-        splitPane.setDividerLocation(screenSize.width/2);
-
-        splitPane.setLeftComponent(fileListPanel);
-        splitPane.setRightComponent(new FileListPanel(filePath));
-
-
-        File f = new File(filePath);
-        JFrame frm = new JFrame();
-        Container container = frm.getContentPane();
-        container.add(splitPane);
-        frm.setSize(screenSize);
-        frm.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frm.setLocationRelativeTo(null);
-        frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frm.setVisible(true);
-        frm.setResizable(false);
     }
 }

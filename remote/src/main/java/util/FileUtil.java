@@ -6,6 +6,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class FileUtil {
     public static SimpleDateFormat simpleDateFormat;
@@ -44,6 +45,22 @@ public class FileUtil {
             path = fullPath.substring(0,maxLast+1);
         }
         return path;
+    }
+
+    /**
+     * 获取目录下的文件列表
+     * @param file
+     * @return
+     */
+    public static File[] getFileList(File file){
+        if(file.getName().contains("根目录")) {
+            FileSystemView fsv = FileSystemView.getFileSystemView();
+            // 列出所有windows 磁盘
+            File[] fs = File.listRoots();
+            return fs;
+        }else{
+            return file.listFiles();
+        }
     }
 
     /**

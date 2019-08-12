@@ -1,7 +1,7 @@
 package handler.command.impl;
 
 import command.PropertiesConst;
-import command.entity.OtherComputer;
+import command.entity.Computer;
 import executor.BaseExecutor;
 import handler.Handler;
 import handler.command.OtherCommandHandler;
@@ -10,16 +10,17 @@ import util.IOUtil;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Date;
 
 public class UpFileHandler extends OtherCommandHandler implements Runnable{
     private volatile boolean success = true;
     private volatile boolean finish = false;
     private long timeOut = 18000000;
+    private Computer computer;
 
     private String key;
     public UpFileHandler(String completeCommand, BaseExecutor executor, String key) {
         super(completeCommand, executor);
+        computer = this.getExecutor().getComputer();
         this.key = key;
         filePath = getCommand();
         if(filePath.split(">").length > 1){
@@ -41,7 +42,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         } catch (FileNotFoundException e) {
             b = false;
             e.printStackTrace();
-            System.out.println("未找到文件:"+filePath);
+            computer.printMessage("未找到文件:"+filePath);
         }
         return b;
     }
@@ -56,7 +57,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
             ThreadManager.getExecutorService().execute(this.new Check());
 
             pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream(),PropertiesConst.appEncoding);
-            System.out.println("UpFileHandler:"+getCompleteCommand()+":"+key+":"+ Handler.UPFILE);
+            computer.printMessage("UpFileHandler:"+getCompleteCommand()+":"+key+":"+ Handler.UPFILE);
             pw.println(getCompleteCommand()+":"+key+":"+Handler.UPFILE);
             pw.flush();
             if(!checkFile()){
@@ -74,12 +75,12 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
         }
 
         if(success){
-            System.out.println("上传检验成功"+System.currentTimeMillis());
+            computer.printMessage("上传检验成功"+System.currentTimeMillis());
             //告诉服务器上传较验成功
             pw.println(Handler.UPFILESUCCESS);
             pw.flush();
         }else{
-            System.out.println("本机较验：文件上传失败，可能是找不到文件");
+            computer.printMessage("上传较验：文件上传失败，可能是找不到文件");
             pw.println("upFail");
             pw.flush();
         }
@@ -93,10 +94,10 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
                 otherStr = otherStr.split(":")[0];
                 if(!Handler.DOWNFILESUCCESS.equals(otherStr)){
                     success = false;
-                    System.out.println("对方较验：文件下载失败，可能不能创建目录");
+                    computer.printMessage("上传较验：文件下载失败，可能不能创建目录");
                 }else{
                     inputStream.skip(length);
-                    System.out.println("UpFileHandler:接收到length"+length+"关跳转");
+                    computer.printMessage("UpFileHandler:接收到length"+length+"关跳转");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -124,16 +125,16 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
             while (!finish) {
                 if (System.currentTimeMillis() - startTime > timeOut) {
                     closeInputStream();
-                    System.out.println("上传文件等待超时");
+                    computer.printMessage("上传文件等待超时");
                     return;
                 }
             }
             if (!success) {
-                System.out.println("文件传输取消，线程结束");
+                computer.printMessage("文件传输取消，线程结束");
                 closeInputStream();
                 return;
             }
-            System.out.println(filePath + "文件上传开始UpFileHandler");
+            computer.printMessage(filePath + "文件上传开始UpFileHandler");
             try {
                 Thread.sleep(1000);
                 OutputStream outputStream = fileSocket.getOutputStream();
@@ -141,7 +142,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println(filePath + "文件上传结束UpFileHandler");
+            computer.printMessage(filePath + "文件上传结束UpFileHandler");
         }
     }
 

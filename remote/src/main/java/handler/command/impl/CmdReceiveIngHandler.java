@@ -1,6 +1,7 @@
 package handler.command.impl;
 
 import command.PropertiesConst;
+import command.entity.Computer;
 import executor.OtherExecutor;
 import handler.Handler;
 import handler.command.OtherCommandHandler;
@@ -13,16 +14,18 @@ import java.io.*;
 public class CmdReceiveIngHandler extends OtherCommandHandler{
     private OtherExecutor otherExecutor;
     private BufferedReader bufferedReader;
+    private Computer computer;
 
     public CmdReceiveIngHandler(OtherExecutor otherExecutor,String completeCommand) {
         super(completeCommand, otherExecutor);
         this.bufferedReader = getExecutor().getComputer().getBufferedReader();
         this.otherExecutor = otherExecutor;
+        computer = this.getExecutor().getComputer();
     }
 
     @Override
     public Object handler() {
-        System.out.println("进入CmdReceiveIngHandler");
+        computer.printMessage("进入CmdReceiveIngHandler");
         try {
             Process process = CmdUtil.getProcess();
             InputStream inputStream = process.getInputStream();
@@ -43,13 +46,13 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
                 if(preFix.equals(Handler.HEART)){
                     otherExecutor.getOtherComputer().resetHeartTime();
                 }else {
-                    System.out.println("进入CmdReceiveIngHandler while");
+                    computer.printMessage("进入CmdReceiveIngHandler while");
                     if ((Handler.CMDEND).equals(preFix)) {
                         printWriter.close();
                         outputStream.close();
                         break;
                     }
-                    System.out.println("向cmd中输入命令" + readStr);
+                    computer.printMessage("向cmd中输入命令" + readStr);
                     printWriter.println(readStr);
                     printWriter.flush();
                 }
@@ -57,7 +60,7 @@ public class CmdReceiveIngHandler extends OtherCommandHandler{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(Handler.CMDEND+"CmdReceiveIngHandler结束");
+        computer.printMessage(Handler.CMDEND+"CmdReceiveIngHandler结束");
         return null;
     }
 }

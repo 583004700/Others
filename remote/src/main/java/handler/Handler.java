@@ -35,7 +35,7 @@ public interface Handler{
 
     //------------------------------------------获取到反馈后要进行处理的----------------------------------
 
-    //截图上传方法，如果截图成功，则再上传到我的电脑
+    //截图上传方法，如果截图成功，则再上传到根目录
     String screenPrintUp = "screenPrintUp>";
     //文件上传成功，对方接收到之后，作相应的处理
     String receiveSuccess = "receiveSuccess>";

@@ -12,7 +12,9 @@ import java.util.Map;
 
 public class Computer extends JPanel {
 
-    public void printMessage(String message){}
+    public void printMessage(String message){
+        System.out.println(message);
+    }
 
 
     public static String getKey() {
