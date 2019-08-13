@@ -1,12 +1,11 @@
 package util;
 
-import javax.swing.Icon;
+import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class FileUtil {
     public static SimpleDateFormat simpleDateFormat;
@@ -61,6 +60,24 @@ public class FileUtil {
         }else{
             return file.listFiles();
         }
+    }
+
+    /**
+     * 递归删除
+     * @param file
+     * @return
+     */
+    public static boolean deleteFiles(File file){
+        if(file != null){
+            File[] files = file.listFiles();
+            if(files != null) {
+                for (File f : files) {
+                    deleteFiles(f);
+                }
+            }
+            return file.delete();
+        }
+        return false;
     }
 
     /**

@@ -46,6 +46,7 @@ public class OperatorFileListPanel extends JPanel {
     private JPopupMenu jPopupMenu = new JPopupMenu();
     private JMenuItem cs = new JMenuItem("传输");
     private JMenuItem sx = new JMenuItem("刷新");
+    private JMenuItem sc = new JMenuItem("删除");
 
     public OperatorFileListPanel(final String currentPath){
         this.setLayout(null);
@@ -84,7 +85,14 @@ public class OperatorFileListPanel extends JPanel {
                         }else{
                             jPopupMenu.remove(cs);
                         }
+                        String fileName = (String) fileListTable.getValueAt(row, 0);
+                        if(!OperatorFileListPanel.this.currentPath.contains("根目录") && !"..".equals(fileName)) {
+                            jPopupMenu.add(sc);
+                        }else{
+                            jPopupMenu.remove(sc);
+                        }
                     }else{
+                        jPopupMenu.remove(sc);
                         jPopupMenu.remove(cs);
                     }
                     jPopupMenu.show(OperatorFileListPanel.this, e.getX()+5, e.getY()+60);
@@ -118,6 +126,25 @@ public class OperatorFileListPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 open(currentPath);
+            }
+        });
+
+        sc.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int o = JOptionPane.showConfirmDialog(OperatorFileListPanel.this,"您确定要删除吗?","文件删除",JOptionPane.YES_NO_CANCEL_OPTION);
+                if(o == JOptionPane.YES_OPTION) {
+                    int row = fileListTable.getSelectedRow();
+                    String realPath = (String) fileListTable.getValueAt(row, 4);
+                    File deleteFile = new File(realPath);
+                    boolean b = FileUtil.deleteFiles(deleteFile);
+                    if(b){
+                        JOptionPane.showMessageDialog(OperatorFileListPanel.this,"删除成功！");
+                    }else{
+                        JOptionPane.showMessageDialog(OperatorFileListPanel.this,"删除失败！");
+                    }
+                    open(OperatorFileListPanel.this.currentPath);
+                }
             }
         });
 
