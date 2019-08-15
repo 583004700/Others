@@ -13,12 +13,14 @@ public class CMDFrame extends JFrame {
 
     private JMenuBar jMenuBar = new JMenuBar();
 
+    private FileListFrame fileListFrame;
+
     public CMDFrame(){
 
         JMenu fileMenu = new JMenu("   文件   ");
         fileMenu.setSize(100,30);
         JMenuItem openMenuItem = new JMenuItem(" 打开 ");
-        JMenuItem fileCsMenuItem = new JMenuItem(" 文件传输 ");
+        final JMenuItem fileCsMenuItem = new JMenuItem(" 文件传输 ");
         openMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -34,8 +36,13 @@ public class CMDFrame extends JFrame {
                 if(getCurrentSelectTab() == null || "".equals(getCurrentSelectTab().getCurrentConnectKey())) {
                     JOptionPane.showMessageDialog(CMDFrame.this, "请先选中连接!");
                 }else{
-                    getCurrentSelectTab().reConnect();
-                    JOptionPane.showMessageDialog(CMDFrame.this, "打开文件传输!"+getCurrentSelectTab().getCurrentConnectKey());
+                    //getCurrentSelectTab().reConnect();
+                    //JOptionPane.showMessageDialog(CMDFrame.this, "打开文件传输!"+getCurrentSelectTab().getCurrentConnectKey());
+                    if(fileListFrame == null) {
+                        fileListFrame = new FileListFrame(getCurrentSelectTab().getCurrentConnectKey());
+                    }else{
+                        fileListFrame.show();
+                    }
                 }
             }
         });

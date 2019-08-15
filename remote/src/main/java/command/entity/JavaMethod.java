@@ -1,5 +1,7 @@
 package command.entity;
 
+import com.alibaba.fastjson.JSON;
+import util.FileUtil;
 import util.OSUtil;
 
 import javax.imageio.ImageIO;
@@ -7,6 +9,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 public class JavaMethod {
@@ -64,6 +68,39 @@ public class JavaMethod {
         for (int i = 0; i < c; i++) {
             screenPrint("null","null");
             Thread.sleep(de);
+        }
+    }
+
+    //java:command.entity.JavaMethod.getFileList(null)
+    public String getFileList(String path){
+        String result = "";
+        try {
+            ArrayList<FileItem> fileItems = new ArrayList<FileItem>();
+            if ("null".equals(path)) {
+                path = System.getProperty("user.dir");
+            }
+            File[] files = FileUtil.getFileList(new File(path));
+            for (File f : files) {
+                File file = new File(f.getAbsolutePath());
+                FileItem fileItem = new FileItem();
+                String fileName = FileUtil.getName(f.getAbsolutePath());
+                String fileType = FileUtil.getType(file);
+                if(fileName == null || fileName.equals("")){
+                    fileName = f.getAbsolutePath();
+                    fileType = "文件夹";
+                }
+                fileItem.setFileName(fileName);
+                fileItem.setFileSize(FileUtil.getFileLengthStr(file));
+                fileItem.setFileType(fileType);
+                fileItem.setLastM(FileUtil.getlastModified(file));
+                fileItem.setRealPath(file.getAbsolutePath());
+                fileItems.add(fileItem);
+            }
+            result = JSON.toJSONString(fileItems);
+            return "success"+separator+result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return "fail"+separator+result;
         }
     }
 }

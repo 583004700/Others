@@ -4,17 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-public class FileListFrame {
+public class FileListFrame extends JFrame{
 
-    private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private static JTabbedPane leftTabbedPane = new JTabbedPane();
-    private static JTabbedPane rightTabbedPane = new JTabbedPane();
+    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private JTabbedPane leftTabbedPane = new JTabbedPane();
+    private JTabbedPane rightTabbedPane = new JTabbedPane();
 
-    public static void main(String[] args) {
+    public FileListFrame(String key){
 
-        String filePath = "D:\\软件备份\\开发工具\\软件\\oracle11g安装与卸载\\";
-
-        OperatorFileListPanel fileListPanel = new OperatorFileListPanel(filePath);
+        OperatorFileListPanel fileListPanel = new OperatorFileListPanel(System.getProperty("user.dir"));
         fileListPanel.setSize(screenSize.width/2,screenSize.height);
 
         JSplitPane splitPane = new JSplitPane();
@@ -29,19 +27,41 @@ public class FileListFrame {
 
         splitPane.setLeftComponent(leftTabbedPane);
 
-        rightTabbedPane.addTab("192.168.1.113",new OperatorFileListPanel(filePath));
+        RemoteFileListPanel remoteFileListPanel = new RemoteFileListPanel(key,"根目录",this);
 
         splitPane.setRightComponent(rightTabbedPane);
 
-        File f = new File(filePath);
-        JFrame frm = new JFrame();
-        Container container = frm.getContentPane();
+        Container container = this.getContentPane();
         container.add(splitPane);
-        frm.setSize(screenSize);
-        frm.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frm.setLocationRelativeTo(null);
-        frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frm.setVisible(true);
-        frm.setResizable(false);
+        this.setSize(screenSize);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setVisible(true);
+        this.setResizable(false);
+    }
+
+    public Dimension getScreenSize() {
+        return screenSize;
+    }
+
+    public void setScreenSize(Dimension screenSize) {
+        this.screenSize = screenSize;
+    }
+
+    public JTabbedPane getLeftTabbedPane() {
+        return leftTabbedPane;
+    }
+
+    public void setLeftTabbedPane(JTabbedPane leftTabbedPane) {
+        this.leftTabbedPane = leftTabbedPane;
+    }
+
+    public JTabbedPane getRightTabbedPane() {
+        return rightTabbedPane;
+    }
+
+    public void setRightTabbedPane(JTabbedPane rightTabbedPane) {
+        this.rightTabbedPane = rightTabbedPane;
     }
 }

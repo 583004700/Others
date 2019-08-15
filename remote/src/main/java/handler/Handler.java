@@ -41,4 +41,6 @@ public interface Handler{
     String receiveSuccess = "receiveSuccess>";
     //返回列表
     String returnList = "returnList:";
+    //返回文件列表
+    String getFileList = "getFileList>";
 }

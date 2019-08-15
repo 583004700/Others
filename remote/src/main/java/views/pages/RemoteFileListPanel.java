@@ -1,6 +1,13 @@
 package views.pages;
 
+import com.alibaba.fastjson.JSON;
+import command.PropertiesConst;
+import command.entity.FileItem;
+import command.entity.Operator;
+import handler.Handler;
+import thread.ThreadManager;
 import util.FileUtil;
+import util.IOUtil;
 import views.pages.common.CommonTable;
 
 import javax.swing.*;
@@ -11,9 +18,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.net.SocketTimeoutException;
+import java.util.List;
 
-public class OperatorFileListPanel extends JPanel {
+public class RemoteFileListPanel extends Operator implements Runnable {
     class CellRenderer extends DefaultTableCellRenderer{
         JLabel jLabel = new JLabel();
         @Override
@@ -23,13 +33,6 @@ public class OperatorFileListPanel extends JPanel {
                 return jLabel;
             }else{
                 JLabel jLabel = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                String realPath = (String)table.getValueAt(row,4);
-                try {
-                    Icon icon = FileUtil.getFileSmallIcon(new File(realPath));
-                    jLabel.setIcon(icon);
-                }catch (Exception e){
-
-                }
                 return jLabel;
             }
         }
@@ -47,8 +50,15 @@ public class OperatorFileListPanel extends JPanel {
     private JMenuItem cs = new JMenuItem("传输");
     private JMenuItem sx = new JMenuItem("刷新");
     private JMenuItem sc = new JMenuItem("删除");
+    private FileListFrame fileListFrame;
+    private String key;
+    private String parentPath = "";
 
-    public OperatorFileListPanel(final String currentPath){
+    public RemoteFileListPanel(String key,final String currentPath,FileListFrame fileListFrame){
+        this.key = key;
+        this.submitCommand(Handler.OPERATE+Handler.separator+key+"FT:");
+        this.fileListFrame = fileListFrame;
+        this.fileListFrame.getRightTabbedPane().addTab(key,this);
         this.setLayout(null);
 
         // 创建内容面板，使用边界布局
@@ -73,7 +83,10 @@ public class OperatorFileListPanel extends JPanel {
                     int row = fileListTable.getSelectedRow();
                     if(row != -1) {
                         String realPath = (String) fileListTable.getValueAt(row, 4);
-                        open(realPath);
+                        String fileType = (String) fileListTable.getValueAt(row,2);
+                        if("文件夹".equals(fileType)) {
+                            open(realPath);
+                        }
                     }
                 }
                 if (e.getButton()==MouseEvent.BUTTON3) {
@@ -86,7 +99,7 @@ public class OperatorFileListPanel extends JPanel {
                             jPopupMenu.remove(cs);
                         }
                         String fileName = (String) fileListTable.getValueAt(row, 0);
-                        if(!OperatorFileListPanel.this.currentPath.contains("根目录") && !"..".equals(fileName)) {
+                        if(!RemoteFileListPanel.this.currentPath.contains("根目录") && !"..".equals(fileName)) {
                             jPopupMenu.add(sc);
                         }else{
                             jPopupMenu.remove(sc);
@@ -95,7 +108,7 @@ public class OperatorFileListPanel extends JPanel {
                         jPopupMenu.remove(sc);
                         jPopupMenu.remove(cs);
                     }
-                    jPopupMenu.show(OperatorFileListPanel.this, e.getX()+5, e.getY()+60);
+                    jPopupMenu.show(RemoteFileListPanel.this, e.getX()+5, e.getY()+60);
                 }
             }
         });
@@ -112,8 +125,8 @@ public class OperatorFileListPanel extends JPanel {
         jspData.setSize(screenSize.width/2-10, screenSize.height - 212);
         jspData.setLocation(0, 30);
 
-        Icon icon = FileUtil.getFileSmallIcon(currentPathFile);
-        JLabel jLabel = new JLabel(icon);
+        //Icon icon = FileUtil.getFileSmallIcon(currentPathFile);
+        JLabel jLabel = new JLabel();
         jLabel.setSize(30,30);
         currentPathText.add(jLabel);
 
@@ -125,25 +138,25 @@ public class OperatorFileListPanel extends JPanel {
         sx.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                open(OperatorFileListPanel.this.currentPath);
+                open(RemoteFileListPanel.this.currentPath);
             }
         });
 
         sc.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int o = JOptionPane.showConfirmDialog(OperatorFileListPanel.this,"您确定要删除吗?","文件删除",JOptionPane.YES_NO_CANCEL_OPTION);
+                int o = JOptionPane.showConfirmDialog(RemoteFileListPanel.this,"您确定要删除吗?","文件删除",JOptionPane.YES_NO_CANCEL_OPTION);
                 if(o == JOptionPane.YES_OPTION) {
                     int row = fileListTable.getSelectedRow();
                     String realPath = (String) fileListTable.getValueAt(row, 4);
                     File deleteFile = new File(realPath);
                     boolean b = FileUtil.deleteFiles(deleteFile);
                     if(b){
-                        JOptionPane.showMessageDialog(OperatorFileListPanel.this,"删除成功！");
+                        JOptionPane.showMessageDialog(RemoteFileListPanel.this,"删除成功！");
                     }else{
-                        JOptionPane.showMessageDialog(OperatorFileListPanel.this,"删除失败！");
+                        JOptionPane.showMessageDialog(RemoteFileListPanel.this,"删除失败！");
                     }
-                    open(OperatorFileListPanel.this.currentPath);
+                    open(RemoteFileListPanel.this.currentPath);
                 }
             }
         });
@@ -152,36 +165,30 @@ public class OperatorFileListPanel extends JPanel {
         this.add(jPopupMenu);
     }
 
-    public void loadList(){
+    public void loadList(List<FileItem> files){
         fileListTable.clearData();
         String parentPath = new File(currentPath).getParent();
         if(!currentPath.contains("根目录")){
+            System.out.println("父目录"+parentPath);
             tableModel.addRow(new String[]{"..","","文件夹","",parentPath});
         }
-        File[] files = FileUtil.getFileList(currentPathFile);
-        for(File f : files){
-            String fileName = FileUtil.getName(f.getAbsolutePath());
-            String fileType = FileUtil.getType(f);
-            if(fileName == null || fileName.equals("")){
-                fileName = f.getAbsolutePath();
-                fileType = "文件夹";
-            }
-            String fileSize = FileUtil.getFileLengthStr(f);
-            String lastM = FileUtil.getlastModified(f);
-            tableModel.addRow(new String[]{fileName,fileSize,fileType,lastM,f.getAbsolutePath()});
+        for(FileItem f : files){
+            String fileName = f.getFileName();
+            String fileSize = f.getFileSize();
+            String fileType = f.getFileType();
+            String lastM = f.getLastM();
+            tableModel.addRow(new String[]{fileName,fileSize,fileType,lastM,f.getRealPath()});
         }
     }
 
     public void open(String path){
         System.out.println("open"+path);
-        if(path != null) {
-            File file = new File(path);
-            if (!file.isDirectory()) {
-                return;
-            }
+        if(path == null) {
+            path = "根目录";
         }
         setCurrentPath(path);
-        loadList();
+        System.out.println("提交"+currentPath);
+        submitCommand("java:command.entity.JavaMethod.getFileList("+currentPath+")");
     }
 
     public static Dimension getScreenSize() {
@@ -189,7 +196,7 @@ public class OperatorFileListPanel extends JPanel {
     }
 
     public static void setScreenSize(Dimension screenSize) {
-        OperatorFileListPanel.screenSize = screenSize;
+        RemoteFileListPanel.screenSize = screenSize;
     }
 
     public String getCurrentPath() {
@@ -227,5 +234,68 @@ public class OperatorFileListPanel extends JPanel {
 
     public void setCurrentPathText(JTextField currentPathText) {
         this.currentPathText = currentPathText;
+    }
+
+
+
+
+
+
+
+
+    public void connect(){
+        super.connect();
+        try {
+            ThreadManager.getExecutorService().execute(this);
+            Thread.sleep(100);
+
+            //submitCommand(Handler.LIST+Handler.separator);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run() {
+        BufferedReader br = null;
+        br = IOUtil.wrapBufferedReader(getInputStream(), PropertiesConst.appEncoding);
+        while(true){
+            String result = null;
+            try {
+                result = br.readLine();
+                if(result!=null && result.contains(Handler.receiveSuccess)){
+                    //如果成功接收到文件
+                }else if(result!=null && result.contains("已连接:")){
+                    this.setName(result);
+                    changeCurrentTabTitle(result);
+                }else if(result.startsWith(Handler.getFileList)){
+                    //获取到文件列表
+                    String[] resultStr = result.split(">");
+                    boolean success = "success".equals(resultStr[2]);
+                    if(success){
+                        String listStr = resultStr[3];
+                        List<FileItem> fileItems = JSON.parseArray(listStr,FileItem.class);
+                        loadList(fileItems);
+                        System.out.println(listStr);
+                    }else{
+                        JOptionPane.showMessageDialog(RemoteFileListPanel.this,"获取文件列表失败");
+                    }
+                }
+            }catch (SocketTimeoutException s){
+                result = "";
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(result == null){
+                this.setName("未连接");
+                changeCurrentTabTitle("未连接");
+                key = "";
+                break;
+            }
+        }
+    }
+
+    public void changeCurrentTabTitle(String title){
+        this.fileListFrame.getRightTabbedPane().setTitleAt(this.fileListFrame.getRightTabbedPane().getSelectedIndex(),title);
     }
 }
