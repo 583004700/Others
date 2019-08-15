@@ -6,7 +6,6 @@ import handler.command.impl.CmdSendIngHandler;
 import handler.command.impl.DownFileHandler;
 import handler.command.impl.UpFileHandler;
 
-import javax.swing.JPanel;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.HashSet;

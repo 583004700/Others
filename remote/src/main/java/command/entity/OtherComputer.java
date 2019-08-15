@@ -90,6 +90,11 @@ public class OtherComputer extends Computer implements Runnable{
         }
     }
 
+    @Override
+    public void printMessage(String message) {
+        super.printMessage(message);
+    }
+
     public void connectServer() throws Exception {
         messageSocket = new Socket();
         //messageSocket.bind(new InetSocketAddress(PropertiesConst.operatorPort));//绑定本地端口

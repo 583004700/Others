@@ -24,9 +24,9 @@ public class JavaMethodHandler extends OtherCommandHandler implements Runnable{
         PrintWriter pw = getPrintWriter();
         try {
             String method = command;
-            int lastDot = method.lastIndexOf(".");
             int left = method.indexOf("(");
             int right = method.indexOf(")");
+            int lastDot = method.substring(0,left).lastIndexOf(".");
             String methodName = method.substring(lastDot + 1, left);
             String className = method.substring(0, lastDot);
             String param = method.substring(left + 1, right);

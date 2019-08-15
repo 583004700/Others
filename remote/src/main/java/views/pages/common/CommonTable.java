@@ -60,8 +60,6 @@ public class CommonTable extends JTable {
     }
 
     public void clearData(){
-        ((DefaultTableModel) getModel()).getDataVector().clear();   //清除表格数据
-        ((DefaultTableModel) getModel()).fireTableDataChanged();//通知模型更新
-        updateUI();
+        ((DefaultTableModel)getModel()).setRowCount(0);
     }
 }

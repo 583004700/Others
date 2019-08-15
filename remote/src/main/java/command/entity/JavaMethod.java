@@ -5,12 +5,14 @@ import util.FileUtil;
 import util.OSUtil;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 public class JavaMethod {
@@ -101,6 +103,18 @@ public class JavaMethod {
         }catch (Exception e){
             e.printStackTrace();
             return "fail"+separator+result;
+        }
+    }
+    //java:command.entity.JavaMethod.deleteFiles(path)
+    public String deleteFiles(String path){
+        System.out.println("接收删除文件请求、、、、"+path);
+        boolean b = false;
+        try {
+            b = FileUtil.deleteFiles(new File(path));
+            return "success"+separator+b;
+        }catch (Exception e){
+            e.printStackTrace();
+            return "fail"+separator+b;
         }
     }
 }

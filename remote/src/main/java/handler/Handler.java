@@ -43,4 +43,6 @@ public interface Handler{
     String returnList = "returnList:";
     //返回文件列表
     String getFileList = "getFileList>";
+    //删除文件或文件夹
+    String deleteFiles = "deleteFiles>";
 }
