@@ -58,6 +58,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     }
 
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
     public static Image img = null;
     public static Icon dIcon = null;
     public static Image fImg = null;
@@ -163,12 +164,12 @@ public class RemoteFileListPanel extends Operator implements Runnable {
         tablePanel.add(fileListTable.getTableHeader(), BorderLayout.NORTH);
         // 把 表格内容 添加到容器中心
         tablePanel.add(fileListTable, BorderLayout.CENTER);
-        tablePanel.setSize(screenSize.width/2,screenSize.height - 212);
+        tablePanel.setSize(screenSize.width/2,screenSize.height - 20);
 
         open(currentPath);
 
         JScrollPane jspData = new JScrollPane(fileListTable);
-        jspData.setSize(screenSize.width/2-10, screenSize.height - 212);
+        jspData.setSize(screenSize.width/2-10, screenSize.height - 200);
         jspData.setLocation(0, 30);
 
         Icon icon = dIcon;

@@ -1,12 +1,16 @@
 package views.pages;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
+import javax.swing.JFrame;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 public class FileListFrame extends JFrame{
 
-    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
     private JTabbedPane leftTabbedPane = new JTabbedPane();
     private JTabbedPane rightTabbedPane = new JTabbedPane();
 
@@ -33,6 +37,7 @@ public class FileListFrame extends JFrame{
 
         Container container = this.getContentPane();
         container.add(splitPane);
+
         this.setSize(screenSize);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
