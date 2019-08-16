@@ -1,5 +1,6 @@
 package views.pages;
 
+import handler.Handler;
 import util.FileUtil;
 import views.pages.common.CommonTable;
 
@@ -53,13 +54,18 @@ public class OperatorFileListPanel extends JPanel {
     private final CommonTable fileListTable;
     private DefaultTableModel tableModel;
     private JTextField currentPathText = new JTextField();
+    private FileListFrame fileListFrame;
     //右键菜单
     private JPopupMenu jPopupMenu = new JPopupMenu();
     private JMenuItem cs = new JMenuItem("传输");
     private JMenuItem sx = new JMenuItem("刷新");
     private JMenuItem sc = new JMenuItem("删除");
 
-    public OperatorFileListPanel(final String currentPath){
+    //当前点击传输的文件路径
+    private String currentTrans;
+
+    public OperatorFileListPanel(final String currentPath,FileListFrame fileListFrame){
+        this.fileListFrame = fileListFrame;
         this.setLayout(null);
 
         // 创建内容面板，使用边界布局
@@ -97,7 +103,7 @@ public class OperatorFileListPanel extends JPanel {
                             jPopupMenu.remove(cs);
                         }
                         String fileName = (String) fileListTable.getValueAt(row, 0);
-                        if(!OperatorFileListPanel.this.currentPath.contains("根目录") && !"..".equals(fileName)) {
+                        if(!OperatorFileListPanel.this.currentPath.contains(Handler.root) && !"..".equals(fileName)) {
                             jPopupMenu.add(sc);
                         }else{
                             jPopupMenu.remove(sc);
@@ -159,14 +165,31 @@ public class OperatorFileListPanel extends JPanel {
             }
         });
 
+        cs.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = fileListTable.getSelectedRow();
+                if(row != -1) {
+                    String realPath = (String) fileListTable.getValueAt(row, 4);
+                    OperatorFileListPanel.this.currentTrans = realPath;
+                    RemoteFileListPanel remoteFileListPanel = (RemoteFileListPanel)(OperatorFileListPanel.this.fileListFrame.getRightTabbedPane().getSelectedComponent());
+                    remoteFileListPanel.fileUp();
+                }
+            }
+        });
+
         jPopupMenu.add(sx);
         this.add(jPopupMenu);
+    }
+
+    public void flushList(){
+        this.open(currentPath);
     }
 
     public void loadList(){
         fileListTable.clearData();
         String parentPath = new File(currentPath).getParent();
-        if(!currentPath.contains("根目录")){
+        if(!currentPath.contains(Handler.root)){
             tableModel.addRow(new String[]{"..","","文件夹","",parentPath});
         }
         File[] files = FileUtil.getFileList(currentPathFile);
@@ -213,7 +236,7 @@ public class OperatorFileListPanel extends JPanel {
      */
     public void setCurrentPath(String currentPath) {
         if(currentPath == null){
-            currentPath = "根目录";
+            currentPath = Handler.root;
         }
         this.currentPath = currentPath;
         this.currentPathFile = new File(currentPath);
@@ -238,5 +261,13 @@ public class OperatorFileListPanel extends JPanel {
 
     public void setCurrentPathText(JTextField currentPathText) {
         this.currentPathText = currentPathText;
+    }
+
+    public String getCurrentTrans() {
+        return currentTrans;
+    }
+
+    public void setCurrentTrans(String currentTrans) {
+        this.currentTrans = currentTrans;
     }
 }

@@ -39,7 +39,7 @@ public class OpenSessionFrame extends JFrame {
         String[] l = tableData.split(",");
 
         for(String key : l){
-            if(!cmdPanel.ylj.containsKey(key)){
+            if(!cmdPanel.ylj.containsKey(key) && !key.endsWith("FT:")){
                 tableModel.addRow(new String[]{key});
             }
         }

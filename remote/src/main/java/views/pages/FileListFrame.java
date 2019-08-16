@@ -1,5 +1,7 @@
 package views.pages;
 
+import handler.Handler;
+
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -16,7 +18,7 @@ public class FileListFrame extends JFrame{
 
     public FileListFrame(String key){
 
-        OperatorFileListPanel fileListPanel = new OperatorFileListPanel(System.getProperty("user.dir"));
+        OperatorFileListPanel fileListPanel = new OperatorFileListPanel(System.getProperty("user.dir"),this);
         fileListPanel.setSize(screenSize.width/2,screenSize.height);
 
         JSplitPane splitPane = new JSplitPane();
@@ -31,7 +33,7 @@ public class FileListFrame extends JFrame{
 
         splitPane.setLeftComponent(leftTabbedPane);
 
-        RemoteFileListPanel remoteFileListPanel = new RemoteFileListPanel(key,"根目录",this);
+        RemoteFileListPanel remoteFileListPanel = new RemoteFileListPanel(key, Handler.root,this);
 
         splitPane.setRightComponent(rightTabbedPane);
 

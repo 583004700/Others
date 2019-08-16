@@ -1,5 +1,7 @@
 package util;
 
+import handler.Handler;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
@@ -52,7 +54,7 @@ public class FileUtil {
      * @return
      */
     public static File[] getFileList(File file){
-        if(file.getName().contains("根目录")) {
+        if(file.getName().contains(Handler.root)) {
             FileSystemView fsv = FileSystemView.getFileSystemView();
             // 列出所有windows 磁盘
             File[] fs = File.listRoots();

@@ -4,6 +4,8 @@ package handler;
  * 处理不同的指令类型
  */
 public interface Handler{
+    String root = "根目录";
+
     //命令分隔符
     String separator = ":";
     //cmd指令

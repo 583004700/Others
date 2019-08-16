@@ -60,6 +60,9 @@ public class CommonTable extends JTable {
     }
 
     public void clearData(){
-        ((DefaultTableModel)getModel()).setRowCount(0);
+        DefaultTableModel model = ((DefaultTableModel)getModel());
+        while(model.getRowCount()>0){
+            model.removeRow(model.getRowCount()-1);
+        }
     }
 }
