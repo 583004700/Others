@@ -1,6 +1,7 @@
 package views.pages;
 
 import handler.Handler;
+import util.CmdUtil;
 import util.FileUtil;
 import views.pages.common.CommonTable;
 
@@ -60,6 +61,8 @@ public class OperatorFileListPanel extends JPanel {
     private JMenuItem cs = new JMenuItem("传输");
     private JMenuItem sx = new JMenuItem("刷新");
     private JMenuItem sc = new JMenuItem("删除");
+    private JMenuItem dir = new JMenuItem("打开目录");
+
 
     //当前点击传输的文件路径
     private String currentTrans;
@@ -178,7 +181,20 @@ public class OperatorFileListPanel extends JPanel {
             }
         });
 
+        dir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String path = OperatorFileListPanel.this.currentPath;
+                try {
+                    CmdUtil.execClose("start explorer " + path);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+        });
+
         jPopupMenu.add(sx);
+        jPopupMenu.add(dir);
         this.add(jPopupMenu);
     }
 
