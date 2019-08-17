@@ -185,19 +185,21 @@ public class CMDPanel extends Operator implements Runnable{
             try {
                 result = br.readLine();
                 this.appendContentLn(result);
-                if(result!=null && result.contains(Handler.screenPrintUp)){
-                    //如果是screenPrintUp方法，还需要上传图片到本机
-                    ScreenPrintUpHandler printUpHandler = new ScreenPrintUpHandler(this,result);
-                    ThreadManager.getExecutorService().execute(printUpHandler);
-                }else if(result!=null && result.contains(Handler.receiveSuccess)){
-                    //如果成功接收到文件
-                }else if(result!=null && result.contains("已连接:")){
-                    currentConnectKey = result.replaceAll("已连接:","");
-                    ylj.put(currentConnectKey,currentConnectKey);
-                    this.setName(result);
-                    changeCurrentTabTitle(result);
-                }else if(result.startsWith(Handler.returnList)){
-                    OpenSessionFrame openSessionFrame = new OpenSessionFrame(this,result.replaceAll(Handler.returnList,""));
+                if(result != null) {
+                    if (result.contains(Handler.screenPrintUp)) {
+                        //如果是screenPrintUp方法，还需要上传图片到本机
+                        ScreenPrintUpHandler printUpHandler = new ScreenPrintUpHandler(this, result);
+                        ThreadManager.getExecutorService().execute(printUpHandler);
+                    } else if (result.contains(Handler.receiveSuccess)) {
+                        //如果成功接收到文件
+                    } else if (result.contains("已连接:")) {
+                        currentConnectKey = result.replaceAll("已连接:", "");
+                        ylj.put(currentConnectKey, currentConnectKey);
+                        this.setName(result);
+                        changeCurrentTabTitle(result);
+                    } else if (result.startsWith(Handler.returnList)) {
+                        OpenSessionFrame openSessionFrame = new OpenSessionFrame(this, result.replaceAll(Handler.returnList, ""));
+                    }
                 }
             }catch (SocketTimeoutException s){
                 result = "";
@@ -210,6 +212,7 @@ public class CMDPanel extends Operator implements Runnable{
                 this.appendContentLn("连接已断开，请重新连接");
                 ylj.remove(currentConnectKey);
                 currentConnectKey = "";
+                reConnect();
                 break;
             }
         }
