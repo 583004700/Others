@@ -147,7 +147,7 @@ public class CMDPanel extends Operator implements Runnable{
                     }
                 }
                 if(e.isControlDown() && e.getKeyCode()==KeyEvent.VK_ALT){
-                    reConnect();
+                    closeConnection();
                 }
             }
         });

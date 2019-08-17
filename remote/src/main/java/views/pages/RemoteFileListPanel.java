@@ -1,12 +1,10 @@
 package views.pages;
 
 import com.alibaba.fastjson.JSON;
-import command.PropertiesConst;
 import command.entity.FileItem;
 import command.entity.Operator;
 import handler.Handler;
 import thread.ThreadManager;
-import util.IOUtil;
 import views.pages.common.CommonTable;
 
 import javax.swing.Icon;
@@ -186,7 +184,11 @@ public class RemoteFileListPanel extends Operator implements Runnable {
         sx.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                open(RemoteFileListPanel.this.currentPath);
+                if("未连接".equals(RemoteFileListPanel.this.getName())){
+                    RemoteFileListPanel.this.submitCommand(Handler.OPERATE+Handler.separator+RemoteFileListPanel.this.key+"FT:");
+                }else {
+                    open(RemoteFileListPanel.this.currentPath);
+                }
             }
         });
 
@@ -217,6 +219,11 @@ public class RemoteFileListPanel extends Operator implements Runnable {
 
         jPopupMenu.add(sx);
         this.add(jPopupMenu);
+    }
+
+    public void reConnect(){
+        closeConnection();
+        connect();
     }
 
     public void loadList(List<FileItem> files){
@@ -370,47 +377,48 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     }
 
     public void run() {
-        BufferedReader br = null;
-        br = IOUtil.wrapBufferedReader(getInputStream(), PropertiesConst.appEncoding);
+        BufferedReader br = getBufferedReader();
         while(true){
             String result = null;
             try {
                 result = br.readLine();
                 System.out.println("result:"+result);
-                if(result!=null && result.contains(Handler.receiveSuccess)){
-                    //如果成功接收到文件
-                    String upPath = result.replaceAll(Handler.separator+Handler.receiveSuccess,"");
-                    JOptionPane.showMessageDialog(RemoteFileListPanel.this,"文件成功上传到"+upPath);
-                    flushList();
-                }else if(result!=null && result.contains("已连接:")){
-                    this.setName(result);
-                    changeCurrentTabTitle(result);
-                }else if(result.startsWith(Handler.getFileList)){
-                    //获取到文件列表
-                    String[] resultStr = result.split(">");
-                    boolean success = "success".equals(resultStr[2]);
-                    if(success){
-                        String listStr = resultStr[3];
-                        List<FileItem> fileItems = JSON.parseArray(listStr,FileItem.class);
-                        loadList(fileItems);
-                        System.out.println(listStr);
-                    }else{
-                        JOptionPane.showMessageDialog(RemoteFileListPanel.this,"获取文件列表失败");
+                if(result != null) {
+                    if (result.contains(Handler.receiveSuccess)) {
+                        //如果成功接收到文件
+                        String upPath = result.replaceAll(Handler.separator + Handler.receiveSuccess, "");
+                        JOptionPane.showMessageDialog(RemoteFileListPanel.this, "文件成功上传到" + upPath);
+                        flushList();
+                    } else if (result.contains("已连接:")) {
+                        this.setName(result);
+                        changeCurrentTabTitle(result);
+                    } else if (result.startsWith(Handler.getFileList)) {
+                        //获取到文件列表
+                        String[] resultStr = result.split(">");
+                        boolean success = "success".equals(resultStr[2]);
+                        if (success) {
+                            String listStr = resultStr[3];
+                            List<FileItem> fileItems = JSON.parseArray(listStr, FileItem.class);
+                            loadList(fileItems);
+                            System.out.println(listStr);
+                        } else {
+                            JOptionPane.showMessageDialog(RemoteFileListPanel.this, "获取文件列表失败");
+                        }
+                    } else if (result.startsWith(Handler.deleteFiles)) {
+                        System.out.println("删除文件。。。" + result);
+                        String[] resultStr = result.split(">");
+                        boolean success = "success".equals(resultStr[2]);
+                        String b = "";
+                        if (success) {
+                            b = resultStr[3];
+                        }
+                        if ("true".equals(b)) {
+                            JOptionPane.showMessageDialog(RemoteFileListPanel.this, "删除成功！");
+                        } else {
+                            JOptionPane.showMessageDialog(RemoteFileListPanel.this, "删除失败！");
+                        }
+                        open(RemoteFileListPanel.this.currentPath);
                     }
-                }else if(result.startsWith(Handler.deleteFiles)){
-                    System.out.println("删除文件。。。"+result);
-                    String[] resultStr = result.split(">");
-                    boolean success = "success".equals(resultStr[2]);
-                    String b = "";
-                    if(success) {
-                        b = resultStr[3];
-                    }
-                    if("true".equals(b)){
-                        JOptionPane.showMessageDialog(RemoteFileListPanel.this,"删除成功！");
-                    }else{
-                        JOptionPane.showMessageDialog(RemoteFileListPanel.this,"删除失败！");
-                    }
-                    open(RemoteFileListPanel.this.currentPath);
                 }
             }catch (SocketTimeoutException s){
                 result = "";
@@ -420,7 +428,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
             if(result == null){
                 this.setName("未连接");
                 changeCurrentTabTitle("未连接");
-                key = "";
+                reConnect();
                 break;
             }
         }
