@@ -20,6 +20,7 @@ public class Operator extends Computer{
     private OutputStream outputStream;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
+    private String otherKey;
 
     private String operatorKey = UUID.randomUUID().toString();
 
@@ -118,5 +119,13 @@ public class Operator extends Computer{
 
     public void setBufferedReader(BufferedReader bufferedReader) {
         this.bufferedReader = bufferedReader;
+    }
+
+    public String getOtherKey() {
+        return otherKey;
+    }
+
+    public void setOtherKey(String otherKey) {
+        this.otherKey = otherKey;
     }
 }

@@ -56,7 +56,6 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             downPath = newDownPath;
         }
         fileName = fileName.replaceAll(" ","空格");
-        downPath = downPath.replaceAll(" ","空格");
         downPathFile = new File(downPath);
         if(!downPathFile.exists()){
             downPathFile.mkdirs();

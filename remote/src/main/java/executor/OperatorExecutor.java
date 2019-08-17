@@ -15,7 +15,6 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
     private Operator operator;
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;
-    private static String otherKey;
     private static Set<String> ignoreKeys;
 
     public OperatorExecutor(Operator operator, String completeCommand) {
@@ -31,22 +30,22 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
     public Handler getHandler(){
         Handler handler = null;
         String prefix = getPrefix();
-        if(!ignoreKeys.contains(getPrefix()) && getOtherKey() == null){
+        if(!ignoreKeys.contains(getPrefix()) && getOperator().getOtherKey() == null){
             getOperator().printMessage("请先选择连接");
             return null;
         }
         if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix) || Handler.OPERATE.equals(prefix) || Handler.LIST.equals(prefix)){
             if(Handler.OPERATE.equals(getPrefix())){
-                this.setOtherKey(getCommand());
+                this.getOperator().setOtherKey(getCommand());
             }
             printWriter.println(getCompleteCommand());
             printWriter.flush();
         }else if(Handler.DOWNFILE.equals(prefix)){
-            handler = new DownFileHandler(otherKey,getCompleteCommand(),this);
+            handler = new DownFileHandler(getOperator().getOtherKey(),getCompleteCommand(),this);
         }else if(Handler.UPFILE.equals(prefix)){
-            handler = new UpFileHandler(getCompleteCommand(),this,getOtherKey());
+            handler = new UpFileHandler(getCompleteCommand(),this,getOperator().getOtherKey());
         }else if(Handler.CMDBEGIN.equals(prefix)){
-            handler = new CmdSendIngHandler(this,getOtherKey(),getCompleteCommand());
+            handler = new CmdSendIngHandler(this,getOperator().getOtherKey(),getCompleteCommand());
         }
         return handler;
     }
@@ -85,14 +84,6 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
 
     public void setPrintWriter(PrintWriter printWriter) {
         this.printWriter = printWriter;
-    }
-
-    public static String getOtherKey() {
-        return otherKey;
-    }
-
-    public static void setOtherKey(String otherKey) {
-        OperatorExecutor.otherKey = otherKey;
     }
 
     public static Set<String> getIgnoreKeys() {

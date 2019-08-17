@@ -23,6 +23,7 @@ public class CMDFrame extends JFrame {
         fileMenu.setSize(100,30);
         JMenuItem openMenuItem = new JMenuItem(" 选择连接 ");
         final JMenuItem fileCsMenuItem = new JMenuItem(" 文件传输 ");
+        JMenuItem screenTr = new JMenuItem("截图上传");
         openMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -35,10 +36,10 @@ public class CMDFrame extends JFrame {
         fileCsMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String key = getCurrentSelectTab().getCurrentConnectKey();
                 if(getCurrentSelectTab() == null || "".equals(getCurrentSelectTab().getCurrentConnectKey())) {
                     JOptionPane.showMessageDialog(CMDFrame.this, "请先选中连接!");
                 }else{
+                    String key = getCurrentSelectTab().getCurrentConnectKey();
                     if(fileListFrameMap.containsKey(key)) {
                         FileListFrame fileListFrame = fileListFrameMap.get(key);
                         fileListFrame.show();
@@ -50,8 +51,20 @@ public class CMDFrame extends JFrame {
                 }
             }
         });
+        screenTr.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(getCurrentSelectTab() == null || "".equals(getCurrentSelectTab().getCurrentConnectKey())) {
+                    JOptionPane.showMessageDialog(CMDFrame.this, "请先选中连接!");
+                }else{
+                    String key = getCurrentSelectTab().getCurrentConnectKey();
+                    getCurrentSelectTab().submitCommand("java:command.entity.JavaMethod.screenPrintUp(null,null)");
+                }
+            }
+        });
         fileMenu.add(openMenuItem);
         fileMenu.add(fileCsMenuItem);
+        fileMenu.add(screenTr);
         jMenuBar.add(fileMenu);
 
         Container container = this.getContentPane();
