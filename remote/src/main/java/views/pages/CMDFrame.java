@@ -7,19 +7,21 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CMDFrame extends JFrame {
     private JTabbedPane jTabbedPane = new JTabbedPane();
 
     private JMenuBar jMenuBar = new JMenuBar();
 
-    private FileListFrame fileListFrame;
+    private static Map<String,FileListFrame> fileListFrameMap = new ConcurrentHashMap<String, FileListFrame>();
 
     public CMDFrame(){
 
         JMenu fileMenu = new JMenu("   文件   ");
         fileMenu.setSize(100,30);
-        JMenuItem openMenuItem = new JMenuItem(" 打开 ");
+        JMenuItem openMenuItem = new JMenuItem(" 选择连接 ");
         final JMenuItem fileCsMenuItem = new JMenuItem(" 文件传输 ");
         openMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -33,15 +35,17 @@ public class CMDFrame extends JFrame {
         fileCsMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String key = getCurrentSelectTab().getCurrentConnectKey();
                 if(getCurrentSelectTab() == null || "".equals(getCurrentSelectTab().getCurrentConnectKey())) {
                     JOptionPane.showMessageDialog(CMDFrame.this, "请先选中连接!");
                 }else{
-                    //getCurrentSelectTab().reConnect();
-                    //JOptionPane.showMessageDialog(CMDFrame.this, "打开文件传输!"+getCurrentSelectTab().getCurrentConnectKey());
-                    if(fileListFrame == null) {
-                        fileListFrame = new FileListFrame(getCurrentSelectTab().getCurrentConnectKey());
-                    }else{
+                    if(fileListFrameMap.containsKey(key)) {
+                        FileListFrame fileListFrame = fileListFrameMap.get(key);
                         fileListFrame.show();
+
+                    }else{
+                        FileListFrame fileListFrame = new FileListFrame(key);
+                        fileListFrameMap.put(key,fileListFrame);
                     }
                 }
             }

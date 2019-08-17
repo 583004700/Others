@@ -15,8 +15,10 @@ public class FileListFrame extends JFrame{
 
     private JTabbedPane leftTabbedPane = new JTabbedPane();
     private JTabbedPane rightTabbedPane = new JTabbedPane();
+    private String key;
 
     public FileListFrame(String key){
+        this.key = key;
 
         OperatorFileListPanel fileListPanel = new OperatorFileListPanel(System.getProperty("user.dir"),this);
         fileListPanel.setSize(screenSize.width/2,screenSize.height);
@@ -70,5 +72,13 @@ public class FileListFrame extends JFrame{
 
     public void setRightTabbedPane(JTabbedPane rightTabbedPane) {
         this.rightTabbedPane = rightTabbedPane;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
