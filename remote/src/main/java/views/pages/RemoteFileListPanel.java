@@ -1,10 +1,12 @@
 package views.pages;
 
 import com.alibaba.fastjson.JSON;
+import command.PropertiesConst;
 import command.entity.FileItem;
 import command.entity.Operator;
 import handler.Handler;
 import thread.ThreadManager;
+import util.IOUtil;
 import views.pages.common.CommonTable;
 
 import javax.swing.Icon;
@@ -377,7 +379,8 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     }
 
     public void run() {
-        BufferedReader br = getBufferedReader();
+        BufferedReader br = null;
+        br = IOUtil.wrapBufferedReader(getInputStream(), PropertiesConst.appEncoding);
         while(true){
             String result = null;
             try {

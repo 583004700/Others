@@ -14,7 +14,7 @@ import java.net.Socket;
 public class UpFileHandler extends OtherCommandHandler implements Runnable{
     private volatile boolean success = true;
     private volatile boolean finish = false;
-    private long timeOut = 18000000;
+    private long timeOut = 180000;
     private Computer computer;
 
     private String key;

@@ -23,7 +23,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
     private volatile boolean success = true;
     private volatile boolean finish = false;
     private volatile Future future;
-    private long timeOut = 18000000;
+    private long timeOut = 180000;
     private Computer computer;
 
     public boolean cancel(){

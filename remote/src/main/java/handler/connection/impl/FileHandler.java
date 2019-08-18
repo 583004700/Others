@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Date;
 
 public class FileHandler extends ConnectionHandler implements Runnable{
 
@@ -24,7 +23,7 @@ public class FileHandler extends ConnectionHandler implements Runnable{
     private InputStream downInStream;
 
     private Socket otherSocket;
-    private final static long timeOut = 18000000;
+    private final static long timeOut = 180000;
     private String fileKey;
 
     public FileHandler(SocketServer socketServer,String completeCommand) {

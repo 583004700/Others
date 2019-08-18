@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class SocketServer {
+public class SocketServer implements Runnable{
     static class HeartThread implements Runnable{
         @Override
         public void run() {
@@ -48,35 +48,43 @@ public class SocketServer {
     private static ConcurrentHashMap<String, Socket> registerOperators = new ConcurrentHashMap<String, Socket>();
     private Socket socket;
 
-    public static void main(String[] args) throws Exception{
+    private static ServerSocket serverSocket;
 
-        ServerSocket serverSocket = new ServerSocket(PropertiesConst.serverLocalPort);
+    public static void main(String[] args) throws Exception{
+        serverSocket = new ServerSocket(PropertiesConst.serverLocalPort);
         while (true) {
             try {
                 Socket socket = serverSocket.accept();
-                String inetAddressStr = socket.getInetAddress().toString();
-                System.out.println(inetAddressStr);
-                InputStream in = socket.getInputStream();
-                String str = IOUtil.readLinStr(in, PropertiesConst.appEncoding);
-                if(str == null){
-                    System.out.println("null");
-                }else {
-                    System.out.println("SocketServer:" + str);
-
-                    SocketServer socketServer = new SocketServer();
-                    socketServer.setSocket(socket);
-
-                    ServerExecutor serverExecutor = new ServerExecutor(str,socketServer);
-                    ThreadManager.getExecutorService().execute(serverExecutor);
-                    System.out.println("-----------------------------------------------");
-                }
+                SocketServer socketServer = new SocketServer();
+                socketServer.socket = socket;
+                ThreadManager.getExecutorService().submit(socketServer);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void registerSocket(String key,Socket value){
+    @Override
+    public void run() {
+        try {
+            String inetAddressStr = socket.getInetAddress().toString();
+            System.out.println(inetAddressStr);
+            InputStream in = socket.getInputStream();
+            String str = IOUtil.readLinStr(in, PropertiesConst.appEncoding);
+            if (str == null) {
+                System.out.println("null");
+            } else {
+                System.out.println("SocketServer:" + str);
+                ServerExecutor serverExecutor = new ServerExecutor(str, this);
+                ThreadManager.getExecutorService().execute(serverExecutor);
+                System.out.println("-----------------------------------------------");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void registerSocket(String key, Socket value){
         registerSockets.put(key,value);
     }
 
