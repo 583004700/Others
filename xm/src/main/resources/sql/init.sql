@@ -1,7 +1,7 @@
 insert into users(id,user_name,password,real_name)
-values(1,'zhuwb','123','朱未斌');
+values(1,'zhangsan','123','张三Oracle');
 insert into users(id,user_name,password,real_name)
-values(2,'zzx','123','钟子祥');
+values(2,'lisi','123','李四Oralce');
 
 insert into type(id,name)
 values(1,'发票');

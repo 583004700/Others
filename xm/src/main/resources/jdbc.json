@@ -5,7 +5,7 @@
     "jdbcDriverClassName": "oracle.jdbc.driver.OracleDriver",
     "jdbcUrl": "jdbc:oracle:thin:@127.0.0.1:1521:orcl",
     "jdbcUsername": "scott",
-    "jdbcPassword": "root"
+    "jdbcPassword": "scott"
   },
   {
     "key": "dataSource1",
