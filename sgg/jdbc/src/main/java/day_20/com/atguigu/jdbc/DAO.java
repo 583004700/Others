@@ -195,7 +195,6 @@ public class DAO {
 			JDBCTools.releaseDB(resultSet, preparedStatement, connection);
 		}
 		//2. 取得结果
-		
 		return null;
 	}
 

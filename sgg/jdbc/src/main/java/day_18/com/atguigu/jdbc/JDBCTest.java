@@ -143,7 +143,6 @@ public class JDBCTest {
 				if(statement != null)
 					statement.close();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally{
 				//2. 关闭连接

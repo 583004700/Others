@@ -25,8 +25,8 @@ public class BeanUtilsTest {
 		Object object = new Student();
 		System.out.println(object); 
 		
-		BeanUtils.setProperty(object, "idCard2", "211121196509091876");
-		System.out.println(object); 
+		BeanUtils.setProperty(object, "idCard", "211121196509091876");
+		System.out.println(((Student) object).getIdCard());
 		
 	}
 
