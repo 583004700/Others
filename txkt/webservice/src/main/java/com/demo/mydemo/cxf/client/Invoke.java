@@ -1,5 +1,6 @@
 package com.demo.mydemo.cxf.client;
 
+import com.demo.mydemo.cxf.server.Student;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
@@ -35,6 +36,9 @@ public class Invoke {
             // invoke("方法名",参数1,参数2,参数3....);
             objects = client.invoke("sayX", "动态调用小东西");
             System.out.println("返回数据:" + objects[0]);
+            System.out.println("返回数据类型:"+objects[0].getClass());
+            Student student = (Student) objects[0];
+            System.out.println(student.getName());
         } catch (java.lang.Exception e) {
             e.printStackTrace();
         }
