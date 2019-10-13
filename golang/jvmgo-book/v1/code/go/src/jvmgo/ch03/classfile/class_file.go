@@ -73,9 +73,12 @@ func (self *ClassFile) readAndCheckMagic(reader *ClassReader) {
 	}
 }
 
+//ch03 -cp D:/IdeaProjects/sgg/out/production/mian two.Main
+
 func (self *ClassFile) readAndCheckVersion(reader *ClassReader) {
 	self.minorVersion = reader.readUint16()
 	self.majorVersion = reader.readUint16()
+	fmt.Printf("self.majorVersion%X", self.majorVersion)
 	switch self.majorVersion {
 	case 45:
 		return
