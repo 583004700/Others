@@ -26,7 +26,7 @@ public class PersonTest {
         Person person = new Person();
         person.setName("张三");
         person.setId(5);
-        String sql = new EntityProvider().update("name","id",person);
+        String sql = new EntityProvider().update(person,"name","id");
         System.out.println(sql);
     }
 
