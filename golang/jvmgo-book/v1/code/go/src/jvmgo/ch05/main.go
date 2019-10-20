@@ -10,16 +10,15 @@ func main() {
 
 	if cmd.versionFlag {
 		fmt.Println("version 0.0.1")
-	} else if cmd.helpFlag || cmd.class == "" {
-		printUsage()
 	} else {
 		startJVM(cmd)
 	}
 }
 
 func startJVM(cmd *Cmd) {
-	cp := classpath.Parse(cmd.XjreOption, cmd.cpOption)
-	className := strings.Replace(cmd.class, ".", "/", -1)
+	//cp := classpath.Parse(cmd.XjreOption, cmd.cpOption)
+	cp := classpath.Parse("C:\\Program Files\\Java\\jre1.8.0_121", "D:\\IdeaProjects\\golang\\out")
+	className := strings.Replace("jvmgo.book.ch05.GaussTest", ".", "/", -1)
 	cf := loadClass(className, cp)
 	mainMethod := getMainMethod(cf)
 	if mainMethod != nil {
