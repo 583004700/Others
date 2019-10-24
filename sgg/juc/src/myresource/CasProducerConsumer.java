@@ -9,34 +9,27 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 class Contain{
     private static int count;
     private static int[] datas = new int[5];
-    private static ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    private static Lock readLock = readWriteLock.readLock();
-    private static Lock writeLock = readWriteLock.writeLock();
     private static ThreadLocal<Integer> sizeThreadL = new ThreadLocal<Integer>();
     private static AtomicReference<Integer> sizeReference = new AtomicReference<Integer>(0);
     public void incre() throws InterruptedException {
-        //writeLock.lock();
-        sizeThreadL.set(sizeReference.get());
         if(sizeReference.get() < datas.length) {
+            sizeThreadL.set(sizeReference.get());
             if (sizeReference.compareAndSet(sizeThreadL.get(), sizeReference.get() + 1)) {
                 datas[sizeThreadL.get()] = count;
                 System.out.println("生产数据:" + count);
                 count++;
             }
         }
-        //writeLock.unlock();
     }
     public void sub() throws InterruptedException {
-        //readLock.lock();
-        sizeThreadL.set(sizeReference.get());
         if(sizeReference.get() > 0) {
+            sizeThreadL.set(sizeReference.get());
             if (sizeReference.compareAndSet(sizeThreadL.get(), sizeReference.get() - 1)) {
                 int data = datas[sizeThreadL.get()-1];
                 //这里是安全的
                 System.out.println("线程：" + Thread.currentThread() + new Date() + "消费数据:" + data);
             }
         }
-        //readLock.unlock();
     }
 }
 
