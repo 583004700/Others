@@ -1,8 +1,10 @@
 package com.atguigu.springdata;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
-import org.springframework.data.repository.RepositoryDefinition;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
@@ -25,7 +27,8 @@ import java.util.List;
  * 若需要使用级联属性, 则属性之间使用 _ 进行连接.
  */
 //@RepositoryDefinition(domainClass = Person.class,idClass = Integer.class)
-public interface PersonRepository extends Repository<Person,Integer> {
+public interface PersonRepository extends JpaRepository<Person,Integer>,
+        JpaSpecificationExecutor<Person>,PersonDao {
     Person getByLastName(String lastName);
 
     //where lastName like ?% and id < ?
@@ -58,4 +61,8 @@ public interface PersonRepository extends Repository<Person,Integer> {
 
     @Query(value = "select count(id) from jpa_persons",nativeQuery = true)
     long getTotalCount();
+
+    @Modifying
+    @Query("update Person p set p.email = :email where p.id = :id")
+    void updatePersonEmail(@Param("id") Integer id,@Param("email") String email);
 }
