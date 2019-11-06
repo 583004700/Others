@@ -10,8 +10,8 @@ import com.atguigu.jpa.spring.entities.Person;
 @Repository
 public class PersonDao {
 
-	//ÈçºÎ»ñÈ¡µ½ºÍµ±Ç°ÊÂÎñ¹ØÁªµÄ EntityManager ¶ÔÏóÄØ ?
-	//Í¨¹ı @PersistenceContext ×¢½âÀ´±ê¼Ç³ÉÔ±±äÁ¿!
+	//å¦‚ä½•è·å–åˆ°å’Œå½“å‰äº‹åŠ¡å…³è”çš„ EntityManager å¯¹è±¡å‘¢ ?
+	//é€šè¿‡ @PersistenceContext æ³¨è§£æ¥æ ‡è®°æˆå‘˜å˜é‡!
 	@PersistenceContext
 	private EntityManager entityManager;
 	
