@@ -2,21 +2,17 @@ package com.atguigu.shiro.realms;
 
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
-import java.util.HashSet;
-
-public class ShiroRealm extends AuthorizingRealm {
+public class SecondRealm extends AuthenticatingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        System.out.println("doGetAuthenticationInfo:"+token);
-        System.out.println("2.token:"+token.hashCode());
+        System.out.println("SecondRealm.doGetAuthenticationInfo():"+token);
         //将AuthenticationToken转换为UsernamePasswordToken
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
         String username = upToken.getUsername();
@@ -34,38 +30,22 @@ public class ShiroRealm extends AuthorizingRealm {
         Object credentials = "";
         String realmName = super.getName();
         if("admin".equals(username)){
-            credentials = "038bdaf98f2037b31f1e75b5b4c9b26e";
+            credentials = "ce2f6417c7e1d32c1d81a797ee0b499f87c5de06---";
         }else if("user".equals(username)){
-            credentials = "098d2c478e9c11555ce2823231e02ec1";
+            credentials = "073d4c3ae812935f23cb3f2a71943f49e082a718---";
         }
         ByteSource credentialsSalt = ByteSource.Util.bytes(username);
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(principal,credentials,credentialsSalt,realmName);
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo("SecondRealm",credentials,credentialsSalt,realmName);
         return info;
     }
 
     public static void main(String[] args) {
-        String hashAlgorithmName = "MD5";
+        String hashAlgorithmName = "SHA1";
         Object credentials = "123456";
-        Object salt = "user";
+        Object salt = "admin";
         int hashIterations = 1024;
         Object result = new SimpleHash(hashAlgorithmName,credentials,salt,hashIterations);
         System.out.println(result);
     }
 
-    //用于授权的方法
-    @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        System.out.println("doGetAuthorizationInfo...");
-        //1.从PrincipalCollection中获取用户登录信息,跟realm的配置顺序有关，只取出第一个realm(ShiroRealm.doGetAuthenticationInfo())返回的值
-        Object principal = principalCollection.getPrimaryPrincipal();
-        //2.利用登录信息来获取用户对应角色或权限
-        HashSet<String> roles = new HashSet<String>();
-        roles.add("user");
-        if("admin".equals(principal)){
-            roles.add("admin");
-        }
-        //3.创建SimpleAuthorizationInfo，并设置其roles属性
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(roles);
-        return info;
-    }
 }
