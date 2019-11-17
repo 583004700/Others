@@ -10,6 +10,13 @@
     <modules>
         <module>microservice-api</module>
         <module>microservice-provider-dept-8001</module>
+        <module>microservice-consumer-dept-80</module>
+        <module>microservice-eureka-7001</module>
+        <module>microservice-eureka-7002</module>
+        <module>microservice-eureka-7003</module>
+        <module>microservice-provider-dept-8002</module>
+        <module>microservice-provider-dept-8003</module>
+        <module>microservice-consumer-dept-feign</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -21,6 +28,28 @@
         <log4j.version>1.2.17</log4j.version>
         <lombok.version>1.16.18</lombok.version>
     </properties>
+
+    <build>
+        <finalName>microservicecloud</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <delimiters>
+                        <delimit>$</delimit>
+                    </delimiters>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencyManagement>
         <dependencies>
