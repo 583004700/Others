@@ -1,0 +1,5 @@
+1.启动/关闭/重启    bin目录下执行./activemq start/stop/restart 默认端口是61616
+2.带日志启动     ./activemq start > runmq.log
+
+activemq控制台：
+    http://192.168.33.13:8161   前台界面    默认用户名密码：admin/admin
