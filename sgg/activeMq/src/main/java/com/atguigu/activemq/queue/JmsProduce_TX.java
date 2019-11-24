@@ -4,10 +4,16 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.*;
+import javax.jms.Connection;
+import javax.jms.DeliveryMode;
+import javax.jms.MapMessage;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
-public class JmsProduce {
-    final static Logger LOG = LoggerFactory.getLogger(JmsProduce.class);
+public class JmsProduce_TX {
+    final static Logger LOG = LoggerFactory.getLogger(JmsProduce_TX.class);
 
     public static final String ACTIVEMQ_URL = "tcp://192.168.33.13:61616";
     public static final String QUEUE_NAME = "queue01";
@@ -18,7 +24,7 @@ public class JmsProduce {
         Connection connection = activeMQConnectionFactory.createConnection();
         connection.start();
         LOG.info("启动成功");
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
 
         Queue queue = session.createQueue(QUEUE_NAME);
         MessageProducer producer = session.createProducer(queue);
@@ -29,10 +35,11 @@ public class JmsProduce {
             producer.send(textMessage);
             textMessage.setStringProperty("c01","vip");
 
-            MapMessage mapMessage = session.createMapMessage();
-            mapMessage.setString("k1","v");
-            producer.send(mapMessage);
         }
+        //如果开启了事务，需要提交
+        session.commit();
+        //如果有异常，可以使用rollback回滚
+        //session.rollback();
         producer.close();
         connection.close();
 

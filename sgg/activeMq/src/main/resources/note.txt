@@ -1,4 +1,5 @@
 1.启动/关闭/重启    bin目录下执行./activemq start/stop/restart 默认端口是61616
+    ./activemq start xbean:file:/app/activemq/conf/activemq02.xml   指定配置文件启动
 2.带日志启动     ./activemq start > runmq.log
 
 activemq控制台：
