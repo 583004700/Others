@@ -9,7 +9,8 @@ import javax.jms.*;
 public class JmsConsumer {
     final static Logger LOG = LoggerFactory.getLogger(JmsConsumer.class);
 
-    public static final String ACTIVEMQ_URL = "tcp://192.168.33.13:61616";
+    //public static final String ACTIVEMQ_URL = "tcp://192.168.33.13:61616";
+    public static final String ACTIVEMQ_URL = "nio://192.168.33.13:61618";
     public static final String QUEUE_NAME = "queue01";
 
     public static void main(String[] args) throws Exception {
