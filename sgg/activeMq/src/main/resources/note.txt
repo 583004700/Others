@@ -22,3 +22,5 @@ activemq控制台：
     <property name="maxTotal" value="200" />
     <property name="poolPreparedStatements" value="true" />
 </bean>
+
+默认会消息会重发6次，如果6次消费失败(未commit或签收)，则会放到死信队列中
