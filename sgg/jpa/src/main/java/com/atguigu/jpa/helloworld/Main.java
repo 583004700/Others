@@ -1,9 +1,14 @@
 package com.atguigu.jpa.helloworld;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.sql.DataSource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,5 +36,9 @@ public class Main {
         entityTransaction.commit();
         entityManager.close();
         entityManagerFactory.close();
+
+        LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        localContainerEntityManagerFactoryBean.setPersistenceXmlLocation("a.xml");
+
     }
 }
