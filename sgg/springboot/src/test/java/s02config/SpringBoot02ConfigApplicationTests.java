@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import s02config.bean.Person;
+import s02config.config.MyAppConfig;
+
 /**
  * SpringBoot单元测试;
  *
@@ -20,6 +22,8 @@ public class SpringBoot02ConfigApplicationTests {
 
 	@Autowired
 	Person person;
+	@Autowired
+	MyAppConfig myAppConfig;
 
 	@Autowired
 	ApplicationContext ioc;
@@ -33,7 +37,8 @@ public class SpringBoot02ConfigApplicationTests {
 
 	@Test
 	public void contextLoads() {
-		System.out.println(person);
+		System.out.println("person:"+person);
+		System.out.println("myAppConfig:"+myAppConfig);
 	}
 
 }
