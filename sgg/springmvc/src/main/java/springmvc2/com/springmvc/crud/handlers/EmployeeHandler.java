@@ -80,8 +80,10 @@ public class EmployeeHandler {
         return "list";
     }
 
+    //初始化绑定
     @InitBinder
     public void initBinder(WebDataBinder binder){
+        //设置不绑定的字段，请求中有参数时也不会绑定到变量
         binder.setDisallowedFields("lastName");
     }
 }
