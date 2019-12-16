@@ -11,6 +11,8 @@ public class NIOByteBufferPutGet {
         buffer.putChar('尚');
         buffer.putShort((short) 4);
 
+        buffer.putDouble(2.3);
+
         //取出
         buffer.flip();
         System.out.println();
