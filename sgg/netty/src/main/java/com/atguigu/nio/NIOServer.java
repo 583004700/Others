@@ -1,14 +1,16 @@
 package com.atguigu.nio;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
 public class NIOServer {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         InetSocketAddress inetSocketAddress = new InetSocketAddress(7000);
         serverSocketChannel.bind(inetSocketAddress);
@@ -17,7 +19,7 @@ public class NIOServer {
 
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         //keys是所有注册的selectionKey
-        System.out.println("keys"+selector.keys());
+        System.out.println("keys:"+selector.keys());
 
         while(true){
             if(selector.select(1000) == 0){
@@ -29,7 +31,7 @@ public class NIOServer {
             Iterator<SelectionKey> iterator = selectionKeys.iterator();
             while(iterator.hasNext()){
                 SelectionKey selectionKey = iterator.next();
-                System.out.println("selectionKey"+selectionKey);
+                System.out.println("selectionKey:"+selectionKey);
                 if(selectionKey.isAcceptable()){
                     SocketChannel socketChannel = serverSocketChannel.accept();
                     socketChannel.configureBlocking(false);
@@ -38,6 +40,7 @@ public class NIOServer {
                     SocketChannel channel = (SocketChannel)selectionKey.channel();
                     ByteBuffer buffer = (ByteBuffer)selectionKey.attachment();
                     long l = channel.read(buffer);
+                    //Thread.sleep(20000);
                     System.out.println("form 客户端:"+new String(buffer.array(),0,(int)l));
                 }
                 iterator.remove();

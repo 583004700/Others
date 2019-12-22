@@ -1,4 +1,4 @@
-package com.atguigu.netty;
+package com.atguigu.netty.simple;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
