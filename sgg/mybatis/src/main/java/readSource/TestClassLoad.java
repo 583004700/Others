@@ -1,6 +1,8 @@
 package readSource;
 
 
+import mybatis1.helloWorld.Employee;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -94,5 +96,8 @@ public class TestClassLoad {
         System.out.println(mcl.getParent());
         System.out.println(obj);
         System.out.println(obj.getClass().getClassLoader());
+        //加载器不同，所以即使是相同的类，也不会返回 true
+        System.out.println(obj instanceof Employee);
+        System.out.println(Employee.class.getClassLoader());
     }
 }
