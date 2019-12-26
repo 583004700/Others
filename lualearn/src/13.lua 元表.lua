@@ -186,6 +186,7 @@ mytable = setmetatable({10}, {
         return sum
     end
 })
+
 newtable = {10,20,30}
 print(mytable(newtable))
 
