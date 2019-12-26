@@ -38,10 +38,11 @@ table
 我们可以在使用
 lua
 命令进入交互模式查看：]]
-other = { foo = 3 }
+other = { foo = 3, f = function(v) print(v) end }
 t = setmetatable({}, { __index = other })
 print(t.foo)
 print(t.bar)
+print(t.f("fffff"))
 
 --[[如果__index包含一个函数的话，Lua就会调用那个函数，table和键会作为参数传递给函数。
 
