@@ -17,7 +17,7 @@ func main() {
 
 func startJVM(cmd *Cmd) {
 	//cp := classpath.Parse(cmd.XjreOption, cmd.cpOption)
-	cp := classpath.Parse("C:\\Program Files\\Java\\jre1.8.0_121", "D:\\IdeaProjects\\golang\\out")
+	cp := classpath.Parse("C:\\Program Files\\Java\\jre1.8.0_121", "E:\\IdeaProjects\\golang\\out")
 	className := strings.Replace("jvmgo.book.ch05.GaussTest", ".", "/", -1)
 	cf := loadClass(className, cp)
 	mainMethod := getMainMethod(cf)

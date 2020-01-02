@@ -33,6 +33,8 @@ func loop(thread *rtda.Thread, bytecode []byte) {
 	reader := &base.BytecodeReader{}
 
 	for {
+		fmt.Printf("Execute before%v\n", frame.LocalVars())
+		fmt.Printf("Execute before%v\n", frame.OperandStack())
 		pc := frame.NextPC()
 		thread.SetPC(pc)
 
@@ -46,5 +48,7 @@ func loop(thread *rtda.Thread, bytecode []byte) {
 		// execute
 		fmt.Printf("pc:%2d inst:%T %v\n", pc, inst, inst)
 		inst.Execute(frame)
+		fmt.Printf("Execute after%v\n", frame.LocalVars())
+		fmt.Printf("Execute after%v\n", frame.OperandStack())
 	}
 }
