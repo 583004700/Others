@@ -30,7 +30,6 @@ func (self *luaState) TypeName(tp LuaType) string {
 
 // [-0, +0, –]
 // http://www.lua.org/manual/5.3/manual.html#lua_type
-//返回栈对应下标的类型
 func (self *luaState) Type(idx int) LuaType {
 	if self.stack.isValid(idx) {
 		val := self.stack.get(idx)
@@ -41,7 +40,6 @@ func (self *luaState) Type(idx int) LuaType {
 
 // [-0, +0, –]
 // http://www.lua.org/manual/5.3/manual.html#lua_isnone
-//判断类型是否是none
 func (self *luaState) IsNone(idx int) bool {
 	return self.Type(idx) == LUA_TNONE
 }
@@ -122,8 +120,7 @@ func (self *luaState) ToInteger(idx int) int64 {
 // http://www.lua.org/manual/5.3/manual.html#lua_tointegerx
 func (self *luaState) ToIntegerX(idx int) (int64, bool) {
 	val := self.stack.get(idx)
-	i, ok := val.(int64)
-	return i, ok
+	return convertToInteger(val)
 }
 
 // [-0, +0, –]
@@ -137,14 +134,7 @@ func (self *luaState) ToNumber(idx int) float64 {
 // http://www.lua.org/manual/5.3/manual.html#lua_tonumberx
 func (self *luaState) ToNumberX(idx int) (float64, bool) {
 	val := self.stack.get(idx)
-	switch x := val.(type) {
-	case float64:
-		return x, true
-	case int64:
-		return float64(x), true
-	default:
-		return 0, false
-	}
+	return convertToFloat(val)
 }
 
 // [-0, +0, m]

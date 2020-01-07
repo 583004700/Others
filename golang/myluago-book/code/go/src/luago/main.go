@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 import . "luago/api"
 import _ "luago/binchunk"
 import "luago/state"
