@@ -2,22 +2,21 @@ package main
 
 import "fmt"
 import "io/ioutil"
-import "os"
 import "luago/binchunk"
 import . "luago/api"
 import "luago/state"
 import . "luago/vm"
 
 func main() {
-	if len(os.Args) > 1 {
-		data, err := ioutil.ReadFile(os.Args[1])
-		if err != nil {
-			panic(err)
-		}
-
-		proto := binchunk.Undump(data)
-		luaMain(proto)
+	//if len(os.Args) > 1 {
+	data, err := ioutil.ReadFile("E:/IdeaProjects/golang/myluago-book/code/lua/sum.out")
+	if err != nil {
+		panic(err)
 	}
+
+	proto := binchunk.Undump(data)
+	luaMain(proto)
+	//}
 }
 
 func luaMain(proto *binchunk.Prototype) {
