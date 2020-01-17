@@ -2,6 +2,7 @@ package vm
 
 import . "luago/api"
 
+// R(A) 初始值 R(A+1) 终止值 R(A+2)步长
 // R(A)-=R(A+2); pc+=sBx
 func forPrep(i Instruction, vm LuaVM) {
 	a, sBx := i.AsBx()
