@@ -42,7 +42,9 @@
         <property name="configLocation" value="classpath:mybatis-config.xml"></property>
     </bean>
 
-    <!--扫描mapper-->
+    <!--扫描mapper,META-INF下有个配置spring.handlers，定义了命名空间处理器
+     ,相当于配置了MapperScannerConfigurer。
+     主要扫描mapper到spring中，bean class为MapperFactoryBean-->
     <mybatis:scan base-package="mybatis.mapper"></mybatis:scan>
 
 </beans>
