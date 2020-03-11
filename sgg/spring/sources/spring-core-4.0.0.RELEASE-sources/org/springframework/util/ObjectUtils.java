@@ -323,6 +323,7 @@ public abstract class ObjectUtils {
 		return (int) (lng ^ (lng >>> 32));
 	}
 
+	//返回  '类名@对象唯一的hashcode十六进制'
 	public static String identityToString(Object obj) {
 		if (obj == null) {
 			return EMPTY_STRING;
@@ -330,6 +331,7 @@ public abstract class ObjectUtils {
 		return obj.getClass().getName() + "@" + getIdentityHexString(obj);
 	}
 
+	//得到对象的唯一(无论是否重写了hashcode方法)的hashcode，并转为16进制
 	public static String getIdentityHexString(Object obj) {
 		return Integer.toHexString(System.identityHashCode(obj));
 	}

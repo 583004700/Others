@@ -86,7 +86,8 @@ public class PropertyPlaceholderHelper {
 	 * @param strVal	spring1/applicationContext.xml
 	 * @param placeholderResolver
 	 * @param visitedPlaceholders
-	 * @return
+	 * @return		比如 ${a${k}}  假设placeholderResolver.resolvePlaceholder(k)=kval
+	 * 								placeholderResolver.resolvePlaceholder(k)=kval
 	 */
 	protected String parseStringValue(
 			String strVal, PlaceholderResolver placeholderResolver, Set<String> visitedPlaceholders) {
@@ -106,8 +107,11 @@ public class PropertyPlaceholderHelper {
 							"Circular placeholder reference '" + originalPlaceholder + "' in property definitions");
 				}
 
-				//取出最内层的内容，比如${ad{3}} 取出来的是3
+				//如果原始值为 ${a${b}},  第一次执行到此处 placeholder为a${b}
 				placeholder = parseStringValue(placeholder, placeholderResolver, visitedPlaceholders);
+				//如果原始值为 ${a${b}}, 且placeholderResolver.resolvePlaceholder(b) = bv
+				// 第一次执行到此处 placeholder为	abv 如果placeholderResolver.resolvePlaceholder(abv) = value
+				// 则最终结果为 value
 
 				String propVal = placeholderResolver.resolvePlaceholder(placeholder);
 				if (propVal == null && this.valueSeparator != null) {
