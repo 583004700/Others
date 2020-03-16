@@ -13,6 +13,8 @@ public class Main {
 
         ApplicationContext ctx = new ClassPathXmlApplicationContext("spring1/applicationContext.xml");
         HelloWorld helloWorld = (HelloWorld) ctx.getBean("helloWorld");
+        Object o = ctx.getBean("environment");
+        System.out.println("prepareBeanFactory 方法会注册 environment----------"+o);
 
         helloWorld.hello();
 

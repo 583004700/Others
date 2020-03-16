@@ -15,5 +15,6 @@ public class PropertyPlaceholderHelperTest {
         p.setProperty("amv","value-----");
         String value = propertyPlaceholderHelper.replacePlaceholders("${a${m}}",p);
         System.out.println(value);
+
     }
 }
