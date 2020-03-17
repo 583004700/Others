@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class QuickSort {
-    public static int[] arr = {3,9,-1,10,-2,7,9,5,3,2,8,6,-10,-9,-1};
+    public static int[] arr = {3,1,2,43,23,77,8,1,23,3,1,4,7};
 
     public static void main(String[] args) {
 //        int[] arr = new int[8000000];
@@ -48,7 +48,7 @@ public class QuickSort {
         }
         swap(arr,oldLeft,left);
         quickSort(arr,oldLeft,left-1);
-        //quickSort(arr,left+1,oldRight);
+        quickSort(arr,left+1,oldRight);
     }
 
     public static void swap(int[] arr,int a,int b){
