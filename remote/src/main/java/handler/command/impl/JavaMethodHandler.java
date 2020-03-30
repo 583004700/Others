@@ -25,7 +25,7 @@ public class JavaMethodHandler extends OtherCommandHandler implements Runnable{
         try {
             String method = command;
             int left = method.indexOf("(");
-            int right = method.indexOf(")");
+            int right = method.lastIndexOf(")");
             int lastDot = method.substring(0,left).lastIndexOf(".");
             String methodName = method.substring(lastDot + 1, left);
             String className = method.substring(0, lastDot);
