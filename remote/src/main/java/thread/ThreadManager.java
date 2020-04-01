@@ -7,7 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class ThreadManager {
     private static ExecutorService executorService = Executors.newCachedThreadPool();
     private static ExecutorService fileExecutorService;
-    private static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(10);
+    private static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1000);
 
     public static ExecutorService getExecutorService(){
         return executorService;

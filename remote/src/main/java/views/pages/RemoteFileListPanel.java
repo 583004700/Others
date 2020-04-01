@@ -26,10 +26,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.net.SocketTimeoutException;
@@ -37,19 +34,20 @@ import java.net.URL;
 import java.util.List;
 
 public class RemoteFileListPanel extends Operator implements Runnable {
-    class CellRenderer extends DefaultTableCellRenderer{
+    class CellRenderer extends DefaultTableCellRenderer {
         JLabel jLabel = new JLabel();
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            if(column != 0){
-                jLabel.setText(value == null ? "" : (String)value);
+            if (column != 0) {
+                jLabel.setText(value == null ? "" : (String) value);
                 return jLabel;
-            }else{
+            } else {
                 JLabel jLabel = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                String fileType = (String)table.getValueAt(row,2);
-                if("文件夹".equals(fileType)){
+                String fileType = (String) table.getValueAt(row, 2);
+                if ("文件夹".equals(fileType)) {
                     jLabel.setIcon(dIcon);
-                }else{
+                } else {
                     jLabel.setIcon(fIcon);
                 }
                 return jLabel;
@@ -64,7 +62,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     public static Image fImg = null;
     public static Icon fIcon = null;
 
-    static{
+    static {
         try {
             URL url = RemoteFileListPanel.class.getResource("/d.png");
             img = Toolkit.getDefaultToolkit().createImage(url);
@@ -82,7 +80,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
 //            j.printAll(g2d);
 //            g2d.dispose();
 //            ImageIO.write(img, "png", new File("d:/remotefile/f.png"));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -101,58 +99,60 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     private String key;
     //当前点击传输的文件路径
     private String currentTrans;
+    //是否连接上了
+    private volatile boolean connected;
 
-    public RemoteFileListPanel(String key,final String currentPath,FileListFrame fileListFrame){
+    public RemoteFileListPanel(String key, final String currentPath, FileListFrame fileListFrame) {
         this.key = key;
-        this.submitCommand(Handler.OPERATE+Handler.separator+key+"FT:");
+        this.submitCommand(Handler.OPERATE + Handler.separator + key + "FT:");
         this.fileListFrame = fileListFrame;
-        this.fileListFrame.getRightTabbedPane().addTab(key,this);
+        this.fileListFrame.getRightTabbedPane().addTab(key, this);
         this.setLayout(null);
 
         // 创建内容面板，使用边界布局
         JPanel tablePanel = new JPanel(new BorderLayout());
         // 表头（列名）
-        Object[] columnNames = {"名称","大小","类型","修改时间","真实路径"};
-        tableModel = new DefaultTableModel(new Object[][]{},columnNames);
+        Object[] columnNames = {"名称", "大小", "类型", "修改时间", "真实路径"};
+        tableModel = new DefaultTableModel(new Object[][]{}, columnNames);
         // 创建一个表格，指定 所有行数据 和 表头
-        fileListTable = new CommonTable(tableModel){
-            public boolean isCellEditable(int row ,int column){
+        fileListTable = new CommonTable(tableModel) {
+            public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        fileListTable.setDefaultRenderer(Object.class,this.new CellRenderer());
-        fileListTable.setPreferredWidth(0,350);
-        fileListTable.setPreferredWidth(3,160);
+        fileListTable.setDefaultRenderer(Object.class, this.new CellRenderer());
+        fileListTable.setPreferredWidth(0, 350);
+        fileListTable.setPreferredWidth(3, 160);
         fileListTable.hideColumn(4);
         fileListTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 2){
+                if (e.getClickCount() == 2) {
                     int row = fileListTable.getSelectedRow();
-                    if(row != -1) {
+                    if (row != -1) {
                         String realPath = (String) fileListTable.getValueAt(row, 4);
-                        String fileType = (String) fileListTable.getValueAt(row,2);
-                        if("文件夹".equals(fileType)) {
+                        String fileType = (String) fileListTable.getValueAt(row, 2);
+                        if ("文件夹".equals(fileType)) {
                             open(realPath);
                         }
                     }
                 }
-                if (e.getButton()==MouseEvent.BUTTON3) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
                     int row = fileListTable.getSelectedRow();
-                    if(row != -1) {
+                    if (row != -1) {
                         String fileType = (String) fileListTable.getValueAt(row, 2);
-                        if("文件".equals(fileType)) {
+                        if ("文件".equals(fileType)) {
                             jPopupMenu.add(cs);
-                        }else{
+                        } else {
                             jPopupMenu.remove(cs);
                         }
                         String fileName = (String) fileListTable.getValueAt(row, 0);
-                        if(!RemoteFileListPanel.this.currentPath.contains(Handler.root) && !"..".equals(fileName)) {
+                        if (!RemoteFileListPanel.this.currentPath.contains(Handler.root) && !"..".equals(fileName)) {
                             jPopupMenu.add(sc);
-                        }else{
+                        } else {
                             jPopupMenu.remove(sc);
                         }
-                    }else{
+                    } else {
                         jPopupMenu.remove(sc);
                         jPopupMenu.remove(cs);
                     }
@@ -165,30 +165,39 @@ public class RemoteFileListPanel extends Operator implements Runnable {
         tablePanel.add(fileListTable.getTableHeader(), BorderLayout.NORTH);
         // 把 表格内容 添加到容器中心
         tablePanel.add(fileListTable, BorderLayout.CENTER);
-        tablePanel.setSize(screenSize.width/2,screenSize.height - 20);
+        tablePanel.setSize(screenSize.width / 2, screenSize.height - 20);
 
         open(currentPath);
 
         JScrollPane jspData = new JScrollPane(fileListTable);
-        jspData.setSize(screenSize.width/2-10, screenSize.height - 200);
+        jspData.setSize(screenSize.width / 2 - 10, screenSize.height - 200);
         jspData.setLocation(0, 30);
 
         Icon icon = dIcon;
         JLabel jLabel = new JLabel(icon);
-        jLabel.setSize(30,30);
-        currentPathText.add(jLabel);
+        jLabel.setSize(30, 30);
 
-        currentPathText.setSize(screenSize.width/2, 30);
-        currentPathText.setLocation(0,0);
+        currentPathText.setSize(screenSize.width / 2, 30);
+        currentPathText.setLocation(30, 0);
+        this.add(jLabel);
         this.add(currentPathText);
         this.add(jspData);
+
+        currentPathText.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+                    open(currentPathText.getText());
+                }
+            }
+        });
 
         sx.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if("未连接".equals(RemoteFileListPanel.this.getName())){
-                    RemoteFileListPanel.this.submitCommand(Handler.OPERATE+Handler.separator+RemoteFileListPanel.this.key+"FT:");
-                }else {
+                if (!connected) {
+                    RemoteFileListPanel.this.submitCommand(Handler.OPERATE + Handler.separator + RemoteFileListPanel.this.key + "FT:");
+                } else {
                     open(RemoteFileListPanel.this.currentPath);
                 }
             }
@@ -197,11 +206,11 @@ public class RemoteFileListPanel extends Operator implements Runnable {
         sc.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int o = JOptionPane.showConfirmDialog(RemoteFileListPanel.this,"您确定要删除吗?","文件删除",JOptionPane.YES_NO_CANCEL_OPTION);
-                if(o == JOptionPane.YES_OPTION) {
+                int o = JOptionPane.showConfirmDialog(RemoteFileListPanel.this, "您确定要删除吗?", "文件删除", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (o == JOptionPane.YES_OPTION) {
                     int row = fileListTable.getSelectedRow();
                     String realPath = (String) fileListTable.getValueAt(row, 4);
-                    submitCommand("java:command.entity.JavaMethod.deleteFiles("+realPath+")");
+                    submitCommand("java:command.entity.JavaMethod.deleteFiles(" + realPath + ")");
                 }
             }
         });
@@ -211,7 +220,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = fileListTable.getSelectedRow();
-                if(row != -1) {
+                if (row != -1) {
                     String realPath = (String) fileListTable.getValueAt(row, 4);
                     RemoteFileListPanel.this.currentTrans = realPath;
                     RemoteFileListPanel.this.fileDown();
@@ -223,36 +232,39 @@ public class RemoteFileListPanel extends Operator implements Runnable {
         this.add(jPopupMenu);
     }
 
-    public void reConnect(){
+    public void reConnect() {
         closeConnection();
         connect();
     }
 
-    public void loadList(List<FileItem> files){
+    public void loadList(List<FileItem> files) {
         fileListTable.clearData();
         String parentPath = new File(currentPath).getParent();
-        if(parentPath != null){
-            parentPath = parentPath.replaceAll("\\\\","/");
+        if (parentPath != null) {
+            parentPath = parentPath.replaceAll("\\\\", "/");
         }
-        if(!currentPath.contains(Handler.root)){
-            tableModel.addRow(new String[]{"..","","文件夹","",parentPath});
+        if (!currentPath.contains(Handler.root)) {
+            tableModel.addRow(new String[]{"..", "", "文件夹", "", parentPath});
         }
-        for(FileItem f : files){
+        for (FileItem f : files) {
             String fileName = f.getFileName();
             String fileSize = f.getFileSize();
             String fileType = f.getFileType();
             String lastM = f.getLastM();
-            tableModel.addRow(new String[]{fileName,fileSize,fileType,lastM,f.getRealPath()});
+            tableModel.addRow(new String[]{fileName, fileSize, fileType, lastM, f.getRealPath()});
         }
     }
 
-    public void open(String path){
-        System.out.println("open"+path);
-        if(path == null) {
+    public void open(String path) {
+        if (!connected) {
+            RemoteFileListPanel.this.submitCommand(Handler.OPERATE + Handler.separator + RemoteFileListPanel.this.key + "FT:");
+        }
+        System.out.println("open" + path);
+        if (path == null) {
             path = Handler.root;
         }
         setCurrentPath(path);
-        submitCommand("java:command.entity.JavaMethod.getFileList("+currentPath+")");
+        submitCommand("java:command.entity.JavaMethod.getFileList(" + currentPath + ")");
     }
 
     public static Dimension getScreenSize() {
@@ -269,15 +281,16 @@ public class RemoteFileListPanel extends Operator implements Runnable {
 
     /**
      * 设置当前路径
+     *
      * @param currentPath
      */
     public void setCurrentPath(String currentPath) {
-        if(currentPath == null){
+        if (currentPath == null) {
             currentPath = Handler.root;
         }
         this.currentPath = currentPath;
         this.currentPathFile = new File(currentPath);
-        this.currentPathText.setText("          "+currentPath);
+        this.currentPathText.setText(currentPath);
     }
 
     public File getCurrentPathFile() {
@@ -301,21 +314,12 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     }
 
 
-
-
-
-
-
-
-    public void connect(){
+    public void connect() {
         super.connect();
         try {
             ThreadManager.getExecutorService().execute(this);
             Thread.sleep(100);
-
-            //submitCommand(Handler.LIST+Handler.separator);
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -323,40 +327,40 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     /**
      * 文件下载
      */
-    public boolean fileDown(){
+    public boolean fileDown() {
         boolean b = false;
-        if(currentTrans != null) {
-            OperatorFileListPanel operatorFileListPanel = (OperatorFileListPanel)fileListFrame.getLeftTabbedPane().getSelectedComponent();
+        if (currentTrans != null) {
+            OperatorFileListPanel operatorFileListPanel = (OperatorFileListPanel) fileListFrame.getLeftTabbedPane().getSelectedComponent();
             String downPath = operatorFileListPanel.getCurrentPath();
             downPath = downPath.endsWith("/") || downPath.endsWith("\\") ? downPath : downPath + "/";
             String upPath = this.currentTrans;
             //JOptionPane.showMessageDialog(RemoteFileListPanel.this,"downPath"+downPath);
             //JOptionPane.showMessageDialog(RemoteFileListPanel.this,"upPath"+upPath);
-            if(!Handler.root.equals(downPath)) {
+            if (!Handler.root.equals(downPath)) {
                 this.submitCommand(Handler.DOWNFILE + Handler.separator + upPath + ">" + downPath);
                 b = true;
-            }else{
-                JOptionPane.showMessageDialog(RemoteFileListPanel.this,"不能选择根目录");
+            } else {
+                JOptionPane.showMessageDialog(RemoteFileListPanel.this, "不能选择根目录");
             }
             currentTrans = null;
         }
         return b;
     }
 
-    public boolean fileUp(){
+    public boolean fileUp() {
         boolean b = false;
-        OperatorFileListPanel operatorFileListPanel = (OperatorFileListPanel)fileListFrame.getLeftTabbedPane().getSelectedComponent();
-        if(operatorFileListPanel.getCurrentTrans() != null) {
+        OperatorFileListPanel operatorFileListPanel = (OperatorFileListPanel) fileListFrame.getLeftTabbedPane().getSelectedComponent();
+        if (operatorFileListPanel.getCurrentTrans() != null) {
             String downPath = this.getCurrentPath();
             downPath = downPath.endsWith("/") || downPath.endsWith("\\") ? downPath : downPath + "/";
             String upPath = operatorFileListPanel.getCurrentTrans();
             //JOptionPane.showMessageDialog(RemoteFileListPanel.this,"downPath"+downPath);
             //JOptionPane.showMessageDialog(RemoteFileListPanel.this,"upPath"+upPath);
-            if(!downPath.contains(Handler.root)) {
+            if (!downPath.contains(Handler.root)) {
                 this.submitCommand(Handler.UPFILE + Handler.separator + upPath + ">" + downPath);
                 b = true;
-            }else{
-                JOptionPane.showMessageDialog(RemoteFileListPanel.this,"不能选择根目录");
+            } else {
+                JOptionPane.showMessageDialog(RemoteFileListPanel.this, "不能选择根目录");
             }
             operatorFileListPanel.setCurrentTrans(null);
         }
@@ -365,34 +369,35 @@ public class RemoteFileListPanel extends Operator implements Runnable {
 
     @Override
     public void printMessage(String message) {
-        if(message.contains("文件下载结束")){
-            JOptionPane.showMessageDialog(RemoteFileListPanel.this,message);
-            OperatorFileListPanel operatorFileListPanel = (OperatorFileListPanel)fileListFrame.getLeftTabbedPane().getSelectedComponent();
+        if (message.contains("文件下载结束")) {
+            JOptionPane.showMessageDialog(RemoteFileListPanel.this, message);
+            OperatorFileListPanel operatorFileListPanel = (OperatorFileListPanel) fileListFrame.getLeftTabbedPane().getSelectedComponent();
             operatorFileListPanel.flushList();
-        }else{
+        } else {
             System.out.println(message);
         }
     }
 
-    public void flushList(){
+    public void flushList() {
         this.open(this.currentPath);
     }
 
     public void run() {
         BufferedReader br = null;
         br = IOUtil.wrapBufferedReader(getInputStream(), PropertiesConst.appEncoding);
-        while(true){
+        while (true) {
             String result = null;
             try {
                 result = br.readLine();
-                System.out.println("result:"+result);
-                if(result != null) {
+                System.out.println("result:" + result);
+                if (result != null) {
                     if (result.contains(Handler.receiveSuccess)) {
                         //如果成功接收到文件
                         String upPath = result.replaceAll(Handler.separator + Handler.receiveSuccess, "");
                         JOptionPane.showMessageDialog(RemoteFileListPanel.this, "文件成功上传到" + upPath);
                         flushList();
                     } else if (result.contains("已连接:")) {
+                        this.connected = true;
                         this.setName(result);
                         changeCurrentTabTitle(result);
                     } else if (result.startsWith(Handler.getFileList)) {
@@ -423,21 +428,23 @@ public class RemoteFileListPanel extends Operator implements Runnable {
                         open(RemoteFileListPanel.this.currentPath);
                     }
                 }
-            }catch (SocketTimeoutException s){
+            } catch (SocketTimeoutException s) {
                 result = "";
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(result == null){
+            if (result == null) {
+                connected = false;
                 this.setName("未连接");
                 changeCurrentTabTitle("未连接");
                 reConnect();
+
                 break;
             }
         }
     }
 
-    public void changeCurrentTabTitle(String title){
-        this.fileListFrame.getRightTabbedPane().setTitleAt(this.fileListFrame.getRightTabbedPane().getSelectedIndex(),title);
+    public void changeCurrentTabTitle(String title) {
+        this.fileListFrame.getRightTabbedPane().setTitleAt(this.fileListFrame.getRightTabbedPane().getSelectedIndex(), title);
     }
 }

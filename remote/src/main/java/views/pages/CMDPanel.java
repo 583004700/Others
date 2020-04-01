@@ -208,12 +208,21 @@ public class CMDPanel extends Operator implements Runnable{
             }
             if(result == null){
                 this.setName("未连接");
-                changeCurrentTabTitle("未连接");
+                changeThisTabTitle("未连接");
                 this.appendContentLn("连接已断开，请重新连接");
                 ylj.remove(currentConnectKey);
                 currentConnectKey = "";
                 reConnect();
                 break;
+            }
+        }
+    }
+
+    public void changeThisTabTitle(String title){
+        for(int i=0;i<cmdFrame.getjTabbedPane().getComponentCount();i++) {
+            CMDPanel t = (CMDPanel) cmdFrame.getjTabbedPane().getComponentAt(i);
+            if(t == this){
+                cmdFrame.getjTabbedPane().setTitleAt(i,title);
             }
         }
     }

@@ -20,10 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 
 public class OperatorFileListPanel extends JPanel {
@@ -135,12 +132,21 @@ public class OperatorFileListPanel extends JPanel {
         Icon icon = FileUtil.getFileSmallIcon(currentPathFile);
         JLabel jLabel = new JLabel(icon);
         jLabel.setSize(30,30);
-        currentPathText.add(jLabel);
 
         currentPathText.setSize(screenSize.width/2, 30);
-        currentPathText.setLocation(0,0);
+        currentPathText.setLocation(30,0);
+        this.add(jLabel);
         this.add(currentPathText);
         this.add(jspData);
+
+        currentPathText.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+                    open(currentPathText.getText());
+                }
+            }
+        });
 
         sx.addActionListener(new ActionListener() {
             @Override
@@ -256,7 +262,7 @@ public class OperatorFileListPanel extends JPanel {
         }
         this.currentPath = currentPath;
         this.currentPathFile = new File(currentPath);
-        this.currentPathText.setText("          "+currentPath);
+        this.currentPathText.setText(currentPath);
     }
 
     public File getCurrentPathFile() {

@@ -29,7 +29,9 @@ public class ServerExecutor extends BaseExecutor implements Runnable{
 
     @Override
     public void run() {
+        System.out.println(Thread.currentThread()+"ServerExecutor执行开始:"+this.getCompleteCommand());
         execute();
+        System.out.println(Thread.currentThread()+"ServerExecutor执行结束:"+this.getCompleteCommand());
     }
 
     public Handler getHandler(){

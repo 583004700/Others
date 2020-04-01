@@ -31,7 +31,8 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         Handler handler = null;
         String prefix = getPrefix();
         if(!ignoreKeys.contains(getPrefix()) && getOperator().getOtherKey() == null){
-            getOperator().printMessage("请先选择连接");
+            getOperator().printMessage("请先选择连接---------");
+            System.out.println("请先选择连接---------");
             return null;
         }
         if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix) || Handler.OPERATE.equals(prefix) || Handler.LIST.equals(prefix)){
@@ -52,7 +53,9 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
 
     @Override
     public void run() {
+        System.out.println(Thread.currentThread()+"OperatorExecutor执行开始:"+this.getCompleteCommand());
         execute();
+        System.out.println(Thread.currentThread()+"OperatorExecutor执行结束:"+this.getCompleteCommand());
     }
 
     public void execute(){

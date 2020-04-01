@@ -43,7 +43,6 @@ public class CMDFrame extends JFrame {
                     if(fileListFrameMap.containsKey(key)) {
                         FileListFrame fileListFrame = fileListFrameMap.get(key);
                         fileListFrame.show();
-
                     }else{
                         FileListFrame fileListFrame = new FileListFrame(key);
                         fileListFrameMap.put(key,fileListFrame);
