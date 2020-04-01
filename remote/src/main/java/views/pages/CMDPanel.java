@@ -193,6 +193,7 @@ public class CMDPanel extends Operator implements Runnable{
                     } else if (result.contains(Handler.receiveSuccess)) {
                         //如果成功接收到文件
                     } else if (result.contains("已连接:")) {
+                        this.setConnected(true);
                         currentConnectKey = result.replaceAll("已连接:", "");
                         ylj.put(currentConnectKey, currentConnectKey);
                         this.setName(result);
@@ -207,6 +208,7 @@ public class CMDPanel extends Operator implements Runnable{
                 e.printStackTrace();
             }
             if(result == null){
+                this.setConnected(false);
                 this.setName("未连接");
                 changeThisTabTitle("未连接");
                 this.appendContentLn("连接已断开，请重新连接");

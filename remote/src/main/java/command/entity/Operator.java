@@ -20,7 +20,8 @@ public class Operator extends Computer{
     private OutputStream outputStream;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
-    private String otherKey;
+    private volatile String otherKey;
+    private volatile boolean connected;
 
     private String operatorKey = UUID.randomUUID().toString();
 
@@ -127,5 +128,13 @@ public class Operator extends Computer{
 
     public void setOtherKey(String otherKey) {
         this.otherKey = otherKey;
+    }
+
+    public boolean getConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 }

@@ -99,8 +99,6 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     private String key;
     //当前点击传输的文件路径
     private String currentTrans;
-    //是否连接上了
-    private volatile boolean connected;
 
     public RemoteFileListPanel(String key, final String currentPath, FileListFrame fileListFrame) {
         this.key = key;
@@ -195,7 +193,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
         sx.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!connected) {
+                if (!RemoteFileListPanel.this.getConnected()) {
                     RemoteFileListPanel.this.submitCommand(Handler.OPERATE + Handler.separator + RemoteFileListPanel.this.key + "FT:");
                 } else {
                     open(RemoteFileListPanel.this.currentPath);
@@ -256,8 +254,8 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     }
 
     public void open(String path) {
-        if (!connected) {
-            RemoteFileListPanel.this.submitCommand(Handler.OPERATE + Handler.separator + RemoteFileListPanel.this.key + "FT:");
+        if (!this.getConnected()) {
+            submitCommand(Handler.OPERATE + Handler.separator + RemoteFileListPanel.this.key + "FT:");
         }
         System.out.println("open" + path);
         if (path == null) {
@@ -397,7 +395,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
                         JOptionPane.showMessageDialog(RemoteFileListPanel.this, "文件成功上传到" + upPath);
                         flushList();
                     } else if (result.contains("已连接:")) {
-                        this.connected = true;
+                        this.setConnected(true);
                         this.setName(result);
                         changeCurrentTabTitle(result);
                     } else if (result.startsWith(Handler.getFileList)) {
@@ -434,7 +432,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
                 e.printStackTrace();
             }
             if (result == null) {
-                connected = false;
+                this.setConnected(false);
                 this.setName("未连接");
                 changeCurrentTabTitle("未连接");
                 reConnect();
