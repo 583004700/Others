@@ -53,9 +53,9 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
 
     @Override
     public void run() {
-        //System.out.println(Thread.currentThread()+"OperatorExecutor执行开始:"+this.getCompleteCommand());
+        System.out.println(Thread.currentThread()+"OperatorExecutor执行开始:"+this.getCompleteCommand());
         execute();
-        //System.out.println(Thread.currentThread()+"OperatorExecutor执行结束:"+this.getCompleteCommand());
+        System.out.println(Thread.currentThread()+"OperatorExecutor执行结束:"+this.getCompleteCommand());
     }
 
     public void execute(){
