@@ -17,7 +17,7 @@ public class ThreadManager {
 
     public synchronized static ExecutorService getFileExecutorService(){
         if(fileExecutorService == null){
-            fileExecutorService = Executors.newFixedThreadPool(15);
+            fileExecutorService = Executors.newFixedThreadPool(threadNum);
         }
         return fileExecutorService;
     }
