@@ -130,9 +130,9 @@ public class RemoteFileListPanel extends Operator implements Runnable {
                     if (row != -1) {
                         String realPath = (String) fileListTable.getValueAt(row, 4);
                         String fileType = (String) fileListTable.getValueAt(row, 2);
-                        if ("文件夹".equals(fileType)) {
+                        //if ("文件夹".equals(fileType)) {
                             open(realPath);
-                        }
+                        //}
                     }
                 }
                 if (e.getButton() == MouseEvent.BUTTON3) {
@@ -404,9 +404,13 @@ public class RemoteFileListPanel extends Operator implements Runnable {
                         boolean success = "success".equals(resultStr[2]);
                         if (success) {
                             String listStr = resultStr[3];
-                            List<FileItem> fileItems = JSON.parseArray(listStr, FileItem.class);
-                            loadList(fileItems);
-                            System.out.println(listStr);
+                            if("".equals(listStr)){
+                                this.printMessage("打开文件");
+                            }else {
+                                List<FileItem> fileItems = JSON.parseArray(listStr, FileItem.class);
+                                loadList(fileItems);
+                                System.out.println(listStr);
+                            }
                         } else {
                             JOptionPane.showMessageDialog(RemoteFileListPanel.this, "获取文件列表失败");
                         }

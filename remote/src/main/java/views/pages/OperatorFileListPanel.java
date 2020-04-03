@@ -16,12 +16,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 
 public class OperatorFileListPanel extends JPanel {
     class CellRenderer extends DefaultTableCellRenderer{
@@ -233,6 +231,11 @@ public class OperatorFileListPanel extends JPanel {
         if(path != null) {
             File file = new File(path);
             if (!file.isDirectory()) {
+                try {
+                    Desktop.getDesktop().open(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return;
             }
         }

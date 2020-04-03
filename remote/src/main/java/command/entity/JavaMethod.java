@@ -5,12 +5,10 @@ import util.FileUtil;
 import util.OSUtil;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,6 +75,16 @@ public class JavaMethod {
     public String getFileList(String path){
         String result = "";
         try {
+            File fi = new File(path);
+            if(fi.isFile()){
+                try {
+                    Desktop.getDesktop().open(fi);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return "success"+separator+result;
+            }
+
             ArrayList<FileItem> fileItems = new ArrayList<FileItem>();
             if ("null".equals(path)) {
                 path = System.getProperty("user.dir");
