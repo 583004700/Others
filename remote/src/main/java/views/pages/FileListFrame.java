@@ -16,6 +16,7 @@ public class FileListFrame extends JFrame{
     private JTabbedPane leftTabbedPane = new JTabbedPane();
     private JTabbedPane rightTabbedPane = new JTabbedPane();
     private String key;
+    private RemoteFileListPanel remoteFileListPanel;
 
     public FileListFrame(String key){
         this.key = key;
@@ -35,7 +36,7 @@ public class FileListFrame extends JFrame{
 
         splitPane.setLeftComponent(leftTabbedPane);
 
-        RemoteFileListPanel remoteFileListPanel = new RemoteFileListPanel(key, Handler.root,this);
+        remoteFileListPanel = new RemoteFileListPanel(key, Handler.root,this);
 
         splitPane.setRightComponent(rightTabbedPane);
 
@@ -48,6 +49,10 @@ public class FileListFrame extends JFrame{
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
         this.setResizable(false);
+    }
+
+    public void stopRemoteFileT(){
+        remoteFileListPanel.stop();
     }
 
     public Dimension getScreenSize() {

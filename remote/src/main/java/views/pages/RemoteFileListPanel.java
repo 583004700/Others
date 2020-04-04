@@ -99,6 +99,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     private String key;
     //当前点击传输的文件路径
     private String currentTrans;
+    private volatile boolean started;
 
     public RemoteFileListPanel(String key, final String currentPath, FileListFrame fileListFrame) {
         this.key = key;
@@ -230,6 +231,11 @@ public class RemoteFileListPanel extends Operator implements Runnable {
         this.add(jPopupMenu);
     }
 
+    @Override
+    public void init() {
+        started = true;
+    }
+
     public void reConnect() {
         closeConnection();
         connect();
@@ -256,6 +262,11 @@ public class RemoteFileListPanel extends Operator implements Runnable {
     public void open(String path) {
         if (!this.getConnected()) {
             submitCommand(Handler.OPERATE + Handler.separator + RemoteFileListPanel.this.key + "FT:");
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         System.out.println("open" + path);
         if (path == null) {
@@ -380,10 +391,15 @@ public class RemoteFileListPanel extends Operator implements Runnable {
         this.open(this.currentPath);
     }
 
+    public void stop(){
+        started = false;
+        closeConnection();
+    }
+
     public void run() {
         BufferedReader br = null;
         br = IOUtil.wrapBufferedReader(getInputStream(), PropertiesConst.appEncoding);
-        while (true) {
+        while (started) {
             String result = null;
             try {
                 result = br.readLine();

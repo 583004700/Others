@@ -2,11 +2,18 @@ package views.pages;
 
 import handler.Handler;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -39,13 +46,24 @@ public class CMDFrame extends JFrame {
                 if(getCurrentSelectTab() == null || "".equals(getCurrentSelectTab().getCurrentConnectKey())) {
                     JOptionPane.showMessageDialog(CMDFrame.this, "请先选中连接!");
                 }else{
-                    String key = getCurrentSelectTab().getCurrentConnectKey();
+                    final String key = getCurrentSelectTab().getCurrentConnectKey();
                     if(fileListFrameMap.containsKey(key)) {
                         FileListFrame fileListFrame = fileListFrameMap.get(key);
                         fileListFrame.show();
                     }else{
-                        FileListFrame fileListFrame = new FileListFrame(key);
+                        final FileListFrame fileListFrame = new FileListFrame(key);
                         fileListFrameMap.put(key,fileListFrame);
+                        fileListFrame.addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent e) {
+                                int value = JOptionPane.showConfirmDialog(null, "确定要关闭吗？");
+                                if (value == JOptionPane.OK_OPTION) {
+                                    fileListFrame.stopRemoteFileT();
+                                    fileListFrame.dispose();
+                                    CMDFrame.fileListFrameMap.remove(key);
+                                }
+                            }
+                        });
                     }
                 }
             }
