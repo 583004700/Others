@@ -32,7 +32,7 @@ class OtherMessageHandler extends ConnectionHandler implements Runnable{
             while((line = br.readLine()) != null){
                 printWriter.println(line);
                 printWriter.flush();
-                System.out.println(outputStream.toString()+inputStream+":"+line);
+                //System.out.println(outputStream.toString()+inputStream+":"+line);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -79,7 +79,7 @@ public class MessageHandler extends ConnectionHandler implements Runnable{
                 }
                 printWriter.println(line);
                 printWriter.flush();
-                System.out.println(outputStream.toString()+inputStream+":"+line);
+                //System.out.println(outputStream.toString()+inputStream+":"+line);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -23,6 +23,7 @@ public class CMDFrame extends JFrame {
     private JMenuBar jMenuBar = new JMenuBar();
 
     private static Map<String,FileListFrame> fileListFrameMap = new ConcurrentHashMap<String, FileListFrame>();
+    private static Map<String,ScreenFrame> screenFrameMap = new ConcurrentHashMap<String, ScreenFrame>();
 
     public CMDFrame(){
 
@@ -30,6 +31,8 @@ public class CMDFrame extends JFrame {
         fileMenu.setSize(100,30);
         JMenuItem openMenuItem = new JMenuItem(" 选择连接 ");
         final JMenuItem fileCsMenuItem = new JMenuItem(" 文件传输 ");
+        final JMenuItem screenMenuItem = new JMenuItem(" 屏幕监控 ");
+
         JMenuItem screenTr = new JMenuItem("截图上传");
         openMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -68,6 +71,36 @@ public class CMDFrame extends JFrame {
                 }
             }
         });
+
+        screenMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(getCurrentSelectTab() == null || "".equals(getCurrentSelectTab().getCurrentConnectKey())) {
+                    JOptionPane.showMessageDialog(CMDFrame.this, "请先选中连接!");
+                }else{
+                    final String key = getCurrentSelectTab().getCurrentConnectKey();
+                    if(screenFrameMap.containsKey(key)) {
+                        ScreenFrame fileListFrame = screenFrameMap.get(key);
+                        fileListFrame.show();
+                    }else{
+                        final ScreenFrame screenFrame = new ScreenFrame(key);
+                        screenFrameMap.put(key,screenFrame);
+                        screenFrame.addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent e) {
+                                int value = JOptionPane.showConfirmDialog(null, "确定要关闭吗？");
+                                if (value == JOptionPane.OK_OPTION) {
+                                    screenFrame.stopRemoteFileT();
+                                    screenFrame.dispose();
+                                    CMDFrame.screenFrameMap.remove(key);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
         screenTr.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,6 +115,7 @@ public class CMDFrame extends JFrame {
         fileMenu.add(openMenuItem);
         fileMenu.add(fileCsMenuItem);
         fileMenu.add(screenTr);
+        fileMenu.add(screenMenuItem);
         jMenuBar.add(fileMenu);
 
         Container container = this.getContentPane();

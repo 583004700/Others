@@ -71,15 +71,6 @@ public class RemoteFileListPanel extends Operator implements Runnable {
             URL furl = RemoteFileListPanel.class.getResource("/f.png");
             fImg = Toolkit.getDefaultToolkit().createImage(furl);
             fIcon = new ImageIcon(fImg);
-//            JLabel j = new JLabel();
-//            ImageIcon i = (ImageIcon) FileUtil.getFileSmallIcon(new File("D:\\IdeaProjects\\remote\\remote.iml"));
-//            j.setIcon(i);
-//            j.setSize(i.getIconWidth(), i.getIconHeight());
-//            BufferedImage img = new BufferedImage(i.getIconWidth(), i.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-//            Graphics2D g2d = img.createGraphics();
-//            j.printAll(g2d);
-//            g2d.dispose();
-//            ImageIO.write(img, "png", new File("d:/remotefile/f.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,7 +94,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
 
     public RemoteFileListPanel(String key, final String currentPath, FileListFrame fileListFrame) {
         this.key = key;
-        this.submitCommand(Handler.OPERATE + Handler.separator + key + "FT:");
+        this.operateKey();
         this.fileListFrame = fileListFrame;
         this.fileListFrame.getRightTabbedPane().addTab(key, this);
         this.setLayout(null);
@@ -195,7 +186,7 @@ public class RemoteFileListPanel extends Operator implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!RemoteFileListPanel.this.getConnected()) {
-                    RemoteFileListPanel.this.submitCommand(Handler.OPERATE + Handler.separator + RemoteFileListPanel.this.key + "FT:");
+                    RemoteFileListPanel.this.operateKey();
                 } else {
                     open(RemoteFileListPanel.this.currentPath);
                 }
@@ -259,9 +250,13 @@ public class RemoteFileListPanel extends Operator implements Runnable {
         }
     }
 
+    public void operateKey(){
+        submitCommand(Handler.OPERATE + Handler.separator + this.key + "FT:");
+    }
+
     public void open(String path) {
         if (!this.getConnected()) {
-            submitCommand(Handler.OPERATE + Handler.separator + RemoteFileListPanel.this.key + "FT:");
+            this.operateKey();
             try {
                 Thread.sleep(1500);
             } catch (InterruptedException e) {

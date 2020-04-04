@@ -32,6 +32,8 @@ public interface Handler{
     String LIST = "list";
     //心跳检测
     String HEART = "heart";
+    //屏幕流
+    String SCREENIN = "screenin";
 
     Object handler();
 

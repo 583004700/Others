@@ -70,6 +70,27 @@ public class OtherComputer extends Computer implements Runnable{
 
     public static void main(String[] args) {
         OtherComputer otherComputer = new OtherComputer();
+
+        Runnable ftRunnable = new Runnable(){
+            @Override
+            public void run() {
+                //文件传输
+                OtherComputer ft = new OtherComputer();
+                ft.setKey(ft.key+"FT:");
+                ft.start();
+            }
+        };
+        Runnable scRunnable = new Runnable(){
+            @Override
+            public void run() {
+                //屏幕监控
+                OtherScreenComputer sc = new OtherScreenComputer();
+                sc.setKey(sc.getKey()+"SC:");
+                sc.start();
+            }
+        };
+        ThreadManager.getExecutorService().submit(ftRunnable);
+        ThreadManager.getExecutorService().submit(scRunnable);
         try {
             ThreadManager.getExecutorService().submit(otherComputer);
             otherComputer.start();
@@ -156,10 +177,7 @@ public class OtherComputer extends Computer implements Runnable{
 
     @Override
     public void run() {
-        //文件传输
-        OtherComputer ft = new OtherComputer();
-        ft.setKey(ft.key+"FT:");
-        ft.start();
+
     }
 
     public void start() {
@@ -284,6 +302,10 @@ public class OtherComputer extends Computer implements Runnable{
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public Set<OtherExecutor> getOtherExecutors() {
+        return otherExecutors;
     }
 }
 

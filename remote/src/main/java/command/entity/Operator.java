@@ -42,6 +42,7 @@ public class Operator extends Computer{
             printWriter = IOUtil.wrapPrintWriter(outputStream, PropertiesConst.appEncoding);
         }catch (Exception e){
             e.printStackTrace();
+            printMessage("连接服务器失败！");
         }
     }
 
@@ -65,6 +66,16 @@ public class Operator extends Computer{
                 socket.close();
             }
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMessage(String message) {
+        try {
+            System.out.print("message" + message);
+            printWriter.println(message);
+            printWriter.flush();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

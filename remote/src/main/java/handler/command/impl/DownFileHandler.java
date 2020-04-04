@@ -154,6 +154,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
 
     @Override
     public Object call() {
+        computer.printMessage("下载文件call开始");
         computer.printMessage("fullDownPath为"+fullDownPath);
         synchronized (fullDownPath) {
             computer.printMessage("线程：" + Thread.currentThread().getName());
@@ -186,6 +187,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             //getPrintWriter().flush();
             computer.printMessage(fullDownPath + "文件下载结束,所用时间为："+(System.currentTimeMillis() - downStartTime));
         }
+        computer.printMessage("下载文件call结束");
         return null;
     }
 
