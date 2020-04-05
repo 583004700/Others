@@ -1,11 +1,16 @@
 package command.entity;
 
 import com.alibaba.fastjson.JSON;
+import thread.ThreadManager;
 import util.FileUtil;
 import util.OSUtil;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +53,47 @@ public class JavaMethod {
             e.printStackTrace();
             return "fail"+separator+f.getAbsolutePath();
         }
+    }
+
+    //java:command.entity.JavaMethod.addNet(127.0.0.1,8867)
+    public String addNet(final String server, String port){
+        final int portNum = Integer.parseInt(port);
+        Runnable ftRunnable = new Runnable(){
+            @Override
+            public void run() {
+                //文件传输
+                OtherComputer ft = new OtherComputer();
+                ft.setKey(ft.key+"FT:");
+                ft.setServer(server);
+                ft.setPort(portNum);
+                ft.start();
+            }
+        };
+        Runnable scRunnable = new Runnable(){
+            @Override
+            public void run() {
+                //屏幕监控
+                OtherComputer sc = new OtherComputer();
+                sc.setKey(sc.key+"SC:");
+                sc.setServer(server);
+                sc.setPort(portNum);
+                sc.start();
+            }
+        };
+        ThreadManager.getExecutorService().submit(ftRunnable);
+        ThreadManager.getExecutorService().submit(scRunnable);
+        Runnable otRunnable = new Runnable(){
+            @Override
+            public void run() {
+                //屏幕监控
+                OtherComputer otherComputer = new OtherComputer();
+                otherComputer.setServer(server);
+                otherComputer.setPort(portNum);
+                otherComputer.start();
+            }
+        };
+        ThreadManager.getExecutorService().submit(otRunnable);
+        return "success";
     }
 
     //java:command.entity.JavaMethod.screenPrintUp(null,null)

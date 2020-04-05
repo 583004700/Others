@@ -40,7 +40,7 @@ public class OtherComputer extends Computer implements Runnable{
         ThreadManager.getScheduledExecutorService().scheduleWithFixedDelay(timeoutRunnable,30,30, TimeUnit.SECONDS);
     }
 
-    private String key = getKey();
+    public String key = getKey();
     private String server = PropertiesConst.server;
     private int port = PropertiesConst.port;
 

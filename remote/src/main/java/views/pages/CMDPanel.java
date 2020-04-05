@@ -7,7 +7,9 @@ import handler.resultHandler.ScreenPrintUpHandler;
 import thread.ThreadManager;
 import util.IOUtil;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -200,6 +202,12 @@ public class CMDPanel extends Operator implements Runnable{
                         changeCurrentTabTitle(result);
                     } else if (result.startsWith(Handler.returnList)) {
                         OpenSessionFrame openSessionFrame = new OpenSessionFrame(this, result.replaceAll(Handler.returnList, ""));
+                    }else if (result.startsWith(Handler.addNet)) {
+                        String[] resultStr = result.split(">");
+                        boolean success = "success".equals(resultStr[2]);
+                        if (success) {
+                            JOptionPane.showMessageDialog(CMDPanel.this, "添加Server成功");
+                        }
                     }
                 }
             }catch (SocketTimeoutException s){

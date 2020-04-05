@@ -49,4 +49,5 @@ public interface Handler{
     String getFileList = "getFileList>";
     //删除文件或文件夹
     String deleteFiles = "deleteFiles>";
+    String addNet = "addNet>";
 }

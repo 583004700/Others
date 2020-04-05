@@ -32,8 +32,20 @@ public class CMDFrame extends JFrame {
         JMenuItem openMenuItem = new JMenuItem(" 选择连接 ");
         final JMenuItem fileCsMenuItem = new JMenuItem(" 文件传输 ");
         final JMenuItem screenMenuItem = new JMenuItem(" 屏幕监控 ");
+        final JMenuItem addNetMenuItem = new JMenuItem(" 添加Server ");
+        JMenuItem screenTr = new JMenuItem(" 截图上传 ");
 
-        JMenuItem screenTr = new JMenuItem("截图上传");
+        addNetMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(getCurrentSelectTab() == null || "".equals(getCurrentSelectTab().getCurrentConnectKey())) {
+                    JOptionPane.showMessageDialog(CMDFrame.this, "请先选中连接!");
+                }else{
+                    new AddNetFrame(getCurrentSelectTab());
+                }
+            }
+        });
+
         openMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -116,6 +128,7 @@ public class CMDFrame extends JFrame {
         fileMenu.add(fileCsMenuItem);
         fileMenu.add(screenTr);
         fileMenu.add(screenMenuItem);
+        fileMenu.add(addNetMenuItem);
         jMenuBar.add(fileMenu);
 
         Container container = this.getContentPane();
