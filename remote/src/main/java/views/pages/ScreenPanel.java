@@ -9,11 +9,14 @@ import util.IOUtil;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ScreenPanel extends Operator implements Runnable {
 
@@ -22,36 +25,21 @@ public class ScreenPanel extends Operator implements Runnable {
     private String key;
     private ScreenFrame screenFrame;
 
-    private volatile boolean started;
-    private int imgWidth;
-    private int imgHeight;
+    private InputStream tranInputStream;
 
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
+    private volatile boolean transportationed;
+
+    private volatile boolean started;
+
     public ScreenPanel(String key, ScreenFrame screenFrame) {
-        this.key = key;
-        this.operateKey();
-        this.screenFrame = screenFrame;
-        this.add(jlbImg);
-        this.setSize((int)(screenSize.width*0.8),(int)(screenSize.height*0.8));
-        imgWidth = this.getWidth();
-        imgHeight = this.getHeight()-32;
-    }
-
-    @Override
-    public void init() {
         this.jlbImg = new JLabel();
-        started = true;
-    }
-
-    public void reConnect() {
-        closeConnection();
-        connect();
-        operateKey();
-    }
-
-    public void operateKey(){
-        submitCommand(Handler.OPERATE + Handler.separator + this.key + "SC:");
+        this.key = key.intern();
+        this.add(jlbImg);
+        this.screenFrame = screenFrame;
+        this.setSize(screenSize.width, screenSize.height);
+        runWhile();
     }
 
     public void connect() {
@@ -64,67 +52,177 @@ public class ScreenPanel extends Operator implements Runnable {
         }
     }
 
-    @Override
-    public void printMessage(String message) {
-        System.out.println(message);
-    }
-
-    public void stop(){
-        started = false;
-        closeConnection();
-    }
-
-    public void changeCurrentTabTitle(String title){
-        this.screenFrame.setTitle(title);
-    }
-
-    public void run() {
-        BufferedReader br = null;
-        br = IOUtil.wrapBufferedReader(getInputStream(), PropertiesConst.appEncoding);
-        String result = null;
+    public void submitScrrentIn() {
+        submitCommand(Handler.OPERATE + Handler.separator + this.key + "SC:");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssS");
+        String fileName = sdf.format(new Date());
         try {
-            result = br.readLine();
-            if (result.contains("已连接:")) {
-                this.setConnected(true);
-                this.setName(result);
-                changeCurrentTabTitle(result);
-            }else if("选择连接失败".equals(result)){
-                result = null;
-            }
-        } catch (IOException e) {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //while (started) {
-            try {
+        screenIn(this, Handler.SCREENIN + Handler.separator + fileName);
+    }
 
-                sendMessage(Handler.SCREENIN+Handler.separator);
-                //File file = new File("d:/remotefile/2019081717340485.png");
-                //InputStream inputStream = new FileInputStream(file);
-                InputStream inputStream = getInputStream();
-                byte[] b = new byte[1024];
-                int length = inputStream.read(b);
-                ImageIcon icon = new ImageIcon(b) ;//里面的参数为一个Byte数组
-                icon.setImage(icon.getImage().getScaledInstance(this.imgWidth,this.imgHeight, Image.SCALE_DEFAULT));
+    public void setImage(InputStream inputStream) {
+        this.screenFrame.setTitle("已连接：" + this.key + "   正在获取屏幕...");
+        this.tranInputStream = inputStream;
+        try {
+            byte[] b = new byte[1024];
+            int len = 0;
+            byte[] l = new byte[4];
 
+            while (true) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                //数据原始长度
+                //System.out.println("将读取dataLength");
+                int d = inputStream.read(l);
+                int dataLength = d < 4 ? 0 : BitUtils.bytesToInt(l, 0);
+                //System.out.println("已读取dataLength："+dataLength);
+                if (dataLength <= 0) {
+                    System.out.println("读取dataLength失败");
+                    break;
+                }
+                //已经读取的长度
+                int readLength = 0;
+                while (dataLength > readLength && (len = inputStream.read(b)) != -1) {
+                    byteArrayOutputStream.write(b, 0, len);
+                    readLength += len;
+                    //System.out.println("readLength:"+readLength);
+                }
+                ImageIcon icon = new ImageIcon(byteArrayOutputStream.toByteArray());
+                //icon.setImage(icon.getImage().getScaledInstance(this.imgWidth, this.imgHeight, Image.SCALE_DEFAULT));
                 this.jlbImg.setIcon(icon);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.screenFrame.setTitle("未连接");
+            stop();
+            System.out.println("setImage方法退出");
+        }
+    }
 
-            }/* catch (SocketTimeoutException s) {
+    @Override
+    public void init() {
+        started = true;
+    }
+
+    public void reConnection() {
+        closeConnection();
+        connect();
+    }
+
+    public void reSelect() {
+        submitScrrentIn();
+    }
+
+    @Override
+    public void run() {
+        runMessage();
+    }
+
+    public void runWhile() {
+        Runnable r1 = new Runnable() {
+            @Override
+            public void run() {
+                while (ScreenPanel.this.started) {
+                    try {
+                        if (!getTransportationed()) {
+                            setTransportationed(true);
+                            if(!getConnected()) {
+                                reConnection();
+                                Thread.sleep(5000);
+                            }
+                            reSelect();
+                        }
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        ThreadManager.getExecutorService().submit(r1);
+    }
+
+    public void runMessage() {
+        BufferedReader br = null;
+        br = IOUtil.wrapBufferedReader(getInputStream(), PropertiesConst.appEncoding);
+        while (started) {
+            String result = null;
+            try {
+                result = br.readLine();
+                System.out.println("result:" + result);
+                if (result != null) {
+                    if (result.contains("已连接:")) {
+                        this.setConnected(true);
+                        System.out.println("已连接到服务器");
+                    } else if (result.contains("选择连接失败")) {
+                        setTransportationed(false);
+                    }
+                }
+            } catch (SocketTimeoutException s) {
                 result = "";
-            } */catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             if (result == null) {
                 this.setConnected(false);
-                this.setName("未连接");
-                changeCurrentTabTitle("未连接");
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                reConnect();
-                //break;
+                break;
             }
-        //}
+        }
+    }
+
+    public void stop() {
+        try {
+            setTransportationed(false);
+            if (tranInputStream != null) {
+                this.tranInputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void exitT() {
+        started = false;
+        stop();
+    }
+
+    public JLabel getJlbImg() {
+        return jlbImg;
+    }
+
+    public void setJlbImg(JLabel jlbImg) {
+        this.jlbImg = jlbImg;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public ScreenFrame getScreenFrame() {
+        return screenFrame;
+    }
+
+    public void setScreenFrame(ScreenFrame screenFrame) {
+        this.screenFrame = screenFrame;
+    }
+
+    public static Dimension getScreenSize() {
+        return screenSize;
+    }
+
+    public static void setScreenSize(Dimension screenSize) {
+        ScreenPanel.screenSize = screenSize;
+    }
+
+    public boolean getTransportationed() {
+        return transportationed;
+    }
+
+    public void setTransportationed(boolean transportationed) {
+        this.transportationed = transportationed;
     }
 }

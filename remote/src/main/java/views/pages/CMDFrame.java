@@ -83,7 +83,7 @@ public class CMDFrame extends JFrame {
                         ScreenFrame fileListFrame = screenFrameMap.get(key);
                         fileListFrame.show();
                     }else{
-                        final ScreenFrame screenFrame = new ScreenFrame(key);
+                        final ScreenFrame screenFrame = new ScreenFrame(key,CMDFrame.this);
                         screenFrameMap.put(key,screenFrame);
                         screenFrame.addWindowListener(new WindowAdapter() {
                             @Override

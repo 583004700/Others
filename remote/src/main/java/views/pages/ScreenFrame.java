@@ -1,37 +1,35 @@
 package views.pages;
 
+import lombok.Getter;
+
 import javax.swing.JFrame;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+@Getter
 public class ScreenFrame extends JFrame{
 
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     private String key;
     private ScreenPanel screenPanel;
+    private CMDFrame cmdFrame;
 
-    public ScreenFrame(String key){
+    public ScreenFrame(String key,CMDFrame cmdFrame){
+        this.cmdFrame = cmdFrame;
         this.key = key;
         screenPanel = new ScreenPanel(key,this);
+        screenPanel.setKey(this.key);
         this.add(screenPanel);
 
-        this.setSize((int)(screenSize.width*0.8),(int)(screenSize.height*0.8));
+        this.setSize(screenSize.width,screenSize.height);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
         this.setResizable(false);
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public void stopRemoteFileT(){
-        this.screenPanel.stop();
+        screenPanel.exitT();
     }
 }

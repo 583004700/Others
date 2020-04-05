@@ -5,6 +5,7 @@ import executor.OperatorExecutor;
 import handler.Handler;
 import thread.ThreadManager;
 import util.IOUtil;
+import views.pages.ScreenPanel;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -93,6 +94,12 @@ public class Operator extends Computer{
         }
     }
 
+    private ScreenPanel screenPanel;
+    public void screenIn(ScreenPanel screenPanel,String completeCommand){
+        this.screenPanel = screenPanel;
+        submitCommand(completeCommand);
+    }
+
     public Socket getSocket() {
         return socket;
     }
@@ -147,5 +154,13 @@ public class Operator extends Computer{
 
     public void setConnected(boolean connected) {
         this.connected = connected;
+    }
+
+    public ScreenPanel getScreenPanel() {
+        return screenPanel;
+    }
+
+    public void setScreenPanel(ScreenPanel screenPanel) {
+        this.screenPanel = screenPanel;
     }
 }

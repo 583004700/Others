@@ -9,6 +9,7 @@ import thread.ThreadManager;
 import util.FileUtil;
 import util.IOUtil;
 import util.OSUtil;
+import views.pages.ScreenPanel;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,43 +26,54 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
     private volatile Future future;
     private long timeOut = 180000;
     private Computer computer;
+    private ScreenPanel screenPanel;
+    private boolean screenIn;
 
     public boolean cancel(){
         computer.printMessage(this+"===========cancelFuture"+future);
         return future.cancel(true);
     }
 
-    public DownFileHandler(String otherKey, String completeCommand, BaseExecutor executor) {
+    public DownFileHandler(String otherKey, String completeCommand, BaseExecutor executor, ScreenPanel screenPanel) {
         super(otherKey, completeCommand, executor);
+        this.screenPanel = screenPanel;
+        if(screenPanel != null){
+            screenIn = true;
+        }
         computer = this.getExecutor().getComputer();
-        if(OSUtil.isLinux()){
-            defaultDownPath = "/remotefile/";
-        }
-        String downPath = defaultDownPath;
-        String[] comArr = getCommand().split(">");
-        fileName = FileUtil.getName(comArr[0]);
-        if(comArr.length > 1){
-            String newFileName = FileUtil.getName(comArr[1]);
-            if("".equals(newFileName)){
-                newFileName = fileName;
+
+        if(!screenIn) {
+            if (OSUtil.isLinux()) {
+                defaultDownPath = "/remotefile/";
             }
-            fileName = newFileName;
-            String newDownPath = FileUtil.getPath(comArr[1]);
-            if("".equals(newDownPath)){
-                newDownPath = downPath;
+            String downPath = defaultDownPath;
+            String[] comArr = getCommand().split(">");
+            fileName = FileUtil.getName(comArr[0]);
+            if (comArr.length > 1) {
+                String newFileName = FileUtil.getName(comArr[1]);
+                if ("".equals(newFileName)) {
+                    newFileName = fileName;
+                }
+                fileName = newFileName;
+                String newDownPath = FileUtil.getPath(comArr[1]);
+                if ("".equals(newDownPath)) {
+                    newDownPath = downPath;
+                }
+                if (new File(comArr[1]).isDirectory()) {
+                    newDownPath = comArr[1];
+                }
+                downPath = newDownPath;
             }
-            if(new File(comArr[1]).isDirectory()){
-                newDownPath = comArr[1];
+            fileName = fileName.replaceAll(" ", "空格");
+            downPathFile = new File(downPath);
+            if (!downPathFile.exists()) {
+                downPathFile.mkdirs();
             }
-            downPath = newDownPath;
+            downPathFile = new File(downPathFile, fileName);
+            fullDownPath = downPathFile.getAbsolutePath().intern();
+        }else{
+            fullDownPath = getCommand();
         }
-        fileName = fileName.replaceAll(" ","空格");
-        downPathFile = new File(downPath);
-        if(!downPathFile.exists()){
-            downPathFile.mkdirs();
-        }
-        downPathFile = new File(downPathFile,fileName);
-        fullDownPath = downPathFile.getAbsolutePath().intern();
     }
 
     private Socket fileSocket;
@@ -74,7 +86,9 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
     private boolean checkFile(){
         boolean b = true;
         try{
-            fileOutputStream = new FileOutputStream(downPathFile,true);
+            if(!screenIn) {
+                fileOutputStream = new FileOutputStream(downPathFile, true);
+            }
         }catch (Exception e){
             e.printStackTrace();
             computer.printMessage("目录为:"+downPathFile);
@@ -89,11 +103,15 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
         getPrintWriter().println(getCompleteCommand());
         getPrintWriter().flush();
         try {
+            if(screenPanel != null){
+                screenPanel.getScreenFrame().setTitle("正在尝试连接："+screenPanel.getKey());
+            }
             fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
 
             ThreadManager.getExecutorService().execute(this.new Check());
 
             pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream(),PropertiesConst.appEncoding);
+            System.out.println("down将要发送1");
             pw.println(getCompleteCommand()+":"+getOtherKey());
             pw.flush();
             if(!checkFile()){
@@ -110,9 +128,14 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             e.printStackTrace();
         }
 
-        long length = downPathFile.exists() ? downPathFile.length() : 0;
+        long length = 0;
+
+        if(!screenIn) {
+            length = downPathFile.exists() ? downPathFile.length() : 0;
+        }
         if(success){
             //告诉服务器下载较验成功
+            System.out.println("down将要发送2");
             pw.println(Handler.DOWNFILESUCCESS+":"+length);
             pw.flush();
             computer.printMessage("DownFileHandler:发送length给服务器"+System.currentTimeMillis()+":"+Handler.DOWNFILESUCCESS+":"+length);
@@ -127,7 +150,9 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
     class Check implements Runnable{
         private void checkDf(){
             try {
+                System.out.println("down将要read");
                 String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(),PropertiesConst.appEncoding);
+                System.out.println("down read到数据");
                 if(!Handler.UPFILESUCCESS.equals(otherStr)){
                     success = false;
                     computer.printMessage("下载较验：文件上传失败，可能是找不到文件");
@@ -178,7 +203,12 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             computer.printMessage(fileName + "文件下载开始DownFileHandler");
             try {
                 InputStream inputStream = fileSocket.getInputStream();
-                IOUtil.inputToOutput(inputStream, fileOutputStream);
+                if(!screenIn) {
+                    IOUtil.inputToOutput(inputStream, fileOutputStream);
+                }else{
+                    //inputStream = new FileInputStream("d:/remotefile/2019081717340485.png");
+                    screenPanel.setImage(inputStream);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

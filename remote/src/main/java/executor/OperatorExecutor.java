@@ -5,6 +5,7 @@ import handler.Handler;
 import handler.command.impl.CmdSendIngHandler;
 import handler.command.impl.DownFileHandler;
 import handler.command.impl.UpFileHandler;
+import views.pages.ScreenPanel;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -41,10 +42,13 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
             }
             printWriter.println(getCompleteCommand());
             printWriter.flush();
+        }else if(Handler.SCREENIN.equals(prefix)){
+            ScreenPanel screenPanel = getOperator().getScreenPanel();
+            handler = new DownFileHandler(getOperator().getOtherKey(),getCompleteCommand(),this,screenPanel);
         }else if(Handler.DOWNFILE.equals(prefix)){
-            handler = new DownFileHandler(getOperator().getOtherKey(),getCompleteCommand(),this);
+            handler = new DownFileHandler(getOperator().getOtherKey(),getCompleteCommand(),this,null);
         }else if(Handler.UPFILE.equals(prefix)){
-            handler = new UpFileHandler(getCompleteCommand(),this,getOperator().getOtherKey());
+            handler = new UpFileHandler(getCompleteCommand(),this,getOperator().getOtherKey(),false);
         }else if(Handler.CMDBEGIN.equals(prefix)){
             handler = new CmdSendIngHandler(this,getOperator().getOtherKey(),getCompleteCommand());
         }

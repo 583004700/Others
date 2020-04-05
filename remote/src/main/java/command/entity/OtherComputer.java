@@ -84,8 +84,8 @@ public class OtherComputer extends Computer implements Runnable{
             @Override
             public void run() {
                 //屏幕监控
-                OtherScreenComputer sc = new OtherScreenComputer();
-                sc.setKey(sc.getKey()+"SC:");
+                OtherComputer sc = new OtherComputer();
+                sc.setKey(sc.key+"SC:");
                 sc.start();
             }
         };

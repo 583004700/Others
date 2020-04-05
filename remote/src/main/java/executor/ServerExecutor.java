@@ -44,7 +44,7 @@ public class ServerExecutor extends BaseExecutor implements Runnable{
         }else if(Handler.OPERATE.equals(prefix)){
             OperateHandler operateHandler = new OperateHandler(socketServer,getCompleteCommand()).setServerExecutor(this);
             operateHandler.handler();
-        }else if(Handler.DOWNFILE.equals(prefix) || Handler.UPFILE.equals(prefix)){
+        }else if(Handler.DOWNFILE.equals(prefix) || Handler.UPFILE.equals(prefix) || Handler.SCREENIN.equals(prefix)){
             FileHandler fileHandler = (FileHandler) new FileHandler(socketServer,getCompleteCommand()).setOperatorSocket(socketServer.getSocket());
             fileHandler.setOtherKey(getCommand());
             fileHandler.handler();

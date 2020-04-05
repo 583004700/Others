@@ -25,10 +25,12 @@ public class OtherExecutor extends BaseExecutor implements Runnable{
         String prefix = getPrefix();
         if(Handler.CMD.equals(prefix)){
             handler = new OtherCmdHandler(getCompleteCommand(),this);
+        }else if(Handler.SCREENIN.equals(prefix)){
+            handler = new UpFileHandler(getCompleteCommand(),this, otherKey,true);
         }else if(Handler.DOWNFILE.equals(prefix)){
-            handler = new UpFileHandler(getCompleteCommand(),this, otherKey);
+            handler = new UpFileHandler(getCompleteCommand(),this, otherKey,false);
         }else if(Handler.UPFILE.equals(prefix)){
-            handler = new DownFileHandler(otherKey,getCompleteCommand(),this);
+            handler = new DownFileHandler(otherKey,getCompleteCommand(),this,null);
         }else if(Handler.CMDBEGIN.equals(prefix)){
             handler = new CmdReceiveIngHandler(this,getCompleteCommand());
         }else if(Handler.JAVA.equals(prefix)){
