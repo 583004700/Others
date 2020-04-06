@@ -185,7 +185,6 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                         outputStream.flush();
                         outputStream.write(data);
                         outputStream.flush();
-                        Thread.sleep(12);
                     }
                 }
             } catch (Exception e) {
