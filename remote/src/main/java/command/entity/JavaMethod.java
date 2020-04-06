@@ -3,6 +3,7 @@ package command.entity;
 import com.alibaba.fastjson.JSON;
 import thread.ThreadManager;
 import util.FileUtil;
+import util.NetUtil;
 import util.OSUtil;
 
 import javax.imageio.ImageIO;
@@ -57,43 +58,51 @@ public class JavaMethod {
 
     //java:command.entity.JavaMethod.addNet(127.0.0.1,8867)
     public String addNet(final String server, String port){
-        final int portNum = Integer.parseInt(port);
-        Runnable ftRunnable = new Runnable(){
-            @Override
-            public void run() {
-                //文件传输
-                OtherComputer ft = new OtherComputer();
-                ft.setKey(ft.key+"FT:");
-                ft.setServer(server);
-                ft.setPort(portNum);
-                ft.start();
-            }
-        };
-        Runnable scRunnable = new Runnable(){
-            @Override
-            public void run() {
-                //屏幕监控
-                OtherComputer sc = new OtherComputer();
-                sc.setKey(sc.key+"SC:");
-                sc.setServer(server);
-                sc.setPort(portNum);
-                sc.start();
-            }
-        };
-        ThreadManager.getExecutorService().submit(ftRunnable);
-        ThreadManager.getExecutorService().submit(scRunnable);
-        Runnable otRunnable = new Runnable(){
-            @Override
-            public void run() {
-                //屏幕监控
-                OtherComputer otherComputer = new OtherComputer();
-                otherComputer.setServer(server);
-                otherComputer.setPort(portNum);
-                otherComputer.start();
-            }
-        };
-        ThreadManager.getExecutorService().submit(otRunnable);
-        return "success";
+        final int portNum;
+        try {
+            portNum = Integer.parseInt(port);
+        }catch (NumberFormatException n){
+            return "fail";
+        }
+        if(NetUtil.isConnection(server,portNum)) {
+            Runnable ftRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    //文件传输
+                    OtherComputer ft = new OtherComputer();
+                    ft.setKey(ft.key + "FT:");
+                    ft.setServer(server);
+                    ft.setPort(portNum);
+                    ft.start();
+                }
+            };
+            Runnable scRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    //屏幕监控
+                    OtherComputer sc = new OtherComputer();
+                    sc.setKey(sc.key + "SC:");
+                    sc.setServer(server);
+                    sc.setPort(portNum);
+                    sc.start();
+                }
+            };
+            ThreadManager.getExecutorService().submit(ftRunnable);
+            ThreadManager.getExecutorService().submit(scRunnable);
+            Runnable otRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    //屏幕监控
+                    OtherComputer otherComputer = new OtherComputer();
+                    otherComputer.setServer(server);
+                    otherComputer.setPort(portNum);
+                    otherComputer.start();
+                }
+            };
+            ThreadManager.getExecutorService().submit(otRunnable);
+            return "success";
+        }
+        return "fail";
     }
 
     //java:command.entity.JavaMethod.screenPrintUp(null,null)

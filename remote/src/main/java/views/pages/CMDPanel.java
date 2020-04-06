@@ -207,6 +207,8 @@ public class CMDPanel extends Operator implements Runnable{
                         boolean success = "success".equals(resultStr[2]);
                         if (success) {
                             JOptionPane.showMessageDialog(CMDPanel.this, "添加Server成功");
+                        }else{
+                            JOptionPane.showMessageDialog(CMDPanel.this, "添加Server失败");
                         }
                     }
                 }
