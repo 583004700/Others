@@ -97,9 +97,9 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
         return b;
     }
 
-    public void connection(){
+    PrintWriter pw = null;
 
-        PrintWriter pw = null;
+    public void connection(){
         getPrintWriter().println(getCompleteCommand());
         getPrintWriter().flush();
         try {
@@ -207,7 +207,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
                     IOUtil.inputToOutput(inputStream, fileOutputStream);
                 }else{
                     //inputStream = new FileInputStream("d:/remotefile/2019081717340485.png");
-                    screenPanel.setImage(inputStream);
+                    screenPanel.setImage(inputStream,pw);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

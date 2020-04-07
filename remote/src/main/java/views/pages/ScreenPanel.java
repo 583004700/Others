@@ -6,7 +6,6 @@ import handler.Handler;
 import thread.ThreadManager;
 import util.IOUtil;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -14,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -64,7 +64,7 @@ public class ScreenPanel extends Operator implements Runnable {
         screenIn(this, Handler.SCREENIN + Handler.separator + fileName);
     }
 
-    public void setImage(InputStream inputStream) {
+    public void setImage(InputStream inputStream, PrintWriter fileSocketOut) {
         this.screenFrame.setTitle("已连接：" + this.key + "   正在获取屏幕...");
         this.tranInputStream = inputStream;
         try {
@@ -79,10 +79,10 @@ public class ScreenPanel extends Operator implements Runnable {
                 int d = inputStream.read(l);
                 int dataLength = d < 4 ? 0 : BitUtils.bytesToInt(l, 0);
                 //System.out.println("已读取dataLength："+dataLength);
-                if (dataLength <= 0) {
-                    System.out.println("读取dataLength失败");
-                    break;
-                }
+                //if (dataLength <= 0) {
+                    //System.out.println("读取dataLength失败");
+                  //  break;
+                //}
                 //已经读取的长度
                 int readLength = 0;
                 while (dataLength > readLength && (len = inputStream.read(b)) != -1) {
@@ -90,9 +90,9 @@ public class ScreenPanel extends Operator implements Runnable {
                     readLength += len;
                     //System.out.println("readLength:"+readLength);
                 }
-                ImageIcon icon = new ImageIcon(byteArrayOutputStream.toByteArray());
-                //icon.setImage(icon.getImage().getScaledInstance(this.imgWidth, this.imgHeight, Image.SCALE_DEFAULT));
-                this.jlbImg.setIcon(icon);
+                ThreadManager.getExecutorService().submit(new SetImageThread(jlbImg).setByteArrayOutputStream(byteArrayOutputStream));
+                fileSocketOut.println("1");
+                fileSocketOut.flush();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,6 +126,11 @@ public class ScreenPanel extends Operator implements Runnable {
         Runnable r1 = new Runnable() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 while (ScreenPanel.this.started) {
                     try {
                         if (!getTransportationed()) {

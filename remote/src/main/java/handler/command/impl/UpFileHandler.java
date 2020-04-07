@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -150,6 +151,8 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
         return null;
     }
 
+    private boolean b = true;
+
     @Override
     public void run() {
         synchronized (filePath) {
@@ -174,17 +177,46 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                 if(!screenIn) {
                     IOUtil.inputToOutput(inputStream, outputStream);
                 }else{
-                    while(true) {
-                        image = robot.createScreenCapture(screenRectangle);
 
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ImageIO.write(image, "png", baos);
-                        byte[] data = baos.toByteArray();
-                        byte[] lenArr = BitUtils.intToBytes(data.length);
-                        outputStream.write(lenArr);
-                        outputStream.flush();
-                        outputStream.write(data);
-                        outputStream.flush();
+                    Runnable r = new Runnable() {
+                        InputStream fileSocketIn = fileSocket.getInputStream();
+                        @Override
+                        public void run() {
+                            while(true) {
+                                synchronized (UpFileHandler.this) {
+                                    String rb = "";
+                                    try {
+                                        rb = IOUtil.readLinStr(fileSocketIn, PropertiesConst.appEncoding);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    if("1".equals(rb)){
+                                        UpFileHandler.this.b = true;
+                                        UpFileHandler.this.notifyAll();
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    ThreadManager.getExecutorService().submit(r);
+
+                    while(true) {
+                        synchronized (this) {
+                            image = robot.createScreenCapture(screenRectangle);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            while(!this.b){
+                                this.wait();
+                            }
+                            ImageIO.write(image, "png", baos);
+                            byte[] data = baos.toByteArray();
+                            byte[] lenArr = BitUtils.intToBytes(data.length);
+                            outputStream.write(lenArr);
+                            outputStream.flush();
+                            outputStream.write(data);
+                            outputStream.flush();
+                            this.b = false;
+                        }
                     }
                 }
             } catch (Exception e) {
