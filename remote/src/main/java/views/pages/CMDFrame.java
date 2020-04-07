@@ -2,12 +2,7 @@ package views.pages;
 
 import handler.Handler;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -27,7 +22,7 @@ public class CMDFrame extends JFrame {
 
     public CMDFrame(){
 
-        JMenu fileMenu = new JMenu("   文件   ");
+        JMenu fileMenu = new JMenu("  File                       ");
         fileMenu.setSize(100,30);
         JMenuItem openMenuItem = new JMenuItem(" 选择连接 ");
         final JMenuItem fileCsMenuItem = new JMenuItem(" 文件传输 ");
@@ -66,6 +61,11 @@ public class CMDFrame extends JFrame {
                         FileListFrame fileListFrame = fileListFrameMap.get(key);
                         fileListFrame.show();
                     }else{
+//                        try {
+//                            UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
+//                        }catch (Exception u){
+//                            u.printStackTrace();
+//                        }
                         final FileListFrame fileListFrame = new FileListFrame(key);
                         fileListFrameMap.put(key,fileListFrame);
                         fileListFrame.addWindowListener(new WindowAdapter() {

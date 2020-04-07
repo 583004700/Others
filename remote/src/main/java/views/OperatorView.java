@@ -2,7 +2,8 @@ package views;
 
 import command.entity.Operator;
 import views.pages.CMDFrame;
-import views.pages.CMDPanel;
+
+import javax.swing.*;
 
 /**
  * cmd常用命令
@@ -20,6 +21,25 @@ import views.pages.CMDPanel;
 public class OperatorView extends Operator{
 
     public static void main(String[] args) {
+        try {
+            JFrame.setDefaultLookAndFeelDecorated(true);
+            UIManager.setLookAndFeel("com.jtattoo.plaf.smart.SmartLookAndFeel");  //还可以
+            //UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel"); //灰黑
+            //UIManager.setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");//不好看
+            //UIManager.setLookAndFeel("com.jtattoo.plaf.aluminium.AluminiumLookAndFeel"); //不好看
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");//不好看，黄亮
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.fast.FastLookAndFeel"); //灰
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.graphite.GraphiteLookAndFeel"); //很难看
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");    //太黑了
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.luna.LunaLookAndFeel");  //还可以
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.mcwin.McWinLookAndFeel");    //mac风格
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");    //还可以
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");    //很黑，需要设置字体为其它颜色
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.texture.TextureLookAndFeel");    //一般
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         CMDFrame cmdFrame = new CMDFrame();
     }
 
