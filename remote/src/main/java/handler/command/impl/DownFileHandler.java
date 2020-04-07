@@ -207,7 +207,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
                     IOUtil.inputToOutput(inputStream, fileOutputStream);
                 }else{
                     //inputStream = new FileInputStream("d:/remotefile/2019081717340485.png");
-                    screenPanel.setImage(inputStream,pw);
+                    screenPanel.setImage(inputStream,DownFileHandler.this.pw);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

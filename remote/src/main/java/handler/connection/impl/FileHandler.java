@@ -7,9 +7,7 @@ import handler.connection.ConnectionHandler;
 import thread.ThreadManager;
 import util.IOUtil;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class FileHandler extends ConnectionHandler implements Runnable{
@@ -134,6 +132,7 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         }
         if (b) {
             System.out.println("服务器文件正在传输...");
+            ThreadManager.getScheduledExecutorService().submit(new DownMessageWrite());
             IOUtil.inputToOutput(upInStream, downOutStream);
         } else {
             System.out.println("文件较验失败，服务器取消传输");
@@ -141,6 +140,28 @@ public class FileHandler extends ConnectionHandler implements Runnable{
         System.out.println("服务器文件传输线程结束");
         close();
 
+    }
+
+    class DownMessageWrite implements Runnable{
+        private BufferedReader downInputReader = IOUtil.wrapBufferedReader(FileHandler.this.downInStream,PropertiesConst.appEncoding);
+        private PrintWriter upPrintWrite = IOUtil.wrapPrintWriter(FileHandler.this.upOutStream,PropertiesConst.appEncoding);
+        @Override
+        public void run() {
+            while(true){
+                String line = null;
+                try {
+                    line = downInputReader.readLine();
+                    if(line == null){
+                        break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    break;
+                }
+                upPrintWrite.println(line);
+                upPrintWrite.flush();
+            }
+        }
     }
 
     private void close(){

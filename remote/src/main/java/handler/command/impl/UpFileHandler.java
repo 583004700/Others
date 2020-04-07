@@ -119,9 +119,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
     class Check implements Runnable {
         private void checkDf() {
             try {
-                System.out.println("up将要read");
                 String otherStr = IOUtil.readLinStr(fileSocket.getInputStream(), PropertiesConst.appEncoding);
-                System.out.println("up read到数据");
                 long length = Long.parseLong(otherStr.split(":")[1]);
                 if(!screenIn) {
                     otherStr = otherStr.split(":")[0];
@@ -151,7 +149,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
         return null;
     }
 
-    private boolean b = true;
+    private volatile boolean b = true;
 
     @Override
     public void run() {
@@ -177,23 +175,23 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                 if(!screenIn) {
                     IOUtil.inputToOutput(inputStream, outputStream);
                 }else{
-
                     Runnable r = new Runnable() {
-                        InputStream fileSocketIn = fileSocket.getInputStream();
+                        InputStream fileSocketIn = UpFileHandler.this.fileSocket.getInputStream();
                         @Override
                         public void run() {
                             while(true) {
-                                synchronized (UpFileHandler.this) {
-                                    String rb = "";
-                                    try {
-                                        rb = IOUtil.readLinStr(fileSocketIn, PropertiesConst.appEncoding);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                String rb = "";
+                                try {
+                                    rb = IOUtil.readLinStr(fileSocketIn,PropertiesConst.appEncoding);
+                                    if(rb == null){
+                                        break;
                                     }
-                                    if("1".equals(rb)){
-                                        UpFileHandler.this.b = true;
-                                        UpFileHandler.this.notifyAll();
-                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    break;
+                                }
+                                if("f".equals(rb)){
+                                    UpFileHandler.this.b = true;
                                 }
                             }
                         }
@@ -202,12 +200,9 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                     ThreadManager.getExecutorService().submit(r);
 
                     while(true) {
-                        synchronized (this) {
+                        while (this.b) {
                             image = robot.createScreenCapture(screenRectangle);
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            while(!this.b){
-                                this.wait();
-                            }
                             ImageIO.write(image, "png", baos);
                             byte[] data = baos.toByteArray();
                             byte[] lenArr = BitUtils.intToBytes(data.length);
