@@ -148,7 +148,7 @@ public class CMDPanel extends Operator implements Runnable{
                         appendContentLn("cmd已退出");
                     }
                 }
-                if(e.isControlDown() && e.getKeyCode()==KeyEvent.VK_ALT){
+                if(e.isControlDown() && e.isShiftDown() && e.getKeyCode()==KeyEvent.VK_ALT){
                     closeConnection();
                 }
             }
