@@ -82,7 +82,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
         getPrintWriter().println(getCompleteCommand());
         getPrintWriter().flush();
         try {
-            fileSocket = new Socket(PropertiesConst.server, PropertiesConst.port);
+            fileSocket = new Socket(getExecutor().getComputer().getServer(), getExecutor().getComputer().getPort());
             ThreadManager.getExecutorService().execute(this.new Check());
             pw = IOUtil.wrapPrintWriter(fileSocket.getOutputStream(), PropertiesConst.appEncoding);
             computer.printMessage("UpFileHandler:" + getCompleteCommand() + ":" + key + ":" + Handler.UPFILE);

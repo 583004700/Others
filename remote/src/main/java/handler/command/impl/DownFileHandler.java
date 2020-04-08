@@ -106,7 +106,7 @@ public class DownFileHandler extends OperatorCommandHandler implements Callable<
             if(screenPanel != null){
                 screenPanel.getScreenFrame().setTitle("正在尝试连接："+screenPanel.getKey());
             }
-            fileSocket = new Socket(PropertiesConst.server,PropertiesConst.port);
+            fileSocket = new Socket(getExecutor().getComputer().getServer(),getExecutor().getComputer().getPort());
 
             ThreadManager.getExecutorService().execute(this.new Check());
 

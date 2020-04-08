@@ -35,7 +35,7 @@ public class Operator extends Computer{
         try {
             socket = new Socket();
             //socket.bind(new InetSocketAddress(PropertiesConst.otherPort));//绑定本地端口
-            socket.connect(new InetSocketAddress(PropertiesConst.server, PropertiesConst.port));//绑定服务器端口
+            socket.connect(new InetSocketAddress(getServer(), getPort()));//绑定服务器端口
             System.out.println("连接服务器成功!!!\nlist:连接列表\noperate:key 选择连接");
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();

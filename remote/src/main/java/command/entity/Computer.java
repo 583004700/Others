@@ -1,5 +1,7 @@
 package command.entity;
 
+import command.PropertiesConst;
+
 import javax.swing.JPanel;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -12,6 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Computer extends JPanel {
+    private String server = PropertiesConst.server;
+    private int port = PropertiesConst.port;
 
     public void printMessage(String message){
         System.out.println(message);
@@ -84,5 +88,19 @@ public class Computer extends JPanel {
         return null;
     }
 
+    public String getServer() {
+        return server;
+    }
 
+    public void setServer(String server) {
+        this.server = server;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 }

@@ -41,8 +41,6 @@ public class OtherComputer extends Computer implements Runnable{
     }
 
     public String key;
-    private String server = PropertiesConst.server;
-    private int port = PropertiesConst.port;
 
     private Socket messageSocket;
     private InputStream inputStream;
@@ -221,22 +219,6 @@ public class OtherComputer extends Computer implements Runnable{
 
     public void setMessageWriter(PrintWriter messageWriter) {
         this.messageWriter = messageWriter;
-    }
-
-    public String getServer() {
-        return server;
-    }
-
-    public void setServer(String server) {
-        this.server = server;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public long getStartTime() {
