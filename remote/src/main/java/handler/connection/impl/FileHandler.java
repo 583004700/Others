@@ -161,6 +161,7 @@ public class FileHandler extends ConnectionHandler implements Runnable{
                 upPrintWrite.println(line);
                 upPrintWrite.flush();
             }
+            System.out.println("服务器退出while");
         }
     }
 

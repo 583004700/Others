@@ -32,6 +32,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
     private long timeOut = 180000;
     private Computer computer;
     private boolean screenIn;
+    private volatile boolean transing = true;
 
     private String key;
 
@@ -184,22 +185,25 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                                 try {
                                     rb = IOUtil.readLinStr(fileSocketIn,PropertiesConst.appEncoding);
                                     if(rb == null){
+                                        UpFileHandler.this.transing = false;
                                         break;
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    UpFileHandler.this.transing  = false;
                                     break;
                                 }
                                 if("f".equals(rb)){
                                     UpFileHandler.this.b = true;
                                 }
                             }
+                            System.out.println("退出while1");
                         }
                     };
 
                     ThreadManager.getExecutorService().submit(r);
 
-                    while(true) {
+                    while(this.transing) {
                         while (this.b) {
                             image = robot.createScreenCapture(screenRectangle);
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -212,7 +216,9 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                             outputStream.flush();
                             this.b = false;
                         }
+                        System.out.println(Thread.currentThread()+"1");
                     }
+                    System.out.println("退出while2");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

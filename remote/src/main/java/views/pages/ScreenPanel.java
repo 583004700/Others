@@ -1,23 +1,19 @@
 package views.pages;
 
-import command.PropertiesConst;
 import command.entity.Operator;
 import handler.Handler;
 import thread.ThreadManager;
-import util.IOUtil;
 
 import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.SocketTimeoutException;
 import java.util.UUID;
 
-public class ScreenPanel extends Operator implements Runnable {
+public class ScreenPanel extends Operator {
 
     private JLabel jlbImg;
 
@@ -28,27 +24,16 @@ public class ScreenPanel extends Operator implements Runnable {
 
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-    private volatile boolean transportationed;
-
-    private volatile boolean started;
-
     public ScreenPanel(String key, ScreenFrame screenFrame) {
         this.jlbImg = new JLabel();
         this.key = key.intern();
         this.add(jlbImg);
         this.screenFrame = screenFrame;
         this.setSize(screenSize.width, screenSize.height);
-        runWhile();
-    }
 
-    public void connect() {
         super.connect();
-        try {
-            ThreadManager.getExecutorService().execute(this);
-            Thread.sleep(100);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        setConnected(true);
+        submitScrrentIn();
     }
 
     public void submitScrrentIn() {
@@ -101,95 +86,18 @@ public class ScreenPanel extends Operator implements Runnable {
         }
     }
 
-    @Override
-    public void init() {
-        started = true;
-    }
-
-    public void reConnection() {
-        closeConnection();
-        connect();
-    }
-
-    public void reSelect() {
-        submitScrrentIn();
-    }
-
-    @Override
-    public void run() {
-        runMessage();
-    }
-
-    public void runWhile() {
-        Runnable r1 = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                while (ScreenPanel.this.started) {
-                    try {
-                        if (!getTransportationed()) {
-                            setTransportationed(true);
-                            if(!getConnected()) {
-                                reConnection();
-                                Thread.sleep(5000);
-                            }
-                            reSelect();
-                        }
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        ThreadManager.getExecutorService().submit(r1);
-    }
-
-    public void runMessage() {
-        BufferedReader br = null;
-        br = IOUtil.wrapBufferedReader(getInputStream(), PropertiesConst.appEncoding);
-        while (started) {
-            String result = null;
-            try {
-                result = br.readLine();
-                System.out.println("result:" + result);
-                if (result != null) {
-                    if (result.contains("已连接:")) {
-                        this.setConnected(true);
-                        System.out.println("已连接到服务器");
-                    } else if (result.contains("选择连接失败")) {
-                        setTransportationed(false);
-                    }
-                }
-            } catch (SocketTimeoutException s) {
-                result = "";
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (result == null) {
-                setTransportationed(false);
-                break;
-            }
-        }
-    }
-
     public void stop() {
         try {
-            setTransportationed(false);
             if (tranInputStream != null) {
                 this.tranInputStream.close();
             }
+            closeConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void exitT() {
-        started = false;
         stop();
     }
 
@@ -219,14 +127,6 @@ public class ScreenPanel extends Operator implements Runnable {
 
     public static void setScreenSize(Dimension screenSize) {
         ScreenPanel.screenSize = screenSize;
-    }
-
-    public boolean getTransportationed() {
-        return transportationed;
-    }
-
-    public void setTransportationed(boolean transportationed) {
-        this.transportationed = transportationed;
     }
 
     public String getKey() {
