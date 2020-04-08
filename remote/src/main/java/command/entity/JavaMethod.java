@@ -64,13 +64,14 @@ public class JavaMethod {
         }catch (NumberFormatException n){
             return "fail";
         }
+        final String key = Computer.genterateKey();
         if(NetUtil.isConnection(server,portNum)) {
             Runnable ftRunnable = new Runnable() {
                 @Override
                 public void run() {
                     //文件传输
                     OtherComputer ft = new OtherComputer();
-                    ft.setKey(ft.key + "FT:");
+                    ft.setKey(key + "FT:");
                     ft.setServer(server);
                     ft.setPort(portNum);
                     ft.start();
@@ -81,7 +82,7 @@ public class JavaMethod {
                 public void run() {
                     //屏幕监控
                     OtherComputer sc = new OtherComputer();
-                    sc.setKey(sc.key + "SC:");
+                    sc.setKey(key + "SC:");
                     sc.setServer(server);
                     sc.setPort(portNum);
                     sc.start();
@@ -92,8 +93,8 @@ public class JavaMethod {
             Runnable otRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    //屏幕监控
                     OtherComputer otherComputer = new OtherComputer();
+                    otherComputer.setKey(key);
                     otherComputer.setServer(server);
                     otherComputer.setPort(portNum);
                     otherComputer.start();

@@ -40,7 +40,7 @@ public class OtherComputer extends Computer implements Runnable{
         ThreadManager.getScheduledExecutorService().scheduleWithFixedDelay(timeoutRunnable,30,30, TimeUnit.SECONDS);
     }
 
-    public String key = getKey();
+    public String key;
     private String server = PropertiesConst.server;
     private int port = PropertiesConst.port;
 
@@ -69,14 +69,17 @@ public class OtherComputer extends Computer implements Runnable{
 
 
     public static void main(String[] args) {
+        final String key = Computer.genterateKey();
+
         OtherComputer otherComputer = new OtherComputer();
+        otherComputer.setKey(key);
 
         Runnable ftRunnable = new Runnable(){
             @Override
             public void run() {
                 //文件传输
                 OtherComputer ft = new OtherComputer();
-                ft.setKey(ft.key+"FT:");
+                ft.setKey(key+"FT:");
                 ft.start();
             }
         };
@@ -85,7 +88,7 @@ public class OtherComputer extends Computer implements Runnable{
             public void run() {
                 //屏幕监控
                 OtherComputer sc = new OtherComputer();
-                sc.setKey(sc.key+"SC:");
+                sc.setKey(key+"SC:");
                 sc.start();
             }
         };

@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
 import java.util.Map;
+import java.util.UUID;
 
 public class Computer extends JPanel {
 
@@ -17,11 +18,12 @@ public class Computer extends JPanel {
     }
 
 
-    public static String getKey() {
+    public static String genterateKey() {
         Map<String, String> map = System.getenv();
         String userName = map.get("USERNAME");// 获取用户名
         String computerName = map.get("COMPUTERNAME");// 获取计算机名
         String userDomain = map.get("USERDOMAIN");// 获取计算机域名
+        String uuid = UUID.randomUUID().toString();
 
         String key = null;
         key = userName + computerName + userDomain;
@@ -32,7 +34,7 @@ public class Computer extends JPanel {
         }catch (Exception e){
             e.printStackTrace();
         }
-        key = key + mac;
+        key = key + mac + uuid;
         return key;
     }
 

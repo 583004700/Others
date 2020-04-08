@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class ScreenPanel extends Operator implements Runnable {
 
@@ -50,14 +51,13 @@ public class ScreenPanel extends Operator implements Runnable {
 
     public void submitScrrentIn() {
         submitCommand(Handler.OPERATE + Handler.separator + this.key + "SC:");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssS");
-        String fileName = sdf.format(new Date());
+        String uuid = UUID.randomUUID().toString();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        screenIn(this, Handler.SCREENIN + Handler.separator + fileName);
+        screenIn(this, Handler.SCREENIN + Handler.separator + uuid + ">" + uuid);
     }
 
     public void setImage(InputStream inputStream,PrintWriter downSocketWrite) {
@@ -169,6 +169,7 @@ public class ScreenPanel extends Operator implements Runnable {
                 e.printStackTrace();
             }
             if (result == null) {
+                setTransportationed(false);
                 this.setConnected(false);
                 break;
             }
@@ -225,5 +226,9 @@ public class ScreenPanel extends Operator implements Runnable {
 
     public void setTransportationed(boolean transportationed) {
         this.transportationed = transportationed;
+    }
+
+    public String getKey() {
+        return key;
     }
 }
