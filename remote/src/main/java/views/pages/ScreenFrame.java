@@ -16,17 +16,17 @@ public class ScreenFrame extends JFrame{
     private CMDFrame cmdFrame;
 
     public ScreenFrame(String key,CMDFrame cmdFrame){
+        this.setSize(screenSize.width,screenSize.height);
         this.cmdFrame = cmdFrame;
         this.key = key;
         screenPanel = new ScreenPanel(key,this);
         screenPanel.setKey(this.key);
         this.add(screenPanel);
 
-        this.setSize(screenSize.width,screenSize.height);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
-        this.setResizable(false);
+        this.setResizable(true);
     }
 
     public void stopRemoteFileT(){

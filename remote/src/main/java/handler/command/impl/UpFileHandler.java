@@ -207,7 +207,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                         while (this.b) {
                             image = robot.createScreenCapture(screenRectangle);
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            ImageIO.write(image, "png", baos);
+                            ImageIO.write(image, "jpg", baos);
                             byte[] data = baos.toByteArray();
                             byte[] lenArr = BitUtils.intToBytes(data.length);
                             outputStream.write(lenArr);

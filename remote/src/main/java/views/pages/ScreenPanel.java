@@ -25,12 +25,11 @@ public class ScreenPanel extends Operator {
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public ScreenPanel(String key, ScreenFrame screenFrame) {
+        this.screenFrame = screenFrame;
+        this.setSize(screenFrame.getSize());
         this.jlbImg = new JLabel();
         this.key = key.intern();
         this.add(jlbImg);
-        this.screenFrame = screenFrame;
-        this.setSize(screenSize.width, screenSize.height);
-
         super.connect();
         setConnected(true);
         submitScrrentIn();
@@ -73,7 +72,7 @@ public class ScreenPanel extends Operator {
                     readLength += len;
                     //System.out.println("readLength:"+readLength);
                 }
-                ThreadManager.getExecutorService().submit(new SetImageThread(jlbImg).setByteArrayOutputStream(byteArrayOutputStream));
+                ThreadManager.getExecutorService().submit(new SetImageThread(this,jlbImg).setByteArrayOutputStream(byteArrayOutputStream));
                 downSocketWrite.println("f");
                 downSocketWrite.flush();
             }
