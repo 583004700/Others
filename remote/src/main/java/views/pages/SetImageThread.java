@@ -3,7 +3,6 @@ package views.pages;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import java.io.ByteArrayOutputStream;
@@ -12,16 +11,16 @@ import java.io.ByteArrayOutputStream;
 @Accessors(chain = true)
 public class SetImageThread implements Runnable{
     private ByteArrayOutputStream byteArrayOutputStream;
-    private ScreeningImageLabel jlbImg;
+    private JLabel jlbImg;
 
-    public SetImageThread(ScreeningImageLabel jlbImg){
+    public SetImageThread(JLabel jlbImg){
         this.jlbImg = jlbImg;
     }
 
     @Override
     public void run() {
-        Image icon = new ImageIcon(byteArrayOutputStream.toByteArray());
+        ImageIcon icon = new ImageIcon(byteArrayOutputStream.toByteArray());
         //icon.setImage(icon.getImage().getScaledInstance(this.imgWidth, this.imgHeight, Image.SCALE_DEFAULT));
-        jlbImg.setImage(icon);
+        jlbImg.setIcon(icon);
     }
 }

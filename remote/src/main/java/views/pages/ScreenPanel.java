@@ -25,7 +25,7 @@ public class ScreenPanel extends Operator {
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public ScreenPanel(String key, ScreenFrame screenFrame) {
-        this.jlbImg = new ScreeningImageLabel();
+        this.jlbImg = new JLabel();
         this.key = key.intern();
         this.add(jlbImg);
         this.screenFrame = screenFrame;
