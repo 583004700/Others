@@ -29,7 +29,7 @@ import java.net.Socket;
 public class UpFileHandler extends OtherCommandHandler implements Runnable {
     private volatile boolean success = true;
     private volatile boolean finish = false;
-    private long timeOut = 180000;
+    private final long timeOut = 180000;
     private Computer computer;
     private boolean screenIn;
     private volatile boolean transing = true;
@@ -195,6 +195,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                                 }
                                 if("f".equals(rb)){
                                     UpFileHandler.this.b = true;
+
                                 }
                             }
                             System.out.println("退出while1");
@@ -203,8 +204,14 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
 
                     ThreadManager.getExecutorService().submit(r);
 
+                    long startT = System.currentTimeMillis();
                     while(this.transing) {
+                        if(System.currentTimeMillis() - startT > timeOut){
+                            UpFileHandler.this.transing  = false;
+                            break;
+                        }
                         while (this.b) {
+                            startT = System.currentTimeMillis();
                             image = robot.createScreenCapture(screenRectangle);
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             ImageIO.write(image, "jpg", baos);
