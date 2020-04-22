@@ -3,6 +3,7 @@ package views.pages;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
