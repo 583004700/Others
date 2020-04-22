@@ -2,16 +2,22 @@ package views.pages;
 
 import command.entity.Operator;
 import handler.Handler;
-import thread.ThreadManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.UUID;
 
 public class ScreenPanel extends Operator {
@@ -48,21 +54,18 @@ public class ScreenPanel extends Operator {
             MouseMotionListener mouseMotionListener = null;
 
             @Override
-            public void mousePressed(MouseEvent e1) {
-                final int oldX = e1.getX();
-                final int oldY = e1.getY();
-                System.out.println("oldX"+oldX);
-                System.out.println("oldY"+oldY);
-
+            public void mousePressed(final MouseEvent e1) {
                 mouseMotionListener = new MouseMotionAdapter() {
+                    int oldX = e1.getX();
+                    int oldY = e1.getY();
                     public void mouseDragged(MouseEvent e) {
                         int rightMove = e.getX() - oldX;
                         int bottomMove = e.getY() - oldY;
                         ScreenPanel.this.x+=rightMove;
                         ScreenPanel.this.y+=bottomMove;
-                        System.out.println("ScreenPanel.this.x"+ScreenPanel.this.x);
-                        System.out.println("rightMove"+rightMove);
-                        System.out.println("bottomMove"+bottomMove);
+                        ScreenPanel.this.repaint();
+                        oldX = e.getX();
+                        oldY = e.getY();
                     }
                 };
                 ScreenPanel.this.addMouseMotionListener(mouseMotionListener);
@@ -142,9 +145,8 @@ public class ScreenPanel extends Operator {
 
     @Override
     public void paint(Graphics g) {
-        System.out.println("paintx"+x);
         g.clearRect(0, 0, this.getWidth(),this.getHeight());
-        g.drawImage(image, x, y, this.getWidth(),this.getHeight(), null);
+        g.drawImage(image, x, y, image.getWidth(this),image.getHeight(this), null);
     }
 
     public void stop() {
