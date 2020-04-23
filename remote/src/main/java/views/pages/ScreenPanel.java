@@ -157,24 +157,28 @@ public class ScreenPanel extends Operator {
             int imageHeight = image.getHeight(this);
             int panelWidth = this.getWidth();
             int panelHeight = this.getHeight();
-
             if(this.x > 0){
                 this.x = 0;
             }
             if(this.y > 0){
                 this.y = 0;
             }
-            if(this.x < panelWidth - imageWidth){
-                this.x = panelWidth - imageWidth;
+            int width = 0;
+            int height = 0;
+            if(imageSize){
+                width = imageWidth;
+                height = imageHeight;
+            }else{
+                width = panelWidth;
+                height = panelHeight;
             }
-            if(this.y < panelHeight - imageHeight){
-                this.y = panelHeight - imageHeight;
+            if(this.x < panelWidth - width){
+                this.x = panelWidth - width;
             }
-            if (imageSize) {
-                g.drawImage(image, x, y,imageWidth , imageHeight, null);
-            } else {
-                g.drawImage(image, x, y, panelWidth, panelHeight, null);
+            if(this.y < panelHeight - height){
+                this.y = panelHeight - height;
             }
+            g.drawImage(image, x, y,width , height, null);
         }
     }
 
