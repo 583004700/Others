@@ -9,10 +9,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +29,10 @@ public class ScreenPanel extends Operator {
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     private Image image;
+    private static final int MOD_MASK = MouseEvent.CTRL_MASK
+            | MouseEvent.SHIFT_MASK | MouseEvent.ALT_MASK
+            | MouseEvent.META_MASK | MouseEvent.ALT_GRAPH_MASK;
+    private volatile boolean imageSize = true;
 
     public ScreenPanel(String key, ScreenFrame screenFrame) {
         this.screenFrame = screenFrame;
@@ -48,7 +49,12 @@ public class ScreenPanel extends Operator {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                if((e.getModifiers() & MOD_MASK) == e.CTRL_MASK){
+                    ScreenPanel.this.imageSize = !ScreenPanel.this.imageSize;
+                    ScreenPanel.this.x = 0;
+                    ScreenPanel.this.y = 0;
+                    ScreenPanel.this.repaint();
+                }
             }
 
             MouseMotionListener mouseMotionListener = null;
@@ -145,8 +151,35 @@ public class ScreenPanel extends Operator {
 
     @Override
     public void paint(Graphics g) {
-        g.clearRect(0, 0, this.getWidth(),this.getHeight());
-        g.drawImage(image, x, y, image.getWidth(this),image.getHeight(this), null);
+        if(image != null) {
+            g.clearRect(0, 0, this.getWidth(), this.getHeight());
+            int imageWidth = image.getWidth(this);
+            int imageHeight = image.getHeight(this);
+            int panelWidth = this.getWidth();
+            int panelHeight = this.getHeight();
+            if(this.x > 0){
+                this.x = 0;
+            }
+            if(this.y > 0){
+                this.y = 0;
+            }
+            int width = 0;
+            int height = 0;
+            if(imageSize){
+                width = imageWidth;
+                height = imageHeight;
+            }else{
+                width = panelWidth;
+                height = panelHeight;
+            }
+            if(this.x < panelWidth - width){
+                this.x = panelWidth - width;
+            }
+            if(this.y < panelHeight - height){
+                this.y = panelHeight - height;
+            }
+            g.drawImage(image, x, y,width , height, null);
+        }
     }
 
     public void stop() {

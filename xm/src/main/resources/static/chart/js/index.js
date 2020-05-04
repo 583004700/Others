@@ -305,13 +305,13 @@ ChartWindow.prototype = {
             alert("不能发送空消息");
             return;
         }
+		var chartDate = new Date().getTime();
         var chartRecord = {
             "chartFrom": this.currentUser.id,
             "chartTo": this.otherUser.id,
             "chartText": messageText,
             "chartDate": chartDate
         };
-        var chartDate = new Date().getTime();
         this.currentUser.addOneChartRecord(chartRecord, this.otherUser);
         ChartRecord.addChartRecord(chartRecord);
         //将聊天窗口定位到最新位置
@@ -325,16 +325,15 @@ ChartWindow.prototype = {
         socket.send(JSON.stringify(sendMessageObj));
     },
     receiveMessage: function(fromUserId,messageText){
+		var chartDate = new Date().getTime();
         var chartRecord = {
             "chartFrom": fromUserId,
             "chartTo": this.currentUser.id,
             "chartText": messageText,
             "chartDate": chartDate
         };
-        var chartDate = new Date().getTime();
         this.currentUser.addOneChartRecord(chartRecord, this.otherUser);
-        //接收到的消息和发送的是同一条记录，所以不用添加再次
-        //ChartRecord.addChartRecord(chartRecord);
+        ChartRecord.addChartRecord(chartRecord);
         var fromUser = this.userMap[fromUserId];
         fromUser.lastChartRecord = chartRecord;
         $(fromUser.leftElements).find(".user_message").html(fromUser.lastChartRecord.chartText);
