@@ -53,4 +53,8 @@ public interface Handler{
 
     String keyPress = "keyPress";
     String keyRelease = "keyRelease";
+    String mousePress = "mousePress";
+    String mouseRelease = "mouseRelease";
+    String mouseWheelMove = "mouseWheelMove";
+    String mouseMove = "mouseMove";
 }

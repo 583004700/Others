@@ -9,12 +9,20 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 public class ScreenPanel extends Operator {
@@ -65,7 +73,7 @@ public class ScreenPanel extends Operator {
                     mouseMotionListener = new MouseMotionAdapter() {
                         int oldX = e1.getX();
                         int oldY = e1.getY();
-
+                        @Override
                         public void mouseDragged(MouseEvent e) {
                             int rightMove = e.getX() - oldX;
                             int bottomMove = e.getY() - oldY;
@@ -96,6 +104,7 @@ public class ScreenPanel extends Operator {
             });
         }else{
             imageSize = false;
+            this.setFocusable(true);
             this.addKeyListener(new KeyListener() {
                 @Override
                 public void keyTyped(KeyEvent e) {
@@ -112,6 +121,74 @@ public class ScreenPanel extends Operator {
                 public void keyReleased(KeyEvent e) {
                     int keyCode = e.getKeyCode();
                     submitCommand(Handler.keyRelease+Handler.separator+keyCode);
+                }
+            });
+            this.addMouseListener(new MouseAdapter() {
+                MouseMotionListener mouseMotionListener = null;
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    int button = e.getButton();
+                    submitCommand(Handler.mousePress+Handler.separator+button);
+                    mouseMotionListener = new MouseMotionAdapter() {
+                        @Override
+                        public void mouseDragged(MouseEvent e) {
+                            if(ScreenPanel.this.image != null) {
+                                int x = e.getX();
+                                int y = e.getY();
+                                int imageWidth = ScreenPanel.this.getWidth();
+                                int imageHeight = ScreenPanel.this.getHeight();
+                                BigDecimal decimal1 = new BigDecimal(x);
+                                BigDecimal decimal2 = new BigDecimal(imageWidth);
+                                BigDecimal decimal3 = new BigDecimal(y);
+                                BigDecimal decimal4 = new BigDecimal(imageHeight);
+                                double leftBfb = decimal1.divide(decimal2, 20, RoundingMode.HALF_DOWN).doubleValue();
+                                double bottomBfb = decimal3.divide(decimal4, 20,RoundingMode.HALF_DOWN).doubleValue();
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e1) {
+                                    e1.printStackTrace();
+                                }
+                                submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+                            }
+                        }
+                    };
+                    ScreenPanel.this.addMouseMotionListener(mouseMotionListener);
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    ScreenPanel.this.removeMouseMotionListener(mouseMotionListener);
+                    int button = e.getButton();
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                    submitCommand(Handler.mouseRelease+Handler.separator+button);
+                }
+            });
+
+            this.addMouseMotionListener(new MouseAdapter() {
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    if(ScreenPanel.this.image != null) {
+                        int x = e.getX();
+                        int y = e.getY();
+                        int imageWidth = ScreenPanel.this.getWidth();
+                        int imageHeight = ScreenPanel.this.getHeight();
+                        BigDecimal decimal1 = new BigDecimal(x);
+                        BigDecimal decimal2 = new BigDecimal(imageWidth);
+                        BigDecimal decimal3 = new BigDecimal(y);
+                        BigDecimal decimal4 = new BigDecimal(imageHeight);
+                        double leftBfb = decimal1.divide(decimal2, 20, RoundingMode.HALF_DOWN).doubleValue();
+                        double bottomBfb = decimal3.divide(decimal4, 20,RoundingMode.HALF_DOWN).doubleValue();
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                        submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+                    }
                 }
             });
         }

@@ -223,7 +223,7 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                             outputStream.flush();
                             this.b = false;
                         }
-                        System.out.println(Thread.currentThread()+"1");
+//                        System.out.println(Thread.currentThread()+"1");
                     }
                     System.out.println("退出while2");
                 }

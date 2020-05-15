@@ -38,7 +38,10 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
         }
         if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix)
                 || Handler.OPERATE.equals(prefix)
-                || Handler.LIST.equals(prefix) || Handler.keyPress.equals(prefix)){
+                || Handler.LIST.equals(prefix) || Handler.keyPress.equals(prefix)
+                || Handler.keyRelease.equals(prefix) || Handler.mousePress.equals(prefix)
+                || Handler.mouseRelease.equals(prefix) || Handler.mouseMove.equals(prefix)
+        ||Handler.mouseWheelMove.equals(prefix)){
             if(Handler.OPERATE.equals(getPrefix())){
                 this.getOperator().setOtherKey(getCommand());
             }

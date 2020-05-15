@@ -35,7 +35,10 @@ public class OtherExecutor extends BaseExecutor implements Runnable{
             handler = new CmdReceiveIngHandler(this,getCompleteCommand());
         }else if(Handler.JAVA.equals(prefix)){
             handler = new JavaMethodHandler(getCompleteCommand(),this);
-        }else if(Handler.keyPress.equals(prefix)){
+        }else if(Handler.keyPress.equals(prefix)
+                || Handler.keyRelease.equals(prefix) || Handler.mousePress.equals(prefix)
+                || Handler.mouseRelease.equals(prefix) || Handler.mouseMove.equals(prefix)
+                ||Handler.mouseWheelMove.equals(prefix)){
             handler = new KeyOtherHandler(getCompleteCommand(),this);
         }
         return handler;
