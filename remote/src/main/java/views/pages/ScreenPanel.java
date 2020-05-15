@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.util.UUID;
 
 public class ScreenPanel extends Operator {
+    private boolean kz;
 
     private JLabel jlbImg;
 
@@ -34,7 +35,8 @@ public class ScreenPanel extends Operator {
             | MouseEvent.META_MASK | MouseEvent.ALT_GRAPH_MASK;
     private volatile boolean imageSize = true;
 
-    public ScreenPanel(String key, ScreenFrame screenFrame) {
+    public ScreenPanel(boolean kz,String key, ScreenFrame screenFrame) {
+        this.kz = kz;
         this.screenFrame = screenFrame;
         this.setSize(screenFrame.getSize());
         this.jlbImg = new JLabel();
@@ -44,54 +46,75 @@ public class ScreenPanel extends Operator {
         setConnected(true);
         submitScrrentIn();
 
-        this.addMouseListener(new MouseListener() {
-
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if((e.getModifiers() & MOD_MASK) == e.CTRL_MASK){
-                    ScreenPanel.this.imageSize = !ScreenPanel.this.imageSize;
-                    ScreenPanel.this.x = 0;
-                    ScreenPanel.this.y = 0;
-                    ScreenPanel.this.repaint();
-                }
-            }
-
-            MouseMotionListener mouseMotionListener = null;
-
-            @Override
-            public void mousePressed(final MouseEvent e1) {
-                mouseMotionListener = new MouseMotionAdapter() {
-                    int oldX = e1.getX();
-                    int oldY = e1.getY();
-                    public void mouseDragged(MouseEvent e) {
-                        int rightMove = e.getX() - oldX;
-                        int bottomMove = e.getY() - oldY;
-                        ScreenPanel.this.x+=rightMove;
-                        ScreenPanel.this.y+=bottomMove;
+        if(!this.kz) {
+            this.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if ((e.getModifiers() & MOD_MASK) == e.CTRL_MASK) {
+                        ScreenPanel.this.imageSize = !ScreenPanel.this.imageSize;
+                        ScreenPanel.this.x = 0;
+                        ScreenPanel.this.y = 0;
                         ScreenPanel.this.repaint();
-                        oldX = e.getX();
-                        oldY = e.getY();
                     }
-                };
-                ScreenPanel.this.addMouseMotionListener(mouseMotionListener);
-            }
+                }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                ScreenPanel.this.removeMouseMotionListener(mouseMotionListener);
-            }
+                MouseMotionListener mouseMotionListener = null;
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
+                @Override
+                public void mousePressed(final MouseEvent e1) {
+                    mouseMotionListener = new MouseMotionAdapter() {
+                        int oldX = e1.getX();
+                        int oldY = e1.getY();
 
-            }
+                        public void mouseDragged(MouseEvent e) {
+                            int rightMove = e.getX() - oldX;
+                            int bottomMove = e.getY() - oldY;
+                            ScreenPanel.this.x += rightMove;
+                            ScreenPanel.this.y += bottomMove;
+                            ScreenPanel.this.repaint();
+                            oldX = e.getX();
+                            oldY = e.getY();
+                        }
+                    };
+                    ScreenPanel.this.addMouseMotionListener(mouseMotionListener);
+                }
 
-            @Override
-            public void mouseExited(MouseEvent e) {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    ScreenPanel.this.removeMouseMotionListener(mouseMotionListener);
+                }
 
-            }
-        });
+                @Override
+                public void mouseEntered(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+
+                }
+            });
+        }else{
+            imageSize = false;
+            this.addKeyListener(new KeyListener() {
+                @Override
+                public void keyTyped(KeyEvent e) {
+
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    int keyCode = e.getKeyCode();
+                    submitCommand(Handler.keyPress+Handler.separator+keyCode);
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    int keyCode = e.getKeyCode();
+                    submitCommand(Handler.keyRelease+Handler.separator+keyCode);
+                }
+            });
+        }
     }
 
     public void submitScrrentIn() {

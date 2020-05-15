@@ -19,6 +19,7 @@ public class CMDFrame extends JFrame {
 
     private static Map<String,FileListFrame> fileListFrameMap = new ConcurrentHashMap<String, FileListFrame>();
     private static Map<String,ScreenFrame> screenFrameMap = new ConcurrentHashMap<String, ScreenFrame>();
+    private static Map<String,ScreenFrame> remoteControllerFrameMap = new ConcurrentHashMap<String, ScreenFrame>();
 
     public CMDFrame(){
 
@@ -27,6 +28,7 @@ public class CMDFrame extends JFrame {
         JMenuItem openMenuItem = new JMenuItem(" 选择连接 ");
         final JMenuItem fileCsMenuItem = new JMenuItem(" 文件传输 ");
         final JMenuItem screenMenuItem = new JMenuItem(" 屏幕监控 ");
+        final JMenuItem remoteControllerMenuItem = new JMenuItem(" 远程控制 ");
         final JMenuItem addNetMenuItem = new JMenuItem(" 添加Server ");
         JMenuItem screenTr = new JMenuItem(" 截图上传 ");
 
@@ -95,17 +97,40 @@ public class CMDFrame extends JFrame {
                         ScreenFrame fileListFrame = screenFrameMap.get(key);
                         fileListFrame.show();
                     }else{
-                        final ScreenFrame screenFrame = new ScreenFrame(key,CMDFrame.this);
+                        final ScreenFrame screenFrame = new ScreenFrame(false,key,CMDFrame.this);
                         screenFrameMap.put(key,screenFrame);
                         screenFrame.addWindowListener(new WindowAdapter() {
                             @Override
                             public void windowClosing(WindowEvent e) {
-                                int value = JOptionPane.showConfirmDialog(null, "确定要关闭吗？");
-                                if (value == JOptionPane.OK_OPTION) {
-                                    screenFrame.stopRemoteFileT();
-                                    screenFrame.dispose();
-                                    CMDFrame.screenFrameMap.remove(key);
-                                }
+                                screenFrame.stopRemoteFileT();
+                                screenFrame.dispose();
+                                CMDFrame.screenFrameMap.remove(key);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        remoteControllerMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(getCurrentSelectTab() == null || "".equals(getCurrentSelectTab().getCurrentConnectKey())) {
+                    JOptionPane.showMessageDialog(CMDFrame.this, "请先选中连接!");
+                }else{
+                    final String key = getCurrentSelectTab().getCurrentConnectKey();
+                    if(remoteControllerFrameMap.containsKey(key)) {
+                        ScreenFrame fileListFrame = remoteControllerFrameMap.get(key);
+                        fileListFrame.show();
+                    }else{
+                        final ScreenFrame screenFrame = new ScreenFrame(true,key,CMDFrame.this);
+                        remoteControllerFrameMap.put(key,screenFrame);
+                        screenFrame.addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent e) {
+                                screenFrame.stopRemoteFileT();
+                                screenFrame.dispose();
+                                CMDFrame.remoteControllerFrameMap.remove(key);
                             }
                         });
                     }
@@ -128,6 +153,7 @@ public class CMDFrame extends JFrame {
         fileMenu.add(fileCsMenuItem);
         fileMenu.add(screenTr);
         fileMenu.add(screenMenuItem);
+        fileMenu.add(remoteControllerMenuItem);
         fileMenu.add(addNetMenuItem);
         jMenuBar.add(fileMenu);
 

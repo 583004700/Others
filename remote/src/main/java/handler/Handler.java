@@ -50,4 +50,7 @@ public interface Handler{
     //删除文件或文件夹
     String deleteFiles = "deleteFiles>";
     String addNet = "addNet>";
+
+    String keyPress = "keyPress";
+    String keyRelease = "keyRelease";
 }

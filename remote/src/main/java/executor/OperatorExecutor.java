@@ -36,7 +36,9 @@ public class OperatorExecutor extends BaseExecutor implements Runnable{
             System.out.println("请先选择连接---------");
             return null;
         }
-        if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix) || Handler.OPERATE.equals(prefix) || Handler.LIST.equals(prefix)){
+        if(Handler.CMD.equals(prefix) || Handler.JAVA.equals(prefix)
+                || Handler.OPERATE.equals(prefix)
+                || Handler.LIST.equals(prefix) || Handler.keyPress.equals(prefix)){
             if(Handler.OPERATE.equals(getPrefix())){
                 this.getOperator().setOtherKey(getCommand());
             }

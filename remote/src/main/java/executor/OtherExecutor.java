@@ -35,6 +35,8 @@ public class OtherExecutor extends BaseExecutor implements Runnable{
             handler = new CmdReceiveIngHandler(this,getCompleteCommand());
         }else if(Handler.JAVA.equals(prefix)){
             handler = new JavaMethodHandler(getCompleteCommand(),this);
+        }else if(Handler.keyPress.equals(prefix)){
+            handler = new KeyOtherHandler(getCompleteCommand(),this);
         }
         return handler;
     }
