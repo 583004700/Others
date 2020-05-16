@@ -37,6 +37,8 @@ public class ScreenPanel extends Operator {
 
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
+    private PrintWriter downSocketWrite;
+
     private Image image;
     private static final int MOD_MASK = MouseEvent.CTRL_MASK
             | MouseEvent.SHIFT_MASK | MouseEvent.ALT_MASK
@@ -114,13 +116,15 @@ public class ScreenPanel extends Operator {
                 @Override
                 public void keyPressed(KeyEvent e) {
                     int keyCode = e.getKeyCode();
-                    submitCommand(Handler.keyPress+Handler.separator+keyCode);
+                    //submitCommand(Handler.keyPress+Handler.separator+keyCode);
+                    sendMessage(Handler.keyPress+Handler.separator+keyCode);
                 }
 
                 @Override
                 public void keyReleased(KeyEvent e) {
                     int keyCode = e.getKeyCode();
-                    submitCommand(Handler.keyRelease+Handler.separator+keyCode);
+                    //submitCommand(Handler.keyRelease+Handler.separator+keyCode);
+                    sendMessage(Handler.keyRelease+Handler.separator+keyCode);
                 }
             });
             this.addMouseListener(new MouseAdapter() {
@@ -128,7 +132,8 @@ public class ScreenPanel extends Operator {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     int button = e.getButton();
-                    submitCommand(Handler.mousePress+Handler.separator+button);
+                    //submitCommand(Handler.mousePress+Handler.separator+button);
+                    sendMessage(Handler.mousePress+Handler.separator+button);
                     mouseMotionListener = new MouseMotionAdapter() {
                         @Override
                         public void mouseDragged(MouseEvent e) {
@@ -148,7 +153,8 @@ public class ScreenPanel extends Operator {
                                 } catch (InterruptedException e1) {
                                     e1.printStackTrace();
                                 }
-                                submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+                                //submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+                                sendMessage(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
                             }
                         }
                     };
@@ -159,12 +165,8 @@ public class ScreenPanel extends Operator {
                 public void mouseReleased(MouseEvent e) {
                     ScreenPanel.this.removeMouseMotionListener(mouseMotionListener);
                     int button = e.getButton();
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                    submitCommand(Handler.mouseRelease+Handler.separator+button);
+                    //submitCommand(Handler.mouseRelease+Handler.separator+button);
+                    sendMessage(Handler.mouseRelease+Handler.separator+button);
                 }
             });
 
@@ -180,14 +182,15 @@ public class ScreenPanel extends Operator {
                         BigDecimal decimal2 = new BigDecimal(imageWidth);
                         BigDecimal decimal3 = new BigDecimal(y);
                         BigDecimal decimal4 = new BigDecimal(imageHeight);
-                        double leftBfb = decimal1.divide(decimal2, 20, RoundingMode.HALF_DOWN).doubleValue();
-                        double bottomBfb = decimal3.divide(decimal4, 20,RoundingMode.HALF_DOWN).doubleValue();
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
-                        submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+                        double leftBfb = decimal1.divide(decimal2, 100, RoundingMode.HALF_DOWN).doubleValue();
+                        double bottomBfb = decimal3.divide(decimal4, 100,RoundingMode.HALF_DOWN).doubleValue();
+//                        try {
+//                            Thread.sleep(10);
+//                        } catch (InterruptedException e1) {
+//                            e1.printStackTrace();
+//                        }
+                        //submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+                        sendMessage(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
                     }
                 }
             });
@@ -206,6 +209,7 @@ public class ScreenPanel extends Operator {
     }
 
     public void setImage(InputStream inputStream,PrintWriter downSocketWrite) {
+        this.downSocketWrite = downSocketWrite;
         this.screenFrame.setTitle("已连接：" + this.key + "   正在获取屏幕...");
         this.tranInputStream = inputStream;
         try {

@@ -11,8 +11,10 @@ public abstract class CommandHandler extends BaseHandler {
 
     public CommandHandler(String completeCommand, BaseExecutor executor) {
         super(completeCommand);
-        this.executor = executor;
-        this.printWriter = getExecutor().getComputer().getPrintWriter();
+        if(executor != null) {
+            this.executor = executor;
+            this.printWriter = getExecutor().getComputer().getPrintWriter();
+        }
     }
 
     public PrintWriter getPrintWriter() {

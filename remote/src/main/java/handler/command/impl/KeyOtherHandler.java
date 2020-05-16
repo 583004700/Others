@@ -34,30 +34,34 @@ public class KeyOtherHandler extends OtherCommandHandler implements Runnable{
     @Override
     public void run() {
         synchronized (rebot) {
-            String prefix = getPrefix();
-            String command = getCommand();
-            if (Handler.keyPress.equals(prefix)) {
-                int k = Integer.parseInt(command);
-                rebot.keyPress(k);
-            } else if (Handler.keyRelease.equals(prefix)) {
-                int k = Integer.parseInt(command);
-                rebot.keyRelease(k);
-            }else if(Handler.mousePress.equals(prefix)){
-                int k = getCode(Integer.parseInt(command));
-                rebot.mousePress(k);
-            }else if(Handler.mouseRelease.equals(prefix)){
-                int k = getCode(Integer.parseInt(command));
-                rebot.mouseRelease(k);
-            }else if(Handler.mouseWheelMove.equals(prefix)){
+            exec();
+        }
+    }
 
-            }else if(Handler.mouseMove.equals(prefix)){
-                String [] xy = command.split(",");
-                double x = Double.parseDouble(xy[0]);
-                double y = Double.parseDouble(xy[1]);
-                int xx = (int)(width * x);
-                int yy = (int)(height * y);
-                rebot.mouseMove(xx,yy);
-            }
+    public void exec(){
+        String prefix = getPrefix();
+        String command = getCommand();
+        if (Handler.keyPress.equals(prefix)) {
+            int k = Integer.parseInt(command);
+            rebot.keyPress(k);
+        } else if (Handler.keyRelease.equals(prefix)) {
+            int k = Integer.parseInt(command);
+            rebot.keyRelease(k);
+        }else if(Handler.mousePress.equals(prefix)){
+            int k = getCode(Integer.parseInt(command));
+            rebot.mousePress(k);
+        }else if(Handler.mouseRelease.equals(prefix)){
+            int k = getCode(Integer.parseInt(command));
+            rebot.mouseRelease(k);
+        }else if(Handler.mouseWheelMove.equals(prefix)){
+
+        }else if(Handler.mouseMove.equals(prefix)){
+            String [] xy = command.split(",");
+            double x = Double.parseDouble(xy[0]);
+            double y = Double.parseDouble(xy[1]);
+            int xx = (int)(width * x);
+            int yy = (int)(height * y);
+            rebot.mouseMove(xx,yy);
         }
     }
 

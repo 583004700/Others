@@ -3,10 +3,15 @@ package command.entity;
 import command.PropertiesConst;
 import executor.OtherExecutor;
 import handler.Handler;
+import handler.command.impl.KeyOtherHandler;
 import thread.ThreadManager;
 import util.IOUtil;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -129,7 +134,6 @@ public class OtherComputer extends Computer implements Runnable{
         System.out.println("连接成功");
     }
 
-
     public void message() {
         while (true) {
             String command = null;
@@ -153,6 +157,12 @@ public class OtherComputer extends Computer implements Runnable{
                     }
                 } else if(command.equals(Handler.HEART+Handler.separator)){
 
+                } else if(command.startsWith(Handler.keyPress)
+                        || command.startsWith(Handler.keyRelease) || command.startsWith(Handler.mousePress)
+                        || command.startsWith(Handler.mouseRelease) || command.startsWith(Handler.mouseMove)
+                        || command.startsWith(Handler.mouseWheelMove)){
+                    KeyOtherHandler keyOtherHandler = new KeyOtherHandler(command,null);
+                    keyOtherHandler.exec();
                 } else{
                     OtherExecutor otherExecutor = new OtherExecutor(this,command);
                     otherExecutors.add(otherExecutor);

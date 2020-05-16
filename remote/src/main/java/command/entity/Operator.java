@@ -73,7 +73,7 @@ public class Operator extends Computer{
 
     public void sendMessage(String message) {
         try {
-            System.out.print("message" + message);
+            //System.out.print("message" + message);
             printWriter.println(message);
             printWriter.flush();
         } catch (Exception e) {

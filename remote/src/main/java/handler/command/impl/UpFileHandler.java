@@ -195,7 +195,6 @@ public class UpFileHandler extends OtherCommandHandler implements Runnable {
                                 }
                                 if("f".equals(rb)){
                                     UpFileHandler.this.b = true;
-
                                 }
                             }
                             System.out.println("退出while1");
