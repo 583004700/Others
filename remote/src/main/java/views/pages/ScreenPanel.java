@@ -5,9 +5,11 @@ import handler.Handler;
 
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
+import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,6 +37,7 @@ public class ScreenPanel extends Operator {
     private ScreenFrame screenFrame;
 
     private InputStream tranInputStream;
+    private Robot robot;
 
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -46,6 +50,11 @@ public class ScreenPanel extends Operator {
     private volatile boolean imageSize = true;
 
     public ScreenPanel(boolean kz,String key, ScreenFrame screenFrame) {
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
         this.kz = kz;
         this.screenFrame = screenFrame;
         this.setSize(screenFrame.getSize());
@@ -171,6 +180,7 @@ public class ScreenPanel extends Operator {
             });
 
             this.addMouseMotionListener(new MouseAdapter() {
+                int count = 0;
                 @Override
                 public void mouseMoved(MouseEvent e) {
                     if(ScreenPanel.this.image != null) {
@@ -190,8 +200,17 @@ public class ScreenPanel extends Operator {
 //                            e1.printStackTrace();
 //                        }
                         //submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+                        robot.delay(50);
                         sendMessage(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
                     }
+                }
+            });
+
+            this.addMouseWheelListener(new MouseAdapter() {
+                @Override
+                public void mouseWheelMoved(MouseWheelEvent e) {
+                    int amount = e.getWheelRotation() > 0 ? e.getScrollAmount() : -e.getScrollAmount();
+                    sendMessage(Handler.mouseWheelMove + Handler.separator + amount);
                 }
             });
         }

@@ -54,7 +54,8 @@ public class KeyOtherHandler extends OtherCommandHandler implements Runnable{
             int k = getCode(Integer.parseInt(command));
             rebot.mouseRelease(k);
         }else if(Handler.mouseWheelMove.equals(prefix)){
-
+            int wheelAmt = Integer.parseInt(command);
+            rebot.mouseWheel(wheelAmt);
         }else if(Handler.mouseMove.equals(prefix)){
             String [] xy = command.split(",");
             double x = Double.parseDouble(xy[0]);
