@@ -239,7 +239,6 @@ public class ScreenPanel extends Operator {
             byte[] b = new byte[1024];
             int len = 0;
             byte[] l = new byte[4];
-
             while (true) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 //数据原始长度
@@ -261,6 +260,7 @@ public class ScreenPanel extends Operator {
                 //ThreadManager.getExecutorService().submit(new SetImageThread(this,jlbImg).setByteArrayOutputStream(byteArrayOutputStream));
                 image = ImageIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
                 this.repaint();
+                Thread.sleep(10);
                 downSocketWrite.println("f");
                 downSocketWrite.flush();
             }
