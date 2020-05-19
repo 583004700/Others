@@ -41,12 +41,8 @@ public class ScreenPanel extends Operator {
 
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-    private PrintWriter downSocketWrite;
-
     private Image image;
-    private static final int MOD_MASK = MouseEvent.CTRL_MASK
-            | MouseEvent.SHIFT_MASK | MouseEvent.ALT_MASK
-            | MouseEvent.META_MASK | MouseEvent.ALT_GRAPH_MASK;
+
     private volatile boolean imageSize = true;
 
     public ScreenPanel(boolean kz,String key, ScreenFrame screenFrame) {
@@ -69,11 +65,8 @@ public class ScreenPanel extends Operator {
             this.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    if ((e.getModifiers() & MOD_MASK) == e.CTRL_MASK) {
-                        ScreenPanel.this.imageSize = !ScreenPanel.this.imageSize;
-                        ScreenPanel.this.x = 0;
-                        ScreenPanel.this.y = 0;
-                        ScreenPanel.this.repaint();
+                    if (e.isControlDown()) {
+                        changeSize();
                     }
                 }
 
@@ -88,9 +81,7 @@ public class ScreenPanel extends Operator {
                         public void mouseDragged(MouseEvent e) {
                             int rightMove = e.getX() - oldX;
                             int bottomMove = e.getY() - oldY;
-                            ScreenPanel.this.x += rightMove;
-                            ScreenPanel.this.y += bottomMove;
-                            ScreenPanel.this.repaint();
+                            moveImage(rightMove,bottomMove);
                             oldX = e.getX();
                             oldY = e.getY();
                         }
@@ -139,31 +130,27 @@ public class ScreenPanel extends Operator {
             this.addMouseListener(new MouseAdapter() {
                 MouseMotionListener mouseMotionListener = null;
                 @Override
-                public void mousePressed(MouseEvent e) {
+                public void mousePressed(final MouseEvent e) {
                     int button = e.getButton();
                     //submitCommand(Handler.mousePress+Handler.separator+button);
                     sendMessage(Handler.mousePress+Handler.separator+button);
                     mouseMotionListener = new MouseMotionAdapter() {
+                        int oldX = e.getX();
+                        int oldY = e.getY();
                         @Override
                         public void mouseDragged(MouseEvent e) {
-                            if(ScreenPanel.this.image != null) {
+                            if(e.isControlDown() && e.isShiftDown() && e.isAltDown()){
+                                int rightMove = e.getX() - oldX;
+                                int bottomMove = e.getY() - oldY;
+                                moveImage(rightMove,bottomMove);
+                                oldX = e.getX();
+                                oldY = e.getY();
+                            }else if(ScreenPanel.this.image != null) {
                                 int x = e.getX();
                                 int y = e.getY();
-                                int imageWidth = ScreenPanel.this.getWidth();
-                                int imageHeight = ScreenPanel.this.getHeight();
-                                BigDecimal decimal1 = new BigDecimal(x);
-                                BigDecimal decimal2 = new BigDecimal(imageWidth);
-                                BigDecimal decimal3 = new BigDecimal(y);
-                                BigDecimal decimal4 = new BigDecimal(imageHeight);
-                                double leftBfb = decimal1.divide(decimal2, 20, RoundingMode.HALF_DOWN).doubleValue();
-                                double bottomBfb = decimal3.divide(decimal4, 20,RoundingMode.HALF_DOWN).doubleValue();
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e1) {
-                                    e1.printStackTrace();
-                                }
-                                //submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
-                                sendMessage(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+                                x = x - ScreenPanel.this.x;
+                                y = y - ScreenPanel.this.y;
+                                sendMousePoint(x,y);
                             }
                         }
                     };
@@ -177,31 +164,24 @@ public class ScreenPanel extends Operator {
                     //submitCommand(Handler.mouseRelease+Handler.separator+button);
                     sendMessage(Handler.mouseRelease+Handler.separator+button);
                 }
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.isControlDown() && e.isShiftDown() && e.isAltDown()) {
+                        changeSize();
+                    }
+                }
             });
 
             this.addMouseMotionListener(new MouseAdapter() {
-                int count = 0;
                 @Override
                 public void mouseMoved(MouseEvent e) {
                     if(ScreenPanel.this.image != null) {
                         int x = e.getX();
                         int y = e.getY();
-                        int imageWidth = ScreenPanel.this.getWidth();
-                        int imageHeight = ScreenPanel.this.getHeight();
-                        BigDecimal decimal1 = new BigDecimal(x);
-                        BigDecimal decimal2 = new BigDecimal(imageWidth);
-                        BigDecimal decimal3 = new BigDecimal(y);
-                        BigDecimal decimal4 = new BigDecimal(imageHeight);
-                        double leftBfb = decimal1.divide(decimal2, 100, RoundingMode.HALF_DOWN).doubleValue();
-                        double bottomBfb = decimal3.divide(decimal4, 100,RoundingMode.HALF_DOWN).doubleValue();
-//                        try {
-//                            Thread.sleep(10);
-//                        } catch (InterruptedException e1) {
-//                            e1.printStackTrace();
-//                        }
-                        //submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
-                        robot.delay(50);
-                        sendMessage(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+                        x = x - ScreenPanel.this.x;
+                        y = y - ScreenPanel.this.y;
+                        sendMousePoint(x,y);
                     }
                 }
             });
@@ -216,6 +196,31 @@ public class ScreenPanel extends Operator {
         }
     }
 
+    public void changeSize(){
+        this.imageSize = !this.imageSize;
+        this.x = 0;
+        this.y = 0;
+        this.repaint();
+    }
+
+    public void moveImage(int rightMove,int bottomMove){
+        this.x += rightMove;
+        this.y += bottomMove;
+        this.repaint();
+    }
+
+    public void sendMousePoint(int x,int y){
+        BigDecimal decimal1 = new BigDecimal(x);
+        BigDecimal decimal2 = new BigDecimal(this.drawWidth);
+        BigDecimal decimal3 = new BigDecimal(y);
+        BigDecimal decimal4 = new BigDecimal(this.drawHeight);
+        double leftBfb = decimal1.divide(decimal2, 100, RoundingMode.HALF_DOWN).doubleValue();
+        double bottomBfb = decimal3.divide(decimal4, 100,RoundingMode.HALF_DOWN).doubleValue();
+        //submitCommand(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+        robot.delay(50);
+        sendMessage(Handler.mouseMove + Handler.separator + leftBfb + "," + bottomBfb);
+    }
+
     public void submitScrrentIn() {
         submitCommand(Handler.OPERATE + Handler.separator + this.key + "SC:");
         String uuid = UUID.randomUUID().toString();
@@ -228,7 +233,6 @@ public class ScreenPanel extends Operator {
     }
 
     public void setImage(InputStream inputStream,PrintWriter downSocketWrite) {
-        this.downSocketWrite = downSocketWrite;
         this.screenFrame.setTitle("已连接：" + this.key + "   正在获取屏幕...");
         this.tranInputStream = inputStream;
         try {
@@ -271,6 +275,8 @@ public class ScreenPanel extends Operator {
 
     private volatile int x = 0;
     private volatile int y = 0;
+    private volatile int drawWidth = 0;
+    private volatile int drawHeight = 0;
 
     @Override
     public void paint(Graphics g) {
@@ -286,22 +292,20 @@ public class ScreenPanel extends Operator {
             if(this.y > 0){
                 this.y = 0;
             }
-            int width = 0;
-            int height = 0;
             if(imageSize){
-                width = imageWidth;
-                height = imageHeight;
+                drawWidth = imageWidth;
+                drawHeight = imageHeight;
             }else{
-                width = panelWidth;
-                height = panelHeight;
+                drawWidth = panelWidth;
+                drawHeight = panelHeight;
             }
-            if(this.x < panelWidth - width){
-                this.x = panelWidth - width;
+            if(this.x < panelWidth - drawWidth){
+                this.x = panelWidth - drawWidth;
             }
-            if(this.y < panelHeight - height){
-                this.y = panelHeight - height;
+            if(this.y < panelHeight - drawHeight){
+                this.y = panelHeight - drawHeight;
             }
-            g.drawImage(image, x, y,width , height, null);
+            g.drawImage(image, x, y,drawWidth , drawHeight, null);
         }
     }
 
