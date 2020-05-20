@@ -2,6 +2,7 @@
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/bigdata" />
+    <file type="web" url="file://$PROJECT_DIR$/jfinaldemo" />
     <file type="web" url="file://$PROJECT_DIR$/mybatis" />
     <file type="web" url="file://$PROJECT_DIR$/springboot1" />
     <file type="web" url="file://$PROJECT_DIR$/springmvc" />
@@ -19,6 +20,7 @@
         <option value="$PROJECT_DIR$/httpClient/pom.xml" />
         <option value="$PROJECT_DIR$/urlTest/pom.xml" />
         <option value="$PROJECT_DIR$/mybatis/pom.xml" />
+        <option value="$PROJECT_DIR$/jfinaldemo/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
