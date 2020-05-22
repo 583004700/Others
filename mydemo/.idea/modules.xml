@@ -6,7 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/bigdata/bigdata.iml" filepath="$PROJECT_DIR$/bigdata/bigdata.iml" />
       <module fileurl="file://$PROJECT_DIR$/bigdatajar/bigdatajar.iml" filepath="$PROJECT_DIR$/bigdatajar/bigdatajar.iml" />
       <module fileurl="file://$PROJECT_DIR$/httpClient/httpClient.iml" filepath="$PROJECT_DIR$/httpClient/httpClient.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mybatis/mybatis.iml" filepath="$PROJECT_DIR$/mybatis/mybatis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jfinaldemo/jfinaldemo.iml" filepath="$PROJECT_DIR$/jfinaldemo/jfinaldemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/others/others.iml" filepath="$PROJECT_DIR$/others/others.iml" />
       <module fileurl="file://$PROJECT_DIR$/purchasingflow0916/purchasingflow0916.iml" filepath="$PROJECT_DIR$/purchasingflow0916/purchasingflow0916.iml" />
       <module fileurl="file://$PROJECT_DIR$/rocketmq/rocketmq.iml" filepath="$PROJECT_DIR$/rocketmq/rocketmq.iml" />
@@ -14,12 +14,9 @@
       <module fileurl="file://$PROJECT_DIR$/spark/spark.iml" filepath="$PROJECT_DIR$/spark/spark.iml" />
       <module fileurl="file://$PROJECT_DIR$/springboot1/springboot1.iml" filepath="$PROJECT_DIR$/springboot1/springboot1.iml" />
       <module fileurl="file://$PROJECT_DIR$/springboot2/springboot2.iml" filepath="$PROJECT_DIR$/springboot2/springboot2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/springmvc/springmvc.iml" filepath="$PROJECT_DIR$/springmvc/springmvc.iml" />
       <module fileurl="file://$PROJECT_DIR$/storm1/storm1.iml" filepath="$PROJECT_DIR$/storm1/storm1.iml" />
       <module fileurl="file://$PROJECT_DIR$/testweixinpay/testweixinpay.iml" filepath="$PROJECT_DIR$/testweixinpay/testweixinpay.iml" />
       <module fileurl="file://$PROJECT_DIR$/urlTest/urlTest.iml" filepath="$PROJECT_DIR$/urlTest/urlTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/webservice/webservice.iml" filepath="$PROJECT_DIR$/webservice/webservice.iml" />
-      <module fileurl="file://$PROJECT_DIR$/webtest/webtest.iml" filepath="$PROJECT_DIR$/webtest/webtest.iml" />
     </modules>
   </component>
 </project>

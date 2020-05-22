@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="bigdatajar" />
         <module name="httpClient" />
+        <module name="jfinaldemo" />
         <module name="mybatis" />
         <module name="spark" />
         <module name="springboot1" />
@@ -23,6 +24,7 @@
       <module name="bigdata" target="1.8" />
       <module name="bigdatajar" target="1.5" />
       <module name="httpClient" target="1.8" />
+      <module name="jfinaldemo" target="1.8" />
       <module name="mybatis" target="1.8" />
       <module name="others" target="1.8" />
       <module name="spark" target="1.8" />
@@ -37,6 +39,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="jfinaldemo" options="-verbose -parameters" />
       <module name="webservice" options="-extdirs D:\IdeaProjects\mydemo\webservice/lib" />
     </option>
   </component>
