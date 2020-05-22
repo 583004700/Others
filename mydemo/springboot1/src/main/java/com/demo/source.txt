@@ -1,3 +1,0 @@
-org.springframework.boot.SpringApplication.run(java.lang.Object, java.lang.String...)
-    org.springframework.boot.SpringApplication.SpringApplication(java.lang.Object...)
-        org.springframework.boot.SpringApplication.initialize

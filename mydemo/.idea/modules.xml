@@ -6,7 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/bigdata/bigdata.iml" filepath="$PROJECT_DIR$/bigdata/bigdata.iml" />
       <module fileurl="file://$PROJECT_DIR$/bigdatajar/bigdatajar.iml" filepath="$PROJECT_DIR$/bigdatajar/bigdatajar.iml" />
       <module fileurl="file://$PROJECT_DIR$/httpClient/httpClient.iml" filepath="$PROJECT_DIR$/httpClient/httpClient.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jfinaldemo/jfinaldemo.iml" filepath="$PROJECT_DIR$/jfinaldemo/jfinaldemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jfinaldemo/jfinal_demo_for_maven.iml" filepath="$PROJECT_DIR$/jfinaldemo/jfinal_demo_for_maven.iml" />
       <module fileurl="file://$PROJECT_DIR$/others/others.iml" filepath="$PROJECT_DIR$/others/others.iml" />
       <module fileurl="file://$PROJECT_DIR$/purchasingflow0916/purchasingflow0916.iml" filepath="$PROJECT_DIR$/purchasingflow0916/purchasingflow0916.iml" />
       <module fileurl="file://$PROJECT_DIR$/rocketmq/rocketmq.iml" filepath="$PROJECT_DIR$/rocketmq/rocketmq.iml" />
