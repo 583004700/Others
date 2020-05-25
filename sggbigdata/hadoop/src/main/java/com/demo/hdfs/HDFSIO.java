@@ -21,7 +21,7 @@ public class HDFSIO {
 		
 		// 1 获取对象
 		Configuration conf = new Configuration();
-		FileSystem fs = FileSystem.get(new URI("hdfs://hadoop102:9000"), conf , "atguigu");
+		FileSystem fs = FileSystem.get(new URI("hdfs://hadoop102:9000"), conf , "root");
 		
 		// 2 获取输入流
 		FileInputStream fis = new FileInputStream(new File("e:/banzhang.txt"));
@@ -44,7 +44,7 @@ public class HDFSIO {
 		
 		// 1 获取对象
 		Configuration conf = new Configuration();
-		FileSystem fs = FileSystem.get(new URI("hdfs://hadoop102:9000"), conf , "atguigu");
+		FileSystem fs = FileSystem.get(new URI("hdfs://hadoop102:9000"), conf , "root");
 		
 		// 2 获取输入流
 		FSDataInputStream fis = fs.open(new Path("/banhua.txt"));
@@ -66,7 +66,7 @@ public class HDFSIO {
 		
 		// 1 获取对象
 		Configuration conf = new Configuration();
-		FileSystem fs = FileSystem.get(new URI("hdfs://hadoop102:9000"), conf , "atguigu");
+		FileSystem fs = FileSystem.get(new URI("hdfs://hadoop102:9000"), conf , "root");
 		
 		// 2 获取输入流
 		FSDataInputStream fis = fs.open(new Path("/hadoop-2.7.2.tar.gz"));
@@ -93,7 +93,7 @@ public class HDFSIO {
 		
 		// 1 获取对象
 		Configuration conf = new Configuration();
-		FileSystem fs = FileSystem.get(new URI("hdfs://hadoop102:9000"), conf , "atguigu");
+		FileSystem fs = FileSystem.get(new URI("hdfs://hadoop102:9000"), conf , "root");
 		
 		// 2 获取输入流
 		FSDataInputStream fis = fs.open(new Path("/hadoop-2.7.2.tar.gz"));

@@ -41,7 +41,7 @@ public class HDFSClient {
 		
 		// 1 获取fs对象
 		Configuration conf = new Configuration();
-		//conf.set("dfs.replication", "2");
+		conf.set("dfs.replication", "2");
 		FileSystem fs = FileSystem.get(new URI("hdfs://hadoop102:9000"), conf , "root");
 		
 		// 2 执行上传API
