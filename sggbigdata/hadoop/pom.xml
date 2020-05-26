@@ -43,7 +43,8 @@
     </dependencies>
 
     <build>
-        <finalName>hdfs</finalName>
+        <!--<finalName>hdfs</finalName>-->
+        <finalName>mr</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -55,7 +56,8 @@
                     <archive>
                         <manifest>
                             <!-- 此处指定main方法入口的class -->
-                            <mainClass>com.demo.hdfs.HDFSClient</mainClass>
+                            <!--<mainClass>com.demo.hdfs.HDFSClient</mainClass>-->
+                            <mainClass>com.demo.mr.wordcount.WordcountDriver</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
