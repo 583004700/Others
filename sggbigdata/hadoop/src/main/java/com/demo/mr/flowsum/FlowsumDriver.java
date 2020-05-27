@@ -1,18 +1,14 @@
 package com.demo.mr.flowsum;
 
-import com.demo.mr.wordcount.WordcountDriver;
-import com.demo.mr.wordcount.WordcountMapper;
-import com.demo.mr.wordcount.WordcountReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class FlowsumDriver {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         // 1 获取Job对象
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf);
@@ -29,8 +25,8 @@ public class FlowsumDriver {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FlowBean.class);
         // 6 设置输入路径和输出路径
-        FileInputFormat.setInputPaths(job,new Path(args[0]));
-        FileOutputFormat.setOutputPath(job,new Path(args[1]));
+        FileInputFormat.setInputPaths(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
         // 7 提交
         //job.submit();
         boolean result = job.waitForCompletion(true);
