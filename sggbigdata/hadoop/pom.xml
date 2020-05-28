@@ -51,8 +51,8 @@
 
     <build>
         <!--<finalName>hdfs</finalName>-->
-        <finalName>wordCount</finalName>
-        <!--<finalName>flowsum</finalName>-->
+        <!--<finalName>wordCount</finalName>-->
+        <finalName>flowsum</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -66,8 +66,8 @@
                             <!-- 此处指定main方法入口的class -->
                             <!--<mainClass>com.demo.hdfs.HDFSClient</mainClass>-->
 
-                            <mainClass>com.demo.mr.wordcount.WordcountDriver</mainClass>
-                            <!--<mainClass>com.demo.mr.flowsum.FlowsumDriver</mainClass>-->
+                            <!--<mainClass>com.demo.mr.wordcount.WordcountDriver</mainClass>-->
+                            <mainClass>com.demo.mr.flowsum.FlowsumDriver</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

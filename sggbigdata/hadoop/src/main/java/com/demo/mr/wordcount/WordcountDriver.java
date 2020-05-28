@@ -11,6 +11,9 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class WordcountDriver {
     public static void main(String[] args) throws Exception{
+        args = new String[2];
+        args[0] = "d:/bigdata/hadoop/input";
+        args[1] = "d:/bigdata/hadoop/output";
         // 1 获取Job对象
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf);
@@ -28,9 +31,11 @@ public class WordcountDriver {
         job.setOutputValueClass(IntWritable.class);
 
         // 如果不设置InputFormat，它默认用的是TextInputFormat.class，如果有多个小文件，每个文件都产生一个mapTask
-        job.setInputFormatClass(CombineTextInputFormat.class);
+        //job.setInputFormatClass(CombineTextInputFormat.class);
         //虚拟存储切片最大值设置4m，多个小文件合成一次mapTask
-        CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
+        //CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
+
+        job.setCombinerClass(WordcountCombiner.class);
 
         // 6 设置输入路径和输出路径
         FileInputFormat.setInputPaths(job,new Path(args[0]));

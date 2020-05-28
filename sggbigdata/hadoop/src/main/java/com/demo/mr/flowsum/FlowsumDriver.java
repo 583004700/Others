@@ -24,6 +24,10 @@ public class FlowsumDriver {
         // 5 设置最终数据输出的key和value类型
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FlowBean.class);
+
+        job.setPartitionerClass(ProvincePartitioner.class);
+        job.setNumReduceTasks(5);
+
         // 6 设置输入路径和输出路径
         FileInputFormat.setInputPaths(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
