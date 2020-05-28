@@ -13,10 +13,21 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 public class SequenceFileDriver {
 
+
+
 	public static void main(String[] args) throws Exception, IOException {
+		try {
+			// 设置 HADOOP_HOME 目录
+			System.setProperty("hadoop.home.dir", "C:/Program Files/hadoop-2.7.2");
+			// 加载库文件
+			System.load("C:/Program Files/hadoop-2.7.2/bin/hadoop.dll");
+		} catch (UnsatisfiedLinkError e) {
+			System.err.println("Native code library failed to load.\n" + e);
+			System.exit(1);
+		}
 
 		// 输入输出路径需要根据自己电脑上实际的输入输出路径设置
-		args = new String[] { "e:/input/inputinputformat", "e:/output4" };
+		args = new String[] { "d:/bigdata/hadoop/input/", "d:/bigdata/hadoop/output/" };
 
 		// 1 获取job对象
 		Configuration conf = new Configuration();
