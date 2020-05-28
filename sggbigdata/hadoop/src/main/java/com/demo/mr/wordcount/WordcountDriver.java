@@ -35,7 +35,7 @@ public class WordcountDriver {
         //虚拟存储切片最大值设置4m，多个小文件合成一次mapTask
         //CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
 
-        job.setCombinerClass(WordcountCombiner.class);
+        job.setCombinerClass(WordcountCombiner.class); //或者可以直接用 WordCountReducer.class,因为代码逻辑一样
 
         // 6 设置输入路径和输出路径
         FileInputFormat.setInputPaths(job,new Path(args[0]));
