@@ -4,18 +4,32 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.compress.BZip2Codec;
+import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.input.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class WordcountDriver {
     public static void main(String[] args) throws Exception{
+        try {
+            // 设置 HADOOP_HOME 目录
+            System.setProperty("hadoop.home.dir", "C:/Program Files/hadoop-2.7.2");
+            // 加载库文件
+            System.load("C:/Program Files/hadoop-2.7.2/bin/hadoop.dll");
+        } catch (UnsatisfiedLinkError e) {
+            System.err.println("Native code library failed to load.\n" + e);
+            System.exit(1);
+        }
+
         args = new String[2];
         args[0] = "d:/bigdata/hadoop/input";
         args[1] = "d:/bigdata/hadoop/output";
         // 1 获取Job对象
         Configuration conf = new Configuration();
+        //开启map端输出压缩
+        conf.setBoolean("mapreduce.map.output.compress",true);
+        conf.setClass("mapreduce.map.output.compress.codec", BZip2Codec.class, CompressionCodec.class);
         Job job = Job.getInstance(conf);
         // 2 设置jar存储位置
         job.setJarByClass(WordcountDriver.class);
@@ -36,6 +50,11 @@ public class WordcountDriver {
         //CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
 
         job.setCombinerClass(WordcountCombiner.class); //或者可以直接用 WordCountReducer.class,因为代码逻辑一样
+
+        //设置reduce端输出压缩开启
+        FileOutputFormat.setCompressOutput(job,true);
+        //设置压缩方式
+        FileOutputFormat.setOutputCompressorClass(job,BZip2Codec.class);
 
         // 6 设置输入路径和输出路径
         FileInputFormat.setInputPaths(job,new Path(args[0]));

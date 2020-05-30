@@ -17,7 +17,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 public class DistributedCacheMapper extends Mapper<LongWritable, Text, Text, NullWritable>{
 
-	HashMap<String, String> pdMap = new HashMap<>();
+	HashMap<String, String> pdMap = new HashMap<String,String>();
 	
 	@Override
 	protected void setup(Context context)
