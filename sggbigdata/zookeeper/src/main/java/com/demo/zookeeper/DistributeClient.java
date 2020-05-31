@@ -35,7 +35,7 @@ public class DistributeClient {
 		List<String> children = zkClient.getChildren("/servers", true);
 		
 		// 存储服务器节点主机名称集合
-		ArrayList<String> hosts = new ArrayList<>();
+		ArrayList<String> hosts = new ArrayList<String>();
 		
 		for (String child : children) {
 			
