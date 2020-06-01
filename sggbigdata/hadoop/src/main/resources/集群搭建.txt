@@ -45,7 +45,7 @@ OK！修改完成。
 
 因为docker不知道怎么配置免密登录，所以每个节点单独启动
 每个节点单独启动集群：
-docker run --name hadoop102 -d -h hadoop102 -p 50070:50070 -p 9000:9000 -p 19888:19888 --privileged=true -v /bigdata/hadoop:/bigdata/hadoop --net netgroup --ip 192.168.1.102  hadoop:2.0 /usr/bin/supervisord
+docker run --name hadoop102 -d -h hadoop102 -p 10000:10000 -p 3306:3306 -p 50070:50070 -p 9000:9000 -p 19888:19888 --privileged=true -v /bigdata:/bigdata --net netgroup --ip 192.168.1.102  hadoop:2.0 /usr/bin/supervisord
     第一次启动:
     rm -rf data/ logs/
     hadoop namenode -format
@@ -56,7 +56,7 @@ docker run --name hadoop102 -d -h hadoop102 -p 50070:50070 -p 9000:9000 -p 19888
 
             mr-jobhistory-daemon.sh start historyserver
 
-docker run --name hadoop103 -d -h hadoop103 -p 8088:8088 --net netgroup --ip 192.168.1.103  hadoop:2.0 /usr/bin/supervisord
+docker run --name hadoop103 -d -h hadoop103 -p 8088:8088 --privileged=true -v /bigdata:/bigdata --net netgroup --ip 192.168.1.103  hadoop:2.0 /usr/bin/supervisord
     第一次启动:
     rm -rf data/ logs/
     之后
@@ -64,7 +64,7 @@ docker run --name hadoop103 -d -h hadoop103 -p 8088:8088 --net netgroup --ip 192
         hadoop-daemon.sh start datanode
             yarn-daemon.sh start nodemanager
 
-docker run --name hadoop104 -d -h hadoop104 -p 50090:50090 --net netgroup --ip 192.168.1.104  hadoop:2.0 /usr/bin/supervisord
+docker run --name hadoop104 -d -h hadoop104 -p 50090:50090 --privileged=true -v /bigdata:/bigdata --net netgroup --ip 192.168.1.104  hadoop:2.0 /usr/bin/supervisord
     第一次启动:
     rm -rf data/ logs/
     之后
