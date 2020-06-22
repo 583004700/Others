@@ -1,0 +1,3 @@
+启动:bin/kafka-server-start.sh config/server.properties
+后台启动:bin/kafka-server-start.sh -daemon config/server.properties
+关闭:bin/kafka-server-stop.sh
